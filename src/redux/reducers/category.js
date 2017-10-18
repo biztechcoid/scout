@@ -25,9 +25,26 @@ category
 }
 */
 
+/*
+*
+function for create id
+*
+*/
+function makeid() {
+  var text = ''
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'
+
+  for(var i = 0; i < 20; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
+
+  return text
+}
+/**/
+
 const initialState = {
 	data: [],
-	refreshing: false
+	refreshing: false,
+	barcode: null
 }
 
 const CategoryReducers = (state = initialState, action) => {
@@ -38,31 +55,44 @@ const CategoryReducers = (state = initialState, action) => {
 				data: action.data
 			}
 
+		/*
+		*
+		add category
+		*
+		*/
+		/*
+		action.data = {
+			name: string
+		}
+		*/
 		case 'ADD_CATEGORY':
 			const createData = {
-				category: action.data,
+				idCategory: makeid(),
+				name: action.data.name,
 				product: []
 			}
-			const data =  [...state.data, createData]
+			const data = [...state.data, createData]
 			AsyncStorage.setItem('@Data', JSON.stringify(data))
 			return {
 				...state,
 				data: data
 			}
 
-		case 'DELETE_CATEGORY':
-			state.data.splice(action.data, 1)
-			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
-			return {
-				...state,
-				data: [...state.data]
-			}
-
-		case 'ADD_PRODUCT':
-			/* {category: 'nama category', product: 'nama product'}*/
+		/*
+		*
+		update category
+		*
+		*/
+		/*
+		action.data = {
+			idCategory: string,
+			name: string
+		}
+		*/
+		case 'UPDATE_CATEGORY':
 			for(var i in state.data) {
-				if(state.data[i].category == action.data.category) {
-					state.data[i].product = [...state.data[i].product, {name: action.data.product}]
+				if(state.data[i].idCategory === action.data.idCategory) {
+					state.data[i].name = action.data.name
 				}
 			}
 			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
@@ -71,8 +101,119 @@ const CategoryReducers = (state = initialState, action) => {
 				data: [...state.data]
 			}
 
+		/*
+		*
+		delete category
+		*
+		*/
+		/*
+		action.data = {
+			idCategory: string
+		}
+		*/
+		case 'DELETE_CATEGORY':
+			for(var i in state.data) {
+				if(state.data[i].idCategory === action.data.idCategory) {
+					state.data.splice(i, 1)
+				}
+			}
+			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
+			return {
+				...state,
+				data: [...state.data]
+			}
+
+		/*
+		*
+		add product
+		*
+		*/
+		/*
+		action.data = {
+			idCategory: string,
+			barcode: string,
+			name: string,
+			cost: number,
+			price: number,
+			quantity: number
+		}
+		*/
+		case 'ADD_PRODUCT':
+			for(var i in state.data) {
+				if(state.data[i].idCategory === action.data.idCategory) {
+					state.data[i].product = [...state.data[i].product, {
+						idProduct: makeid(),
+						barcode: action.data.barcode,
+						name: action.data.name,
+						cost: action.data.cost,
+						price: action.data.price,
+						quantity: action.data.quantity
+					}]
+				}
+			}
+			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
+			return {
+				...state,
+				data: [...state.data]
+			}
+
+		/*
+		*
+		update product
+		*
+		*/
+		/*
+		action.data = {
+			idCategory: string,
+			idProduct: string,
+			barcode: string,
+			name: string,
+			cost: number,
+			price: number,
+			quantity: number
+		}
+		*/
+		case 'UPDATE_PRODUCT':
+			for(var i in state.data) {
+				if(state.data[i].idCategory === action.data.idCategory) {
+					for(var j in state.data[i].product) {
+						if(state.data[i].product[j].idProduct === action.data.idProduct) {
+							state.data[i].product[j].barcode = action.data.barcode
+							state.data[i].product[j].name = action.data.name
+							state.data[i].product[j].cost = action.data.cost
+							state.data[i].product[j].price = action.data.price
+							state.data[i].product[j].quantity = action.data.quantity
+						}
+					}
+				}
+			}
+			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
+			return {
+				...state,
+				data: [...state.data]
+			}
+
+		/*
+		*
+		delete product
+		*
+		*/
+		/*
+		action.data = {
+			idCategory: string,
+			idProduct: string
+		}
+		*/
 		case 'DELETE_PRODUCT':
-			state.data[action.data.idCategory].product.splice(action.data.idProduct, 1)
+			for(var i in state.data) {
+				if(state.data[i].idCategory === action.data.idCategory) {
+					for(var j in state.data[i].product) {
+						if(state.data[i].product[j].idProduct === action.data.idProduct) {
+							state.data[i].product.splice(j, 1)
+						}
+					}
+				}
+			}
 			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
 			return {
 				...state,
@@ -83,6 +224,12 @@ const CategoryReducers = (state = initialState, action) => {
 			return {
 				...state,
 				refreshing: action.data
+			}
+
+		case 'BARCODE_PRODUCT':
+			return {
+				...state,
+				barcode: action.data
 			}
 
 		default:

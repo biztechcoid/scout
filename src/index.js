@@ -5,7 +5,7 @@ import {
 import SplashScreen from './pages/splash'
 import LoginScreen from './pages/login'
 import HomeManagerScreen from './routes/homeManager'
-import HomeSalesScreen from './routes/homeSales'
+import HomeAdminScreen from './routes/homeAdmin'
 import HomeScreen from './routes/home'
 import ScanQRScreen from './pages/scanQR'
 import CategoryScreen from './pages/category'
@@ -35,8 +35,8 @@ const MobilePos = StackNavigator({
 			header: null
 		}
 	},
-	HomeSales: {
-		screen: HomeSalesScreen,
+	HomeAdmin: {
+		screen: HomeAdminScreen,
 		navigationOptions: {
 			header: null
 		}

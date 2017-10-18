@@ -14,6 +14,13 @@ export function addCategory(data) {
 	}
 }
 
+export function updateCategory(data) {
+	return {
+		type: 'UPDATE_CATEGORY',
+		data
+	}
+}
+
 export function deleteCategory(data) {
 	return {
 		type: 'DELETE_CATEGORY',
@@ -28,6 +35,13 @@ export function addProduct(data) {
 	}
 }
 
+export function updateProduct(data) {
+	return {
+		type: 'UPDATE_PRODUCT',
+		data
+	}
+}
+
 export function deleteProduct(data) {
 	return {
 		type: 'DELETE_PRODUCT',
@@ -38,6 +52,13 @@ export function deleteProduct(data) {
 export function refreshing(data) {
 	return {
 		type: 'REFRESHING',
+		data
+	}
+}
+
+export function barcodeProduct(data) {
+	return {
+		type: 'BARCODE_PRODUCT',
 		data
 	}
 }

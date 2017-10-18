@@ -206,7 +206,7 @@ class ReportScreen extends React.Component {
 								<View
 									style = { styles.category }>
 									<Text> {index + 1}. </Text>
-									<Text> {content.category} </Text>
+									<Text> {content.name} </Text>
 								</View>
 
 								{content.product.map((product, idx) => {

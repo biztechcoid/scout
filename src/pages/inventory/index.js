@@ -18,6 +18,7 @@ import { connect } from 'react-redux'
 import {
 	localStorage,
 	addCategory,
+	updateCategory,
 	deleteCategory
 } from '../../redux/actions'
 
@@ -44,19 +45,57 @@ class InventoryScreen extends React.Component {
 		keyboard: false,
 		modalVisible: false,
 
+		idCategory: null,
 		category: null
 	}
 
 	_addCategory() {
-		this._setModalVisible(false)
-		this.props.dispatchAddCategory(this.state.category)
-		this.setState({ category: null })
+		if(this.state.category == '' || this.state.category == null) {
+			Alert.alert(null, 'nama category tidak valid')
+		} else {
+			var data = {
+				name: this.state.category
+			}
+			this._setModalVisible(false)
+			this.props.dispatchAddCategory(data)
+			this.setState({
+				category: null
+			})
+		}
 	}
 
-	_deleteCategory(content, index) {
-		Alert.alert(null, 'Anda yakin akan menghapus category '+ content.category,
+	__updateCategory(content) {
+		this.setState({
+			idCategory: content.idCategory,
+			category: content.name
+		})
+		this._setModalVisible(true)
+	}
+
+	_updateCategory() {
+		if(this.state.category == '' || this.state.category == null) {
+			Alert.alert(null, 'nama category tidak valid')
+		} else {
+			var data = {
+				idCategory: this.state.idCategory,
+				name: this.state.category
+			}
+			this._setModalVisible(false)
+			this.props.dispatchUpdateCategory(data)
+			this.setState({
+				idCategory: null,
+				category: null
+			})
+		}
+	}
+
+	_deleteCategory(content) {
+		var data = {
+			idCategory: content.idCategory
+		}
+		Alert.alert(null, 'Anda yakin akan menghapus category '+ content.name,
 			[
-				{ text: 'Yakin', onPress: () => this.props.dispatchDeleteCategory(index) },
+				{ text: 'Yakin', onPress: () => this.props.dispatchDeleteCategory(data) },
 				{ text: 'Batal' }
 			])
 	}
@@ -74,7 +113,7 @@ class InventoryScreen extends React.Component {
 									autoCapitalize = 'words'
 									returnKeyType = 'done'
 									onChangeText = { (text) => this.setState({ category: text })}
-									onSubmitEditing = { this._addCategory.bind(this) }
+									onSubmitEditing = { this.state.idCategory == null ? this._addCategory.bind(this) : this._updateCategory.bind(this) }
 									placeholder = 'category'
 									value = {this.state.category}/>
 							</View>
@@ -86,9 +125,15 @@ class InventoryScreen extends React.Component {
 									onPress = { () => this.setState({ category: null })}
 									name = 'Clear'/>
 
-								<Button
-									onPress = { this._addCategory.bind(this) }
-									name = 'Add'/>
+								{this.state.idCategory == null ?
+									<Button
+										onPress = { this._addCategory.bind(this) }
+										name = 'Add'/>
+									:
+									<Button
+										onPress = { this._updateCategory.bind(this) }
+										name = 'Edit'/>
+								}
 							</View>
 						</View>
 					</View>
@@ -104,12 +149,18 @@ class InventoryScreen extends React.Component {
 									style = {{ flex: 1, flexDirection: 'row' }}
 									onPress = { () => this.props.navigation.navigate('Category', { index: index, content: content }) }>
 									<Text> {index + 1}. </Text>
-									<Text> {content.category} </Text>
+									<Text> {content.name} </Text>
 								</Touchable>
 
 								<Touchable
 									style = {{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
-									onPress = { this._deleteCategory.bind(this, content, index) }>
+									onPress = { this.__updateCategory.bind(this, content) }>
+									<Text> E </Text>
+								</Touchable>
+
+								<Touchable
+									style = {{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
+									onPress = { this._deleteCategory.bind(this, content) }>
 									<Text> X </Text>
 								</Touchable>
 							</View>
@@ -218,6 +269,7 @@ function mapDispatchToProps (dispatch) {
 	return {
 		dispatchLocalStorage: (data) => dispatch(localStorage(data)),
 		dispatchAddCategory: (data) => dispatch(addCategory(data)),
+		dispatchUpdateCategory: (data) => dispatch(updateCategory(data)),
 		dispatchDeleteCategory: (data) => dispatch(deleteCategory(data))
 	}
 }

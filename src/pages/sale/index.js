@@ -1,11 +1,12 @@
 import React from 'react'
 import {
-	View,
+	Keyboard,
 	RefreshControl,
 	ScrollView,
 	StyleSheet,
 	Text,
-	TextInput
+	TextInput,
+	View
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -30,6 +31,7 @@ class SaleScreen extends React.Component {
 	})
 
 	state = {
+		keyboard: false,
 		view: [],
 		sale: []
 	}
@@ -68,99 +70,139 @@ class SaleScreen extends React.Component {
 
 		stateCopy.sale.splice(0, 0, product)
 
-		console.log(stateCopy.product)
 		this.setState(stateCopy)
 	}
 
 	render() {
 		return(
 			<View style = { styles.container }>
-				<View style = { styles.row }>
-					<View style = {{ flex: 0.5 }}>
-						<Button
-							onPress = { this._scanQR.bind(this) }
-							name = 'Scan' />
-					</View>
-
-					<View style = {{ flex: 2 }}>
-						<TextInput />
-					</View>
-				</View>
-
-				<ScrollView
-					style = {{ flex: 1 }}>
-					{this.state.sale.map((content, index) => {
-						return <Text key = { index} > {content} </Text>
-					})}
-				</ScrollView>
-
-				<View style = { styles.row }>
-					<View style = {{ flex: 1 }}>
-						<Text> Total </Text>
-					</View>
-
-					<View style = {{ flex: 2, alignItems: 'flex-end' }}>
-						<Text> 0.00 </Text>
-					</View>
-				</View>
-
-				<ScrollView
-					style = {{ flex: 1 }}
-					refreshControl = { this._renderRefresh() }>
-					{this.props.category.map((content, index) => {
-						return (
-							<View
-								key = { index }
-								style = {{ flex: 1, flexDirection: 'column' }}>
-								<View style = { styles.category }>
-									<Touchable
-										style = {{ flex: 1, flexDirection: 'row' }}
-										onPress = { this._collapse.bind(this, index) }>
-										<Text> {index + 1}. </Text>
-										<Text> {content.category} </Text>
-									</Touchable>
-								</View>
-
-								{content.product.map((product, idx) => {
-									return (
-										<View
-											key = { idx }>
-											{this.state.view[index] ?
-												<View
-													style = {[ styles.category, { marginLeft: 10 }]}>
-													<Touchable
-														style = {{ flex: 1, flexDirection: 'row' }}
-														onPress = { this._addSale.bind(this, product.name) }>
-														<Text> {idx + 1}. </Text>
-														<Text> {product.name} </Text>
-													</Touchable>
-												</View>
-												:
-												null
-											}
-										</View>
-									)
-								})}
-							</View>
-						)
-					})}
-				</ScrollView>
-
-				<View style = {{height: 45 }}/>
-
-				<View style = { styles.stickyBottom }>
+				<View style = {{ flex: 1 }}>
 					<View style = { styles.row }>
-						<Button
-							onPress = { () => console.log('clear') }
-							name = 'Clear' />
+						<View style = {{ flex: 0.5 }}>
+							<Button
+								onPress = { this._scanQR.bind(this) }
+								name = 'Scan' />
+						</View>
 
-						<Button
-							onPress = { () => console.log('done') }
-							name = 'Done' />
+						<View style = {{ flex: 2 }}>
+							<TextInput />
+						</View>
+					</View>
+
+					<ScrollView
+						style = {{ flex: 1 }}>
+						{this.state.sale.map((content, index) => {
+							return (
+								<View
+									key = { index }
+									style = {{ flex: 1, flexDirection: 'row' }}>
+									<Text> {content.name} </Text>
+									<Text> {content.price} </Text>
+								</View>
+							)
+						})}
+					</ScrollView>
+
+					<View style = { styles.row }>
+						<View style = {{ flex: 1 }}>
+							<Text> Total </Text>
+						</View>
+
+						<View style = {{ flex: 2, alignItems: 'flex-end' }}>
+							<Text> 0.00 </Text>
+						</View>
 					</View>
 				</View>
+
+				{this.state.keyboard ?
+					null
+					:
+					<View style = {{ flex: 1 }}>
+						<ScrollView
+							style = {{ flex: 1 }}
+							refreshControl = { this._renderRefresh() }>
+							{this.props.category.map((content, index) => {
+								return (
+									<View
+										key = { index }
+										style = {{ flex: 1, flexDirection: 'column' }}>
+										<View style = { styles.category }>
+											<Touchable
+												style = {{ flex: 1, flexDirection: 'row' }}
+												onPress = { this._collapse.bind(this, index) }>
+												<Text> {index + 1}. </Text>
+												<Text> {content.name} </Text>
+											</Touchable>
+										</View>
+
+										{content.product.map((product, idx) => {
+											return (
+												<View
+													key = { idx }>
+													{this.state.view[index] ?
+														<View
+															style = {[ styles.category, { marginLeft: 10 }]}>
+															<Touchable
+																style = {{ flex: 1, flexDirection: 'row' }}
+																onPress = { this._addSale.bind(this, product) }>
+																<View style = {{ flexDirection: 'row' }}>
+																	<Text> {idx + 1}. </Text>
+																	<Text> {product.name} </Text>
+																</View>
+
+																<Text> {product.price} </Text>
+															</Touchable>
+														</View>
+														:
+														null
+													}
+												</View>
+											)
+										})}
+									</View>
+								)
+							})}
+						</ScrollView>
+
+						<View style = {{height: 45 }}/>
+
+						<View style = { styles.stickyBottom }>
+							<View style = { styles.row }>
+								<Button
+									onPress = { () => console.log('clear') }
+									name = 'Clear' />
+
+								<Button
+									onPress = { () => console.log('done') }
+									name = 'Done' />
+							</View>
+						</View>
+					</View>
+				}
 			</View>
 		)
+	}
+
+	_keyboardDidShow() {
+		this.setState({
+			keyboard: true
+		})
+	}
+
+	_keyboardDidHide() {
+		this.setState({
+			keyboard: false
+		})
+	}
+
+	componentWillMount() {
+		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
+		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
+	}
+
+	componentWillUnmount() {
+		this.keyboardDidShowListener.remove()
+		this.keyboardDidHideListener.remove()
 	}
 }
 

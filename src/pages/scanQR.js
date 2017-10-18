@@ -10,14 +10,14 @@ import { NavigationActions } from 'react-navigation'
 var back = NavigationActions.back({key: null})
 
 import { connect } from 'react-redux'
-import { addCategory } from '../redux/actions/category'
+import { barcodeProduct } from '../redux/actions/category'
 
 
 class ScanQRScreen extends React.Component {
 	onSuccess(e) {
 		switch(this.props.navigation.state.params.type) {
-			case 'addCategory':
-				this.props.dispatchAddCategory(e.data)
+			case 'barcodeProduct':
+				this.props.dispatchBarcodeProduct(e.data)
 				this.props.navigation.dispatch(back)
 				break
 
@@ -34,14 +34,10 @@ class ScanQRScreen extends React.Component {
 					style={{flex: 1}}
 					title = 'Scan Code'
 					onRead = { this.onSuccess.bind(this) }
-					topContent = {
-						<Text>
-							Go to <Text>wikipedia.org/wiki/QR_code</Text> on your computer and scan the QR code.
-						</Text>
-					}
+					topContent = {null}
 					bottomContent = {
 						<TouchableOpacity>
-							<Text onPress = { () => this.props.navigation.dispatch(back) }>OK. Got it! </Text>
+							<Text onPress = { () => this.props.navigation.dispatch(back) }> back </Text>
 						</TouchableOpacity>
 					} />
 			</View>
@@ -58,7 +54,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
 	return {
-		dispatchAddCategory: (data) => dispatch(addCategory(data))
+		dispatchBarcodeProduct: (data) => dispatch(barcodeProduct(data))
 	}
 }
 

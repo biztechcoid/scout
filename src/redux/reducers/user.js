@@ -71,20 +71,20 @@ const UserReducers = (state = initialState, action) => {
 					level: 'manager',
 					lastLogin: new Date()
 				}
-			} else if(action.data.data.email == 'sales' && action.data.data.password == 'sales') {
+			} else if(action.data.data.email == 'admin' && action.data.data.password == 'admin') {
 				action.data.navigation.dispatch({
 				  type: 'Navigation/RESET',
 				  index: 0,
-				  actions: [{ type: 'Navigation/NAVIGATE', routeName: 'HomeSales' }]
+				  actions: [{ type: 'Navigation/NAVIGATE', routeName: 'HomeAdmin' }]
 				})
 
 				user = {
 					token: 'token',
-					idUser: 'idSales',
+					idUser: 'idAdmin',
 					email: action.data.data.email,
-					name: 'Sales',
+					name: 'Admin',
 					password: action.data.data.password,
-					level: 'sales',
+					level: 'admin',
 					lastLogin: new Date()
 				}
 			} else {
@@ -112,13 +112,6 @@ const UserReducers = (state = initialState, action) => {
 			}
 
 		case 'LOGOUT':
-			/*
-			*
-			remove old token from local storage
-			*
-			*/
-			AsyncStorage.removeItem('@Token')
-			/**/
 			AsyncStorage.removeItem('@User')
 			action.data.dispatch({
 				key: null,

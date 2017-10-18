@@ -49,8 +49,8 @@ class SplashScreen extends React.Component {
 					case 'manager':
 						return this.next('HomeManager')
 
-					case 'sales':
-						return this.next('HomeSales')
+					case 'admin':
+						return this.next('HomeAdmin')
 
 					default:
 						return this.next('Home')
