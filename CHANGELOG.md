@@ -108,3 +108,11 @@
 	* perubahan structure data
 	* perubahan field add product
 	* fitur edit category
+
+
+##  21/10/2017
+
+1. tab sale
+	* add pembelian
+	* tambah quantity
+	* kurang quantity

@@ -16,7 +16,6 @@ const { width, height } = Dimensions.get('window')
 
 import { connect } from 'react-redux'
 import {
-	localStorage,
 	addCategory,
 	updateCategory,
 	deleteCategory
@@ -146,20 +145,26 @@ class InventoryScreen extends React.Component {
 								key = { index }
 								style = { styles.category }>
 								<Touchable
-									style = {{ flex: 1, flexDirection: 'row' }}
+									style = {{ flex: 1 }}
 									onPress = { () => this.props.navigation.navigate('Category', { index: index, content: content }) }>
-									<Text> {index + 1}. </Text>
-									<Text> {content.name} </Text>
+									<View style = {{ flexDirection: 'row' }}>
+										<Text> {index + 1}. </Text>
+
+										<View style = {{ flexDirection: 'column' }}>
+											<Text> {content.idCategory} </Text>
+											<Text> {content.name} </Text>
+										</View>
+									</View>
 								</Touchable>
 
 								<Touchable
-									style = {{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
+									style = {{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
 									onPress = { this.__updateCategory.bind(this, content) }>
 									<Text> E </Text>
 								</Touchable>
 
 								<Touchable
-									style = {{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
+									style = {{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
 									onPress = { this._deleteCategory.bind(this, content) }>
 									<Text> X </Text>
 								</Touchable>
@@ -204,20 +209,6 @@ class InventoryScreen extends React.Component {
 	componentWillMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
 		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
-	}
-
-	componentDidMount() {
-		AsyncStorage.getItem('@Data', (err, resData) => {
-			if(err) {
-				return state
-			}
-
-			if(resData == null) {
-				return true
-			} else {
-				this.props.dispatchLocalStorage(JSON.parse(resData))
-			}
-		})
 	}
 
 	componentWillUnmount() {
@@ -267,7 +258,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
 	return {
-		dispatchLocalStorage: (data) => dispatch(localStorage(data)),
 		dispatchAddCategory: (data) => dispatch(addCategory(data)),
 		dispatchUpdateCategory: (data) => dispatch(updateCategory(data)),
 		dispatchDeleteCategory: (data) => dispatch(deleteCategory(data))

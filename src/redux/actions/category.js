@@ -1,8 +1,8 @@
 'use strict'
 
-export function localStorage(data) {
+export function localStorageData(data) {
 	return {
-		type: 'LOCAL_STORAGE',
+		type: 'LOCAL_STORAGE_CATEGORY',
 		data
 	}
 }
@@ -59,6 +59,13 @@ export function refreshing(data) {
 export function barcodeProduct(data) {
 	return {
 		type: 'BARCODE_PRODUCT',
+		data
+	}
+}
+
+export function updateStock(data) {
+	return {
+		type: 'UPDATE_STOCK',
 		data
 	}
 }

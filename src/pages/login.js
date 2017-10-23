@@ -2,6 +2,7 @@ import React from 'react'
 import {
 	ActivityIndicator,
 	Alert,
+	AsyncStorage,
 	Dimensions,
 	Text,
 	TextInput,
@@ -12,7 +13,12 @@ import {
 const { width, height } = Dimensions.get('window')
 
 import { connect } from 'react-redux'
-import { loginProcess, login } from '../redux/actions'
+import {
+	loginProcess,
+	login,
+	localStorageData,
+	localStorageSale
+} from '../redux/actions'
 
 import {
 	Button,
@@ -40,6 +46,36 @@ class LoginScreen extends React.Component {
 					password: this.state.password
 				}
 			}
+
+			/*
+			*
+			cek data di local storage
+			*
+			*/
+			AsyncStorage.getItem('@Data', (err, resData) => {
+				if(err) {
+					return state
+				}
+
+				if(resData == null) {
+					return true
+				} else {
+					this.props.dispatchLocalStorageData(JSON.parse(resData))
+				}
+			})
+
+			AsyncStorage.getItem('@Penjualan', (err, resData) => {
+				if(err) {
+					return state
+				}
+
+				if(resData == null) {
+					return true
+				} else {
+					this.props.dispatchLocalStorageSale(JSON.parse(resData))
+				}
+			})
+			/**/
 
 			this.props.dispatchLogin(data)
 		}
@@ -123,7 +159,9 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
 	return {
 		dispatchLoginProcess: (data) => dispatch(loginProcess(data)),
-		dispatchLogin: (data) => dispatch(login(data))
+		dispatchLogin: (data) => dispatch(login(data)),
+		dispatchLocalStorageData: (data) => dispatch(localStorageData(data)),
+		dispatchLocalStorageSale: (data) => dispatch(localStorageSale(data))
 	}
 }
 

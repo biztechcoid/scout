@@ -4,6 +4,10 @@ import {
 	AsyncStorage
 } from 'react-native'
 
+import {
+	makeId
+} from '../../modules'
+
 /*
 *
 category
@@ -25,21 +29,6 @@ category
 }
 */
 
-/*
-*
-function for create id
-*
-*/
-function makeid() {
-  var text = ''
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'
-
-  for(var i = 0; i < 20; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length))
-
-  return text
-}
-/**/
 
 const initialState = {
 	data: [],
@@ -49,7 +38,7 @@ const initialState = {
 
 const CategoryReducers = (state = initialState, action) => {
 	switch(action.type) {
-		case 'LOCAL_STORAGE':
+		case 'LOCAL_STORAGE_CATEGORY':
 			return {
 				...state,
 				data: action.data
@@ -67,7 +56,7 @@ const CategoryReducers = (state = initialState, action) => {
 		*/
 		case 'ADD_CATEGORY':
 			const createData = {
-				idCategory: makeid(),
+				idCategory: makeId(),
 				name: action.data.name,
 				product: []
 			}
@@ -142,7 +131,7 @@ const CategoryReducers = (state = initialState, action) => {
 			for(var i in state.data) {
 				if(state.data[i].idCategory === action.data.idCategory) {
 					state.data[i].product = [...state.data[i].product, {
-						idProduct: makeid(),
+						idProduct: makeId(),
 						barcode: action.data.barcode,
 						name: action.data.name,
 						cost: action.data.cost,
@@ -230,6 +219,24 @@ const CategoryReducers = (state = initialState, action) => {
 			return {
 				...state,
 				barcode: action.data
+			}
+
+		case 'UPDATE_STOCK':
+			for(var i in action.data.data) {
+				for(var j in state.data) {
+					if(state.data[j].idCategory === action.data.data[i].idCategory) {
+						for(var k in state.data[j].product) {
+							if(state.data[j].product[k].idProduct === action.data.data[i].idProduct) {
+								state.data[j].product[k].quantity = state.data[j].product[k].quantity - action.data.data[i].quantity
+							}
+						}
+					}
+				}
+			}
+			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
+			return {
+				...state,
+				data: [...state.data]
 			}
 
 		default:

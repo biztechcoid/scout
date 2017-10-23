@@ -52,7 +52,7 @@ const MyApp = DrawerNavigator({
 			HomeScreen: {
 				screen: TabReportScreen,
 				navigationOptions: {
-					headerTitle: 'Title',
+					headerTitle: 'Scout',
 					headerTintColor: 'white',
 					headerStyle: {
 						backgroundColor: '#6ecbe0'

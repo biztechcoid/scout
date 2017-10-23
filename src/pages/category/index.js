@@ -68,9 +68,9 @@ class CategoryScreen extends React.Component {
 				idCategory: this.props.navigation.state.params.content.idCategory,
 				barcode: this.state.barcode,
 				name: this.state.product,
-				cost: this.state.cost,
-				price: this.state.price,
-				quantity: this.state.quantity
+				cost: Number(this.state.cost),
+				price: Number(this.state.price),
+				quantity: Number(this.state.quantity)
 			}
 			this._setModalVisible(false)
 			this.props.dispatchAddProduct(data)
@@ -147,6 +147,11 @@ class CategoryScreen extends React.Component {
 	render() {
 		return(
 			<View style = { styles.container }>
+				{/*
+				*
+				add product
+				*
+				*/}
 				<MyModal
 					visible = { this.props.barcode == null ? this.state.modalVisible : true }
 					top = {0.5}
@@ -191,7 +196,7 @@ class CategoryScreen extends React.Component {
 									onChangeText = { (text) => this.setState({ cost: text })}
 									onSubmitEditing = { () => this._price.focus() }
 									placeholder = 'cost'
-									value = {this.state.cost}/>
+									value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
 
 								<TextInput
 									ref = { (c) => this._price = c }
@@ -200,7 +205,7 @@ class CategoryScreen extends React.Component {
 									onChangeText = { (text) => this.setState({ price: text })}
 									onSubmitEditing = { () => this._quantity.focus() }
 									placeholder = 'price'
-									value = {this.state.price}/>
+									value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
 
 								<TextInput
 									ref = { (c) => this._quantity = c }
@@ -209,7 +214,7 @@ class CategoryScreen extends React.Component {
 									onChangeText = { (text) => this.setState({ quantity: text })}
 									onSubmitEditing = { this.state.idProduct == null ? this._addProduct.bind(this) : this._updateProduct.bind(this) }
 									placeholder = 'quantity'
-									value = {this.state.quantity}/>
+									value = { this.state.quantity == null ? this.state.quantity : this.state.quantity.toString() }/>
 							</ScrollView>
 						</View>
 						
@@ -218,7 +223,12 @@ class CategoryScreen extends React.Component {
 						<View style = { styles.stickyBottom }>
 							<View style = { styles.row }>
 								<Button
-									onPress = { () => this.setState({ product: null })}
+									onPress = { () => this.setState({ idProduct: null,
+										barcode: null,
+										product: null,
+										cost: null,
+										price: null,
+										quantity: null })}
 									name = 'Clear'/>
 
 								{this.state.idProduct == null ?
@@ -235,18 +245,11 @@ class CategoryScreen extends React.Component {
 					</View>
 				</MyModal>
 
-				{/*<View style = { styles.row }>
-					<View style = {{ flex: 0.5 }}>
-						<Button
-							onPress = { this._scanQR.bind(this) }
-							name = 'Scan' />
-					</View>
-
-					<View style = {{ flex: 2 }}>
-						<TextInput />
-					</View>
-				</View>*/}
-
+				{/*
+				*
+				list product
+				*
+				*/}
 				<ScrollView style = {{ flex: 1 }}>
 					{this.props.category[this.props.navigation.state.params.index].product.map((content, index) => {
 						return (
@@ -255,24 +258,35 @@ class CategoryScreen extends React.Component {
 								style = { styles.product }>
 								<View style = {{ flex: 1, flexDirection: 'row' }}>
 									<Text> {index + 1}. </Text>
+
 									<View style = {{ flexDirection: 'column' }}>
 										<Text> {content.barcode} </Text>
-										<Text> nama : {content.name} </Text>
-										<Text> cost : {content.cost} </Text>
-										<Text> price: {content.price} </Text>
-										<Text> qty  : {content.quantity} </Text>
+										
+										<Text> {content.name} </Text>
+										<View style = {{ flexDirection: 'row' }}>
+											<View style = {{ flexDirection: 'column' }}>
+												<Text> qty </Text>
+												<Text> cost </Text>
+												<Text> price </Text>
+											</View>
+
+											<View style = {{ flexDirection: 'column' }}>
+												<Text> : {content.quantity} </Text>
+												<Text> : {content.cost} </Text>
+												<Text> : {content.price} </Text>
+											</View>
+										</View>
 									</View>
 								</View>
 
-
 								<Touchable
-									style = {{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
+									style = {{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
 									onPress = { this.__updateProduct.bind(this, content) }>
 									<Text> E </Text>
 								</Touchable>
 
 								<Touchable
-									style = {{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}
+									style = {{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
 									onPress = { this._deleteProduct.bind(this, content) }>
 									<Text> X </Text>
 								</Touchable>

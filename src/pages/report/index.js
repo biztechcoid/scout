@@ -12,7 +12,8 @@ import {
 const { width, height } = Dimensions.get('window')
 
 import { connect } from 'react-redux'
-import { refreshing } from '../../redux/actions'
+import { 
+} from '../../redux/actions'
 
 import {
 	Button,
@@ -197,25 +198,38 @@ class ReportScreen extends React.Component {
 
 				<ScrollView
 					style = {{ flex: 1 }}
-					refreshControl = { this._renderRefresh() }>
-					{this.props.category.map((content, index) => {
+					/*refreshControl = { this._renderRefresh() }*/>
+					{this.props.sale.map((content, index) => {
 						return (
 							<View
 								key = { index }
 								style = {{ flex: 1, flexDirection: 'column' }}>
 								<View
 									style = { styles.category }>
-									<Text> {index + 1}. </Text>
-									<Text> {content.name} </Text>
+									<View style = {{ flexDirection: 'row' }}>
+										<Text> {index + 1}. </Text>
+										<Text> {content.idTransaction} </Text>
+									</View>
+
+									<Text> {new Date(content.date).getDate()}-{new Date(content.date).getMonth()}-{new Date(content.date).getFullYear()} {new Date(content.date).getHours()}:{new Date(content.date).getMinutes()}:{new Date(content.date).getSeconds()} </Text>
 								</View>
 
-								{content.product.map((product, idx) => {
+								{content.data == undefined ? null : content.data.map((product, idx) => {
 									return (
 										<View
 											key = { idx }
 											style = {[ styles.category, { marginLeft: 10 }]}>
-											<Text> {idx + 1}. </Text>
-											<Text> {product.name} </Text>
+											<View style = {{ flexDirection: 'row' }}>
+												<Text> {idx + 1}. </Text>
+												<Text> {product.name} </Text>
+											</View>
+
+											<View style = {{ flexDirection: 'row' }}>
+												<Text> {product.quantity} </Text>
+												<Text> {product.price} </Text>
+												<Text> {product.disc} % </Text>
+												<Text> {product.subTotal} </Text>
+											</View>
 										</View>
 									)
 								})}
@@ -223,6 +237,8 @@ class ReportScreen extends React.Component {
 						)
 					})}
 				</ScrollView>
+
+				<View style = {{height: 20 }}/>
 
 				<View style = { styles.stickyBottom }>
 					<View style = { styles.row }>
@@ -257,7 +273,6 @@ const styles = StyleSheet.create({
 	},
 	category: {
 		flex: 1,
-		flexDirection: 'row',
 		padding: 5,
 		marginTop: 2.5,
 		marginBottom: 2.5,
@@ -271,14 +286,13 @@ const styles = StyleSheet.create({
 
 function mapStateToProps (state) {
 	return {
-		category: state.category.data,
-		refreshing: state.category.refreshing
+		sale: state.sale.data
 	}
 }
 
 function mapDispatchToProps (dispatch) {
 	return {
-		dispatchRefreshing: (data) => dispatch(refreshing(data))
+		
 	}
 }
 

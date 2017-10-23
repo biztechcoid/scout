@@ -6,7 +6,11 @@ import {
 } from 'react-native'
 
 import { connect } from 'react-redux'
-import { setUser } from '../redux/actions'
+import {
+	setUser,
+	localStorageData,
+	localStorageSale
+} from '../redux/actions'
 
 class SplashScreen extends React.Component {
 	render() {
@@ -24,10 +28,15 @@ class SplashScreen extends React.Component {
 				index: 0,
 				actions: [{ type: 'Navigation/NAVIGATE', routeName: pages }]
 			})
-		}, 3000)
+		}, 1)
 	}
 
 	componentDidMount() {
+		/*
+		*
+		cek token di local storage
+		*
+		*/
 		AsyncStorage.getItem('@User', (err, res) => {
 			if(err) {
 				return true
@@ -58,6 +67,38 @@ class SplashScreen extends React.Component {
 				/**/
 			}
 		})
+		/**/
+
+
+		/*
+		*
+		cek data di local storage
+		*
+		*/
+		AsyncStorage.getItem('@Data', (err, resData) => {
+			if(err) {
+				return state
+			}
+
+			if(resData == null) {
+				return true
+			} else {
+				this.props.dispatchLocalStorageData(JSON.parse(resData))
+			}
+		})
+
+		AsyncStorage.getItem('@Penjualan', (err, resData) => {
+			if(err) {
+				return state
+			}
+
+			if(resData == null) {
+				return true
+			} else {
+				this.props.dispatchLocalStorageSale(JSON.parse(resData))
+			}
+		})
+		/**/
 	}
 }
 
@@ -70,7 +111,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
 	return {
-		dispatchSetUser: (data) => dispatch(setUser(data))
+		dispatchSetUser: (data) => dispatch(setUser(data)),
+		dispatchLocalStorageData: (data) => dispatch(localStorageData(data)),
+		dispatchLocalStorageSale: (data) => dispatch(localStorageSale(data))
 	}
 }
 
