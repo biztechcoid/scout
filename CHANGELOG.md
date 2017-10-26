@@ -172,3 +172,13 @@
 	* button clear ganti jadi hapus
 	* button edit ganti jadi ubah
 	* bug jika tidak jadi ubah produk lalu tambah produk
+
+
+## 26/10/2017
+
+1. tab penjualan
+	* bug subtotal penjualan
+	* button done ganti jadi selesai
+	* button clear ganti jadi hapus
+	* bug selesai penjualan
+	* bug hapus penjualan

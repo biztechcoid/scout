@@ -126,7 +126,7 @@ class SaleScreen extends React.Component {
 									cost: product.cost,
 									quantity: 1,
 									disc: 0,
-									subTotal: 0
+									subTotal: (1 * product.price) - ((1 * product.price) * (0 / 100))
 								}
 								stateCopy.sale.total = data.subTotal
 							} else {
@@ -175,7 +175,7 @@ class SaleScreen extends React.Component {
 									cost: product.cost,
 									quantity: 1,
 									disc: 0,
-									subTotal: 0
+									subTotal: (1 * product.price) - ((1 * product.price) * (0 / 100))
 								}
 							}
 
@@ -303,7 +303,7 @@ class SaleScreen extends React.Component {
 		if(stateCopy.sale.data.length > 0) {
 			Alert.alert(null, 'Anda yakin ingin menghapus pembelian ?',
 				[
-					{ text: 'yakin', onPress: () => this.setState({sale: { data: [], total: 0.00 }})},
+					{ text: 'yakin', onPress: () => this.setState({sale: { data: [], total: 0.00, customer: 1 }})},
 					{ text: 'tidak' }
 				])
 		}
@@ -338,7 +338,7 @@ class SaleScreen extends React.Component {
 					stateCopy.sale['date'] = new Date()
 					this.props.dispatchUpdateStock(stateCopy.sale)
 					this.props.dispatchPenjualan(stateCopy.sale)
-					this.setState({sale: { data: [], total: 0.00 }})
+					this.setState({sale: { data: [], total: 0.00, customer: 1 }})
 				}},
 				{ text: 'tidak' }
 			])
@@ -551,11 +551,11 @@ class SaleScreen extends React.Component {
 							<View style = { styles.row }>
 								<Button
 									onPress = { this._clear.bind(this) }
-									name = 'Clear' />
+									name = 'Hapus' />
 
 								<Button
 									onPress = { this._done.bind(this) }
-									name = 'Done' />
+									name = 'Selesai' />
 							</View>
 						</View>
 					</View>
