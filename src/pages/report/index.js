@@ -17,7 +17,8 @@ import {
 
 import {
 	Button,
-	ButtonIcons
+	ButtonIcons,
+	Touchable
 } from '../../components'
 
 import {
@@ -27,7 +28,7 @@ import {
 } from '../../modules'
 
 const first = new Date().getDate() - new Date().getDay()
-
+const total = 0
 
 class ReportScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
@@ -42,7 +43,9 @@ class ReportScreen extends React.Component {
 
 	state = {
 		value: 'daily',
-		date: new Date()
+		date: new Date(),
+		total: 0,
+		view: []
 	}
 
 	_onRefresh() {
@@ -68,24 +71,28 @@ class ReportScreen extends React.Component {
 				this.setState({
 					date: new Date(new Date(this.state.date).setDate(new Date(this.state.date).getDate() - 1))
 				})
+				total = 0
 				break
 
 			case 'weekly':
 				this.setState({
 					date: new Date(new Date(this.state.date).setDate(new Date(this.state.date).getDate() - 7))
 				})
+				total = 0
 				break
 
 			case 'monthly':
 				this.setState({
 					date: new Date(new Date(this.state.date).setMonth(new Date(this.state.date).getMonth() - 1))
 				})
+				total = 0
 				break
 
 			case 'yearly':
 				this.setState({
 					date: new Date(new Date(this.state.date).setYear(new Date(this.state.date).getFullYear() - 1))
 				})
+				total = 0
 				break
 		}
 	}
@@ -96,24 +103,28 @@ class ReportScreen extends React.Component {
 				this.setState({
 					date: new Date(new Date(this.state.date).setDate(new Date(this.state.date).getDate() + 1))
 				})
+				total = 0
 				break
 
 			case 'weekly':
 				this.setState({
 					date: new Date(new Date(this.state.date).setDate(new Date(this.state.date).getDate() + 7))
 				})
+				total = 0
 				break
 
 			case 'monthly':
 				this.setState({
 					date: new Date(new Date(this.state.date).setMonth(new Date(this.state.date).getMonth() + 1))
 				})
+				total = 0
 				break
 
 			case 'yearly':
 				this.setState({
 					date: new Date(new Date(this.state.date).setYear(new Date(this.state.date).getFullYear() + 1))
 				})
+				total = 0
 				break
 		}
 	}
@@ -125,6 +136,7 @@ class ReportScreen extends React.Component {
 					value: item,
 					date: new Date()
 				})
+				total = 0
 				break
 
 			case 'weekly':
@@ -132,6 +144,7 @@ class ReportScreen extends React.Component {
 					value: item,
 					date: new Date(new Date().setDate(first))
 				})
+				total = 0
 				break
 
 			case 'monthly':
@@ -139,6 +152,7 @@ class ReportScreen extends React.Component {
 					value: item,
 					date: new Date()
 				})
+				total = 0
 				break
 
 			case 'yearly':
@@ -146,6 +160,55 @@ class ReportScreen extends React.Component {
 					value: item,
 					date: new Date()
 				})
+				total = 0
+				break
+		}
+	}
+
+	_collapse(index) {
+		const stateCopy = this.state
+
+		stateCopy.view[index] = !stateCopy.view[index]
+
+		this.setState(stateCopy)
+	}
+
+	_renderValue(content, index) {
+		switch(this.state.value) {
+			case 'daily':
+				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() == new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate()).getTime()) {
+					total +=content.total
+					return true
+				} else {
+					return false
+				}
+				break
+
+			case 'weekly':
+				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() >= new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate()).getTime() && new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() <= new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate() + 6).getTime()) {
+					total +=content.total
+					return true
+				} else {
+					return false
+				}
+				break
+
+			case 'monthly':
+				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth()).getTime() == new Date(this.state.date.getFullYear(), this.state.date.getMonth()).getTime()) {
+					total +=content.total
+					return true
+				} else {
+					return false
+				}
+				break
+
+			case 'yearly':
+				if(new Date(new Date(content.date).getFullYear()).getTime() == new Date(this.state.date.getFullYear()).getTime()) {
+					total +=content.total
+					return true
+				} else {
+					return false
+				}
 				break
 		}
 	}
@@ -159,10 +222,10 @@ class ReportScreen extends React.Component {
 							mode = 'dropdown'
 							selectedValue = { this.state.value }
 							onValueChange = { this._value.bind(this) }>
-							<Picker.Item label = 'Daily' value = 'daily' />
-							<Picker.Item label = 'Weekly' value = 'weekly' />
-							<Picker.Item label = 'Monthly' value = 'monthly' />
-							<Picker.Item label = 'Yearly' value = 'yearly' />
+							<Picker.Item label = 'Hari' value = 'daily' />
+							<Picker.Item label = 'Minggu' value = 'weekly' />
+							<Picker.Item label = 'Bulan' value = 'monthly' />
+							<Picker.Item label = 'Tahun' value = 'yearly' />
 						</Picker>
 					</View>
 
@@ -201,38 +264,58 @@ class ReportScreen extends React.Component {
 					/*refreshControl = { this._renderRefresh() }*/>
 					{this.props.sale.map((content, index) => {
 						return (
-							<View
-								key = { index }
-								style = {{ flex: 1, flexDirection: 'column' }}>
-								<View
-									style = { styles.category }>
-									<View style = {{ flexDirection: 'row' }}>
-										<Text> {index + 1}. </Text>
-										<Text> {content.idTransaction} </Text>
-									</View>
-
-									<Text> {new Date(content.date).getDate()}-{new Date(content.date).getMonth()}-{new Date(content.date).getFullYear()} {new Date(content.date).getHours()}:{new Date(content.date).getMinutes()}:{new Date(content.date).getSeconds()} </Text>
-								</View>
-
-								{content.data == undefined ? null : content.data.map((product, idx) => {
-									return (
+							<View key = { index }>
+								{this._renderValue(content, index) ?
+									<View style = {{ flex: 1, flexDirection: 'column' }}>
 										<View
-											key = { idx }
-											style = {[ styles.category, { marginLeft: 10 }]}>
-											<View style = {{ flexDirection: 'row' }}>
-												<Text> {idx + 1}. </Text>
-												<Text> {product.name} </Text>
-											</View>
+											style = { styles.category }>
+											<Touchable
+												style = {{ flexDirection: 'row' }}
+												onPress = { this._collapse.bind(this, index) }>
+												<View style = {{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+													<Text> {index + 1}. </Text>
+													<Text> {ddmmyyyy(content.date)} {new Date(content.date).getHours()}:{new Date(content.date).getMinutes()}:{new Date(content.date).getSeconds()} </Text>
+												</View>
 
-											<View style = {{ flexDirection: 'row' }}>
-												<Text> {product.quantity} </Text>
-												<Text> {product.price} </Text>
-												<Text> {product.disc} % </Text>
-												<Text> {product.subTotal} </Text>
-											</View>
+												<View style = {{ height: 40, justifyContent: 'center' }}>
+													<Text> {content.total} </Text>
+												</View>
+											</Touchable>
 										</View>
-									)
-								})}
+
+										{content.data == undefined ? null : content.data.map((product, idx) => {
+											return (
+												<View key = { idx }>
+													{this.state.view[index] ?
+														<View
+															style = {[ styles.category, { marginLeft: 10 }]}>
+															<View style = {{ flexDirection: 'row' }}>
+																<View>
+																	<Text> {idx + 1}. </Text>
+																</View>
+
+																<View>
+																	<Text> {product.name} </Text>
+
+																	<View style = {{ flexDirection: 'row' }}>
+																		<Text> {product.quantity} </Text>
+																		<Text> {product.price} </Text>
+																		<Text> {product.disc} % </Text>
+																		<Text> {product.subTotal} </Text>
+																	</View>
+																</View>
+															</View>
+														</View>
+														:
+														null
+													}
+												</View>
+											)
+										})}
+									</View>
+									:
+									null
+								}
 							</View>
 						)
 					})}
@@ -247,7 +330,7 @@ class ReportScreen extends React.Component {
 						</View>
 
 						<View style = {{ flex: 2, alignItems: 'flex-end' }}>
-							<Text> 0.00 </Text>
+							<Text> {total} </Text>
 						</View>	
 					</View>
 				</View>

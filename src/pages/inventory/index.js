@@ -9,8 +9,7 @@ import {
 	ScrollView,
 	StyleSheet,
 	Text,
-	TextInput,
-	TouchableOpacity
+	TextInput
 } from 'react-native'
 const { width, height } = Dimensions.get('window')
 
@@ -107,13 +106,21 @@ class InventoryScreen extends React.Component {
 					onRequestClose = { this._setModalVisible.bind(this, false) }>
 					<View style = {{ flex: 1, width: width - 20, height: height / 4, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
 						<View style = { styles.content }>
+							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
+								{this.state.idCategory == null ?
+									<Text style = {{ fontWeight: 'bold' }}> Tambah Kategori </Text>
+									:
+									<Text style = {{ fontWeight: 'bold' }}> Ubah Kategori </Text>
+								}
+							</View>
+
 							<View style = {{ flex: 2 }}>
 								<TextInput
 									autoCapitalize = 'words'
 									returnKeyType = 'done'
 									onChangeText = { (text) => this.setState({ category: text })}
 									onSubmitEditing = { this.state.idCategory == null ? this._addCategory.bind(this) : this._updateCategory.bind(this) }
-									placeholder = 'category'
+									placeholder = 'Kategori'
 									value = {this.state.category}/>
 							</View>
 						</View>
@@ -122,16 +129,16 @@ class InventoryScreen extends React.Component {
 							<View style = { styles.row }>
 								<Button
 									onPress = { () => this.setState({ category: null })}
-									name = 'Clear'/>
+									name = 'Hapus'/>
 
 								{this.state.idCategory == null ?
 									<Button
 										onPress = { this._addCategory.bind(this) }
-										name = 'Add'/>
+										name = 'Tambah'/>
 									:
 									<Button
 										onPress = { this._updateCategory.bind(this) }
-										name = 'Edit'/>
+										name = 'Ubah'/>
 								}
 							</View>
 						</View>
@@ -145,29 +152,32 @@ class InventoryScreen extends React.Component {
 								key = { index }
 								style = { styles.category }>
 								<Touchable
-									style = {{ flex: 1 }}
+									style = {{ justifyContent: 'center' }}
 									onPress = { () => this.props.navigation.navigate('Category', { index: index, content: content }) }>
 									<View style = {{ flexDirection: 'row' }}>
 										<Text> {index + 1}. </Text>
 
 										<View style = {{ flexDirection: 'column' }}>
-											<Text> {content.idCategory} </Text>
 											<Text> {content.name} </Text>
 										</View>
 									</View>
 								</Touchable>
 
-								<Touchable
-									style = {{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
-									onPress = { this.__updateCategory.bind(this, content) }>
-									<Text> E </Text>
-								</Touchable>
+								<View style = {{ width: 40, height: 40 }}>
+									<Touchable
+										style = {{ justifyContent: 'center', alignItems: 'center'}}
+										onPress = { this.__updateCategory.bind(this, content) }>
+										<Text> E </Text>
+									</Touchable>
+								</View>
 
-								<Touchable
-									style = {{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
-									onPress = { this._deleteCategory.bind(this, content) }>
-									<Text> X </Text>
-								</Touchable>
+								<View style = {{ width: 40, height: 40 }}>
+									<Touchable
+										style = {{ justifyContent: 'center', alignItems: 'center'}}
+										onPress = { this._deleteCategory.bind(this, content) }>
+										<Text> X </Text>
+									</Touchable>
+								</View>
 							</View>
 						)
 					})}
@@ -181,7 +191,7 @@ class InventoryScreen extends React.Component {
 					<View style = { styles.stickyBottom }>
 						<Button
 							onPress = { this._setModalVisible.bind(this, true) }
-							name = 'Add Category'/>
+							name = 'Tambah Kategori'/>
 					</View>
 				}
 			</View>
@@ -189,9 +199,17 @@ class InventoryScreen extends React.Component {
 	}
 
 	_setModalVisible(visible) {
-		this.setState({
-			modalVisible: visible
-		})
+		if(visible) {
+			this.setState({
+				modalVisible: visible
+			})
+		} else {
+			/* set default state jika modal tertutup */
+			this.setState({
+				modalVisible: visible,
+				category: null
+			})
+		}
 	}
 
 	_keyboardDidShow() {

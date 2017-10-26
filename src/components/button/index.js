@@ -15,6 +15,18 @@ const defaultProps = {
 	textStyle: {}
 }
 
+/*
+*
+example
+*
+*/
+/*
+<Button
+	onPress = { this._onPress.bind(this) }
+	name = 'Button'/>
+*/
+/**/
+
 class Button extends React.Component {
 	render() {
 		if(Platform.OS == 'android' && Platform.Version >= 21) {

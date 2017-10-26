@@ -46,8 +46,9 @@ class SideMenuScreen extends React.Component {
 					null
 				}
 
-				<View style = {{ height: 40, borderWidth: 0.5, borderColor: '#ccc', justifyContent: 'center' }}>
+				<View style = {{ height: 40, borderWidth: 0.5, borderColor: '#ccc' }}>
 					<Touchable
+						style = {{ justifyContent: 'center' }}
 						onPress = { this._logout.bind(this) }>
 						<Text> Logout </Text>
 					</Touchable>

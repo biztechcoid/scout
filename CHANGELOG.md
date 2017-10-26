@@ -116,3 +116,59 @@
 	* add pembelian
 	* tambah quantity
 	* kurang quantity
+
+
+## 23/10/2017
+
+1. tab sale
+	* input quantity dengan inputbox
+	* input disc dengan inputbox
+
+2. tab report
+	* data sale tampil di report
+
+
+## 25/10/2017
+
+1. tab inventory
+	* ganti nama persediaan
+	* hide id
+	* button add category ganti nama tambah kategori
+	* placeholder category ganti jadi Kategory
+	* button add ganti jadi tambah
+	* button clear ganti jadi hapus
+	* button edit ganti jadi ubah
+	* title tambah kategori
+	* title ubah kategori
+	* bug jika tidak jadi ubah kategori lalu tambah kategori
+
+2. tab sale
+	* ganti nama penjualan
+	* hide id
+	* hide barcode
+	* hide alert stock menipis
+	* hide alert tidak ada stock
+	* hide alert stock tidak cukup
+	* tambah field jumlah konsumen
+	* quantity produk penjualan default 1
+
+3. tab report
+	* ganti nama laporan
+	* update listview laporan
+	* fungsi filter sudah berfungsi
+	* total berdasarkan data yang tampil
+
+4. Category
+	* ganti nama Kategori
+	* button add product ganti jadi tambah produk
+	* hide barcode
+	* title add product ganti jadi tambah produk
+	* title edit product ganti jadi ubah produk
+	* placeholder product ganti jadi label produk
+	* placeholder cost ganti jadi label biaya
+	* placeholder price ganti jadi label harga
+	* placeholder quantity ganti jadi label Kuantitas
+	* button add ganti jadi tambah
+	* button clear ganti jadi hapus
+	* button edit ganti jadi ubah
+	* bug jika tidak jadi ubah produk lalu tambah produk

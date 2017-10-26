@@ -22,7 +22,6 @@ import {
 
 import {
 	Button,
-	ButtonIcons,
 	MyModal
 } from '../components'
 

@@ -18,6 +18,15 @@ const defaultProps = {
 	style: {}
 }
 
+/*
+*
+example
+*
+*/
+/*
+
+*/
+/**/
 
 class ButtonIcons extends Component {
 	_icons(fontIcons, name, size, color) {

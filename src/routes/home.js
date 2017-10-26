@@ -25,7 +25,8 @@ const TabNavigatorConfig = {
 			// margin: 0
 		},
 		labelStyle: {
-			// margin: 0
+			marginLeft: 0,
+			marginRight: 0
 		},
 		tabSyle: {
 			// backgroundColor: '#6ecbe0'
@@ -41,9 +42,9 @@ const TabNavigatorConfig = {
 
 
 const HomeScreen = TabNavigator({
-	Inventory: { screen: TabInventoryScreen },
-	Sale: { screen: TabSaleScreen },
-	Report: { screen: TabReportScreen }
+	Persediaan: { screen: TabInventoryScreen },
+	Penjualan: { screen: TabSaleScreen },
+	Laporan: { screen: TabReportScreen }
 }, TabNavigatorConfig)
 
 const MyApp = DrawerNavigator({

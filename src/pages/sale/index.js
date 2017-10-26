@@ -45,7 +45,8 @@ class SaleScreen extends React.Component {
 		view: [],
 		sale: {
 			data: [],
-			total: 0.00
+			total: 0.00,
+			customer: 1
 		}
 	}
 
@@ -100,7 +101,7 @@ class SaleScreen extends React.Component {
 								stock menipis
 								*
 								*/
-								Alert.alert(null, 'stock product ' + this.props.category[i].product[j].name + ' tersisa ' + this.props.category[i].product[j].quantity)
+								// Alert.alert(null, 'stock product ' + this.props.category[i].product[j].name + ' tersisa ' + this.props.category[i].product[j].quantity)
 							}
 
 							/*
@@ -123,7 +124,7 @@ class SaleScreen extends React.Component {
 									name: product.name,
 									price: product.price,
 									cost: product.cost,
-									quantity: 0,
+									quantity: 1,
 									disc: 0,
 									subTotal: 0
 								}
@@ -172,7 +173,7 @@ class SaleScreen extends React.Component {
 									name: product.name,
 									price: product.price,
 									cost: product.cost,
-									quantity: 0,
+									quantity: 1,
 									disc: 0,
 									subTotal: 0
 								}
@@ -198,7 +199,7 @@ class SaleScreen extends React.Component {
 							tidak ada stock
 							*
 							*/
-							Alert.alert(null, 'stock product ' + this.props.category[i].product[j].name + ' kosong')
+							// Alert.alert(null, 'stock product ' + this.props.category[i].product[j].name + ' kosong')
 						}
 					}
 				}
@@ -253,7 +254,7 @@ class SaleScreen extends React.Component {
 						*
 						*/
 						if(Number(text) > this.props.category[i].product[j].quantity) {
-							return Alert.alert(null, 'stock tidak cukup')
+							// return Alert.alert(null, 'stock tidak cukup')
 						}
 						/**/
 
@@ -284,6 +285,14 @@ class SaleScreen extends React.Component {
 			total += stateCopy.sale.data[i].subTotal
 		}
 		stateCopy.sale.total = total
+
+		this.setState(stateCopy)
+	}
+
+	_editCustomer(text) {
+		const stateCopy = this.state
+
+		stateCopy.sale.customer = Number(text)
 
 		this.setState(stateCopy)
 	}
@@ -423,12 +432,33 @@ class SaleScreen extends React.Component {
 					</ScrollView>
 
 					<View style = { styles.row }>
-						<View style = {{ flex: 1 }}>
-							<Text> Total </Text>
-						</View>
+						<View style = {{ flex: 1, flexDirection: 'row' }}>
+							<View style = {{ flex: 2 }}>
+								<Text> konsumen </Text>
+							</View>
 
-						<View style = {{ flex: 2, alignItems: 'flex-end' }}>
-							<Text> {this.state.sale.total} </Text>
+							<View style = {{ flex: 1 }}>
+								<TextInput
+									ref = { (c) => this._disc = c }
+									keyboardType = 'numeric'
+									returnKeyType = 'done'
+									underlineColorAndroid = 'transparent'
+									onChangeText = { (text) => this._editCustomer(text) }
+									onEndEditing = { () => { }}
+									onSubmitEditing = { () => { }}
+									style = {{ flex: 1, padding: 0, color: 'gray', borderWidth: 0.5 }}
+									value = { this.state.sale.customer.toString() }/>
+							</View>
+						</View>
+						
+						<View style = {{ flex: 1, flexDirection: 'row' }}>
+							<View style = {{ flex: 1 }}>
+								<Text> Total </Text>
+							</View>
+
+							<View style = {{ flex: 2, alignItems: 'flex-end' }}>
+								<Text> {this.state.sale.total} </Text>
+							</View>
 						</View>
 					</View>
 				</View>
@@ -457,19 +487,13 @@ class SaleScreen extends React.Component {
 										style = {{ flex: 1 }}>
 										<View style = { styles.category }>
 											<Touchable
-												style = {{ flex: 1 }}
+												style = {{ height: 40, justifyContent: 'center' }}
 												onPress = { this._collapse.bind(this, index) }>
-												<View style = {{ flex: 1, flexDirection: 'row' }}>
+												<View style = {{ flexDirection: 'row' }}>
 													<Text> {index + 1}. </Text>
 													
 													<View style = {{ flexDirection: 'column' }}>
-														<View style = {{ flex: 1 }}>
-															<Text> {content.idCategory} </Text>
-														</View>
-
-														<View style = {{ flex: 1, flexDirection: 'row' }}>
-															<Text> {content.name} </Text>
-														</View>
+														<Text> {content.name} </Text>
 													</View>
 												</View>
 											</Touchable>
@@ -488,16 +512,11 @@ class SaleScreen extends React.Component {
 														<View
 															style = {[ styles.category, { marginLeft: 10 }]}>
 															<Touchable
-																style = {{ flex: 1 }}
 																onPress = { this._addSale.bind(this, content.idCategory, product) }>
 																<View style = {{ flex: 1, flexDirection: 'row' }}>
 																	<Text> {idx + 1}. </Text>
 
 																	<View style = {{ flex: 1, flexDirection: 'column' }}>
-																		<View style = {{ flex: 1 }}>
-																			<Text> {product.barcode} </Text>
-																		</View>
-
 																		<View style = {{ flex: 1 }}>
 																			<Text> {product.name} </Text>
 																		</View>

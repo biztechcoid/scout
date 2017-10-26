@@ -30,16 +30,25 @@ import {
 
 class CategoryScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
-		title: `Category ${ navigation.state.params.content.name }`
+		title: `Kategori ${ navigation.state.params.content.name }`
 	})
 
 	state = {
 		keyboard: false,
-		modalVisible: false,
 
+		modalVisible: false,
 		idProduct: null,
 		barcode: null,
 		product: null,
+		cost: null,
+		price: null,
+		quantity: null,
+
+		view: [],
+		subProductModal: false,
+		idSubProduct: null,
+		barcode: null,
+		subProduct: null,
 		cost: null,
 		price: null,
 		quantity: null
@@ -144,6 +153,14 @@ class CategoryScreen extends React.Component {
 			])
 	}
 
+	_collapse(index) {
+		const stateCopy = this.state
+
+		stateCopy.view[index] = !stateCopy.view[index]
+
+		this.setState(stateCopy)
+	}
+
 	render() {
 		return(
 			<View style = { styles.container }>
@@ -160,6 +177,165 @@ class CategoryScreen extends React.Component {
 					onRequestClose = { this._setModalVisible.bind(this, false) }>
 					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
 						<View style = { styles.content }>
+							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
+								{this.state.idProduct == null ?
+									<Text style = {{ fontWeight: 'bold' }}> Tambah Produk </Text>
+									:
+									<Text style = {{ fontWeight: 'bold' }}> Ubah Produk </Text>
+								}
+							</View>
+
+							<View style = { styles.row }>
+								<View style = {{ flex: 0.5 }}>
+									<Button
+										onPress = { this._scanQR.bind(this) }
+										name = 'Scan' />
+								</View>
+
+								<View style = {{ flex: 2 }}>
+									<TextInput
+										returnKeyType = 'next'
+										onChangeText = { (text) => this.props.barcode == null ? this.setState({ barcode: text }) : this.setState({ barcode: this.props.barcode })}
+										onSubmitEditing = { () => this._product.focus() }
+										placeholder = 'Barcode'
+										value = { this.props.barcode == null ? this.state.barcode : this.props.barcode }/>
+								</View>
+							</View>
+
+							<ScrollView
+								style = {{ flex: 3 }}
+								keyboardShouldPersistTaps = 'always'>
+								<View style = {{ flexDirection: 'row' }}>
+									<View style = {{ flexDirection: 'column' }}>
+										<View style = {{ height: 50, justifyContent: 'center' }}>
+											<Text> Produk </Text>
+										</View>
+										<View style = {{ height: 50, justifyContent: 'center' }}>
+											<Text> Biaya </Text>
+										</View>
+										<View style = {{ height: 50, justifyContent: 'center' }}>
+											<Text> Harga </Text>
+										</View>
+										<View style = {{ height: 50, justifyContent: 'center' }}>
+											<Text> Kuantitas </Text>
+										</View>
+									</View>
+
+									<View style = {{ flex: 1, flexDirection: 'column' }}>
+										<View style = {{ flexDirection: 'row' }}>
+											<View style = {{ height: 50, justifyContent: 'center' }}>
+												<Text> : </Text>
+											</View>
+											
+											<TextInput
+												ref = { (c) => this._product = c }
+												style = {{ flex: 1, height: 50 }}
+												autoCapitalize = 'words'
+												returnKeyType = 'next'
+												onChangeText = { (text) => this.setState({ product: text })}
+												onSubmitEditing = { () => this._cost.focus() }
+												placeholder = 'Produk'
+												value = {this.state.product}/>
+										</View>
+
+										<View style = {{ flexDirection: 'row' }}>
+											<View style = {{ height: 50, justifyContent: 'center' }}>
+												<Text> : </Text>
+											</View>
+											
+											<TextInput
+												ref = { (c) => this._cost = c }
+												style = {{ flex: 1, height: 50 }}
+												keyboardType = 'numeric'
+												returnKeyType = 'next'
+												onChangeText = { (text) => this.setState({ cost: text })}
+												onSubmitEditing = { () => this._price.focus() }
+												placeholder = 'Biaya'
+												value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
+										</View>
+
+										<View style = {{ flexDirection: 'row' }}>
+											<View style = {{ height: 50, justifyContent: 'center' }}>
+												<Text> : </Text>
+											</View>
+											
+											<TextInput
+												ref = { (c) => this._price = c }
+												style = {{ flex: 1, height: 50 }}
+												keyboardType = 'numeric'
+												returnKeyType = 'next'
+												onChangeText = { (text) => this.setState({ price: text })}
+												onSubmitEditing = { () => this._quantity.focus() }
+												placeholder = 'Harga'
+												value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
+										</View>
+
+										<View style = {{ flexDirection: 'row' }}>
+											<View style = {{ height: 50, justifyContent: 'center' }}>
+												<Text> : </Text>
+											</View>
+											
+											<TextInput
+												ref = { (c) => this._quantity = c }
+												style = {{ flex: 1, height: 50 }}
+												keyboardType = 'numeric'
+												returnKeyType = 'done'
+												onChangeText = { (text) => this.setState({ quantity: text })}
+												onSubmitEditing = { this.state.idProduct == null ? this._addProduct.bind(this) : this._updateProduct.bind(this) }
+												placeholder = 'Kuantitas'
+												value = { this.state.quantity == null ? this.state.quantity : this.state.quantity.toString() }/>
+										</View>
+									</View>
+								</View>
+							</ScrollView>
+						</View>
+						
+						<View style = {{height: 45 }}/>
+
+						<View style = { styles.stickyBottom }>
+							<View style = { styles.row }>
+								<Button
+									onPress = { () => this.setState({ idProduct: null,
+										barcode: null,
+										product: null,
+										cost: null,
+										price: null,
+										quantity: null })}
+									name = 'Hapus'/>
+
+								{this.state.idProduct == null ?
+									<Button
+										onPress = { this._addProduct.bind(this) }
+										name = 'Tambah'/>
+									:
+									<Button
+										onPress = { this._updateProduct.bind(this) }
+										name = 'Ubah'/>
+								}
+							</View>
+						</View>
+					</View>
+				</MyModal>
+
+				{/*
+				*
+				add sub-product
+				*
+				*/}
+				<MyModal
+					visible = { this.props.barcode == null ? this.state.subProductModal : true }
+					top = {0.5}
+					left = {0.5}
+					contentStyle = {{ flex: 3 }}
+					onRequestClose = { this._setSubProductModal.bind(this, false) }>
+					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
+						<View style = { styles.content }>
+							{this.state.idSubProduct == null ?
+								<Text> Add Sub-Product </Text>
+								:
+								<Text> Edit Sub-Product </Text>
+							}
+
 							<View style = { styles.row }>
 								<View style = {{ flex: 0.5 }}>
 									<Button
@@ -231,7 +407,7 @@ class CategoryScreen extends React.Component {
 										quantity: null })}
 									name = 'Clear'/>
 
-								{this.state.idProduct == null ?
+								{this.state.idSubProduct == null ?
 									<Button
 										onPress = { this._addProduct.bind(this) }
 										name = 'Add'/>
@@ -253,45 +429,75 @@ class CategoryScreen extends React.Component {
 				<ScrollView style = {{ flex: 1 }}>
 					{this.props.category[this.props.navigation.state.params.index].product.map((content, index) => {
 						return (
-							<View
-								key = { index }
-								style = { styles.product }>
-								<View style = {{ flex: 1, flexDirection: 'row' }}>
-									<Text> {index + 1}. </Text>
-
-									<View style = {{ flexDirection: 'column' }}>
-										<Text> {content.barcode} </Text>
-										
-										<Text> {content.name} </Text>
-										<View style = {{ flexDirection: 'row' }}>
-											<View style = {{ flexDirection: 'column' }}>
-												<Text> qty </Text>
-												<Text> cost </Text>
-												<Text> price </Text>
-											</View>
+							<View key = { index }>
+								<View
+									style = { styles.product }>
+									<View style = {{ flex: 1, flexDirection: 'row' }}>
+										<Touchable onPress = { this._collapse.bind(this, index) }>
+											<Text> {index + 1}. </Text>
 
 											<View style = {{ flexDirection: 'column' }}>
-												<Text> : {content.quantity} </Text>
-												<Text> : {content.cost} </Text>
-												<Text> : {content.price} </Text>
+												<Text> {content.name} </Text>
+
+												<View style = {{ flexDirection: 'row' }}>
+													<View style = {{ flexDirection: 'column' }}>
+														<Text> qty </Text>
+														<Text> cost </Text>
+														<Text> price </Text>
+													</View>
+
+													<View style = {{ flexDirection: 'column' }}>
+														<Text> : {content.quantity} </Text>
+														<Text> : {content.cost} </Text>
+														<Text> : {content.price} </Text>
+													</View>
+												</View>
 											</View>
-										</View>
+										</Touchable>
+									</View>
+
+									<View style = {{ width: 40, height: 40 }}>
+										<Touchable
+											style = {{ alignItems: 'center', justifyContent: 'center' }}
+											onPress = { this.__updateProduct.bind(this, content) }>
+											<Text> E </Text>
+										</Touchable>
+									</View>
+
+									<View style = {{ width: 40, height: 40 }}>
+										<Touchable
+											style = {{ alignItems: 'center', justifyContent: 'center' }}
+											onPress = { this._deleteProduct.bind(this, content) }>
+											<Text> X </Text>
+										</Touchable>
 									</View>
 								</View>
 
-								<Touchable
-									style = {{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
-									onPress = { this.__updateProduct.bind(this, content) }>
-									<Text> E </Text>
-								</Touchable>
-
-								<Touchable
-									style = {{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
-									onPress = { this._deleteProduct.bind(this, content) }>
-									<Text> X </Text>
-								</Touchable>
+								{this.state.view[index] ?
+									content.subProduct == undefined ?
+										<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10 }]}>
+											<Touchable onPress = { this._setSubProductModal.bind(this, true) }>
+												<Text> add </Text>
+												<Text> ... </Text>
+											</Touchable>
+										</View>
+									:
+									content.subProduct.map((subProduct, index) => {
+										return (
+											<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10 }]}>
+												<Touchable onPress = { this._setSubProductModal.bind(this, true) }>
+													<Text> add </Text>
+													<Text> ... </Text>
+												</Touchable>
+											</View>
+										)
+									})
+									:
+									null
+								}
 							</View>
 						)
+
 					})}
 				</ScrollView>
 
@@ -303,7 +509,7 @@ class CategoryScreen extends React.Component {
 					<View style = { styles.stickyBottom }>
 						<Button
 							onPress = { this._setModalVisible.bind(this, true) }
-							name = 'Add Product'/>
+							name = 'Tambah Produk'/>
 					</View>
 				}
 			</View>
@@ -311,8 +517,27 @@ class CategoryScreen extends React.Component {
 	}
 
 	_setModalVisible(visible) {
+		if(visible) {
+			this.setState({
+				modalVisible: visible
+			})
+		} else {
+			/* set default state jika modal tertutup */
+			this.setState({
+				modalVisible: visible,
+				idProduct: null,
+				barcode: null,
+				product: null,
+				cost: null,
+				price: null,
+				quantity: null
+			})
+		}
+	}
+
+	_setSubProductModal(visible) {
 		this.setState({
-			modalVisible: visible
+			subProductModal: visible
 		})
 	}
 
