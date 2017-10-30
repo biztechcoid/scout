@@ -6,3 +6,5 @@ exports.mmyyyy = require('./date').mmyyyy
 exports.yyyy = require('./date').yyyy
 
 exports.makeId = require('./makeId')
+
+exports.rupiah = require('./rupiah')

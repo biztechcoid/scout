@@ -2,7 +2,8 @@ import React from 'react'
 import {
 	AsyncStorage,
 	Text,
-	View
+	View,
+	Keyboard
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -32,6 +33,8 @@ class SplashScreen extends React.Component {
 	}
 
 	componentDidMount() {
+		Keyboard.dismiss()
+		
 		/*
 		*
 		cek token di local storage

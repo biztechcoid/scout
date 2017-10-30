@@ -12,7 +12,6 @@ import {
 
 import { connect } from 'react-redux'
 import {
-	collapse,
 	refreshing,
 	updateStock,
 	penjualan
@@ -25,7 +24,8 @@ import {
 } from '../../components'
 
 import {
-	makeId
+	makeId,
+	rupiah
 } from '../../modules'
 
 
@@ -35,6 +35,13 @@ class SaleScreen extends React.Component {
 			<ButtonIcons
 				onPress = { () => { navigation.navigate('DrawerOpen') }}
 				name = 'md-menu'
+				color = 'white'
+				size = { 30 }/>
+		),
+		headerRight: (
+			<ButtonIcons
+				onPress = { () => { navigation.navigate('Search', {type: 'search'}) }}
+				name = 'md-search'
 				color = 'white'
 				size = { 30 }/>
 		)
@@ -344,6 +351,16 @@ class SaleScreen extends React.Component {
 			])
 	}
 
+	_search(text) {
+		for(var i in this.props.category) {
+			for(var j in this.props.category[i].product) {
+				if(this.props.category[i].product[j].name.toUpperCase().indexOf(text.toUpperCase()) > -1) {
+					console.log(this.props.category[i].product[j].name)
+				}
+			}
+		}
+	}
+
 	render() {
 		return(
 			<View style = { styles.container }>
@@ -361,7 +378,10 @@ class SaleScreen extends React.Component {
 						</View>
 
 						<View style = {{ flex: 2 }}>
-							<TextInput />
+							<TextInput
+								ref = { (c) => this._barcode = c }
+								returnKeyType = 'search'
+								onChangeText = { (text) => this._search(text) }/>
 						</View>
 					</View>
 
@@ -399,7 +419,7 @@ class SaleScreen extends React.Component {
 											</View>
 
 											<View style = {{ flex: 1, padding: 5, alignItems: 'flex-end' }}>
-												<Text> {content.price} </Text>
+												<Text> {rupiah(content.price)} </Text>
 											</View>
 
 											<View style = {{ flex: 1, flexDirection: 'row' }}>
@@ -422,19 +442,27 @@ class SaleScreen extends React.Component {
 											</View>
 
 											<View style = {{ flex: 1, padding: 5, alignItems: 'flex-end' }}>
-												<Text> {content.subTotal} </Text>
+												<Text> {rupiah(content.subTotal)} </Text>
 											</View>
 										</View>
 									</View>
 								</View>
 							)
 						})}
+
+						<View style = {{ flex: 1, height: 50, flexDirection: 'column', borderWidth: 0.5, borderColor: 'transparent', backgroundColor: this.state.sale.data.length%2 == 0 ? '#ccc' : 'white' }}>
+							<Touchable
+								style = {{ justifyContent: 'center' }}
+								onPress = { () => { this.props.navigation.navigate('Search', {type: 'list'}) }}>
+								<Text> Pilih Produk . . . </Text>
+							</Touchable>
+						</View>
 					</ScrollView>
 
 					<View style = { styles.row }>
 						<View style = {{ flex: 1, flexDirection: 'row' }}>
 							<View style = {{ flex: 2 }}>
-								<Text> konsumen </Text>
+								<Text> Konsumen </Text>
 							</View>
 
 							<View style = {{ flex: 1 }}>
@@ -457,7 +485,7 @@ class SaleScreen extends React.Component {
 							</View>
 
 							<View style = {{ flex: 2, alignItems: 'flex-end' }}>
-								<Text> {this.state.sale.total} </Text>
+								<Text> {rupiah(this.state.sale.total)} </Text>
 							</View>
 						</View>
 					</View>
@@ -472,6 +500,7 @@ class SaleScreen extends React.Component {
 						list inventory
 						*
 						*/}
+						{
 						<ScrollView
 							style = {{ flex: 1 }}
 							refreshControl = { this._renderRefresh() }>
@@ -491,7 +520,7 @@ class SaleScreen extends React.Component {
 												onPress = { this._collapse.bind(this, index) }>
 												<View style = {{ flexDirection: 'row' }}>
 													<Text> {index + 1}. </Text>
-													
+
 													<View style = {{ flexDirection: 'column' }}>
 														<Text> {content.name} </Text>
 													</View>
@@ -527,7 +556,7 @@ class SaleScreen extends React.Component {
 																			</View>
 
 																			<View style = {{ flex: 1 }}>
-																				<Text> price: {product.price} </Text>
+																				<Text> price: {rupiah(product.price)} </Text>
 																			</View>
 																		</View>
 																	</View>
@@ -544,6 +573,7 @@ class SaleScreen extends React.Component {
 								)
 							})}
 						</ScrollView>
+						}
 
 						<View style = {{height: 45 }}/>
 
@@ -598,8 +628,8 @@ const styles = StyleSheet.create({
 	},
 	stickyBottom: {
 		position: 'absolute',
-		left: 5,
-		right: 5,
+		left: 0,
+		right: 0,
 		bottom: 0
 	},
 	category: {
@@ -624,7 +654,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
 	return {
-		dispatchCollapse: (data) => dispatch(collapse(data)),
 		dispatchRefreshing: (data) => dispatch(refreshing(data)),
 		dispatchUpdateStock: (data) => dispatch(updateStock(data)),
 		dispatchPenjualan: (data) => dispatch(penjualan(data))

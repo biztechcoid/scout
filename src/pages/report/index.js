@@ -24,11 +24,13 @@ import {
 import {
 	ddmmyyyy,
 	mmyyyy,
-	yyyy
+	yyyy,
+	rupiah
 } from '../../modules'
 
 const first = new Date().getDate() - new Date().getDay()
 const total = 0
+const customer = 0
 
 class ReportScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
@@ -44,7 +46,6 @@ class ReportScreen extends React.Component {
 	state = {
 		value: 'daily',
 		date: new Date(),
-		total: 0,
 		view: []
 	}
 
@@ -72,6 +73,7 @@ class ReportScreen extends React.Component {
 					date: new Date(new Date(this.state.date).setDate(new Date(this.state.date).getDate() - 1))
 				})
 				total = 0
+				customer = 0
 				break
 
 			case 'weekly':
@@ -79,6 +81,7 @@ class ReportScreen extends React.Component {
 					date: new Date(new Date(this.state.date).setDate(new Date(this.state.date).getDate() - 7))
 				})
 				total = 0
+				customer = 0
 				break
 
 			case 'monthly':
@@ -86,6 +89,7 @@ class ReportScreen extends React.Component {
 					date: new Date(new Date(this.state.date).setMonth(new Date(this.state.date).getMonth() - 1))
 				})
 				total = 0
+				customer = 0
 				break
 
 			case 'yearly':
@@ -93,6 +97,7 @@ class ReportScreen extends React.Component {
 					date: new Date(new Date(this.state.date).setYear(new Date(this.state.date).getFullYear() - 1))
 				})
 				total = 0
+				customer = 0
 				break
 		}
 	}
@@ -104,6 +109,7 @@ class ReportScreen extends React.Component {
 					date: new Date(new Date(this.state.date).setDate(new Date(this.state.date).getDate() + 1))
 				})
 				total = 0
+				customer = 0
 				break
 
 			case 'weekly':
@@ -111,6 +117,7 @@ class ReportScreen extends React.Component {
 					date: new Date(new Date(this.state.date).setDate(new Date(this.state.date).getDate() + 7))
 				})
 				total = 0
+				customer = 0
 				break
 
 			case 'monthly':
@@ -118,6 +125,7 @@ class ReportScreen extends React.Component {
 					date: new Date(new Date(this.state.date).setMonth(new Date(this.state.date).getMonth() + 1))
 				})
 				total = 0
+				customer = 0
 				break
 
 			case 'yearly':
@@ -125,6 +133,7 @@ class ReportScreen extends React.Component {
 					date: new Date(new Date(this.state.date).setYear(new Date(this.state.date).getFullYear() + 1))
 				})
 				total = 0
+				customer = 0
 				break
 		}
 	}
@@ -137,6 +146,7 @@ class ReportScreen extends React.Component {
 					date: new Date()
 				})
 				total = 0
+				customer = 0
 				break
 
 			case 'weekly':
@@ -145,6 +155,7 @@ class ReportScreen extends React.Component {
 					date: new Date(new Date().setDate(first))
 				})
 				total = 0
+				customer = 0
 				break
 
 			case 'monthly':
@@ -153,6 +164,7 @@ class ReportScreen extends React.Component {
 					date: new Date()
 				})
 				total = 0
+				customer = 0
 				break
 
 			case 'yearly':
@@ -161,6 +173,7 @@ class ReportScreen extends React.Component {
 					date: new Date()
 				})
 				total = 0
+				customer = 0
 				break
 		}
 	}
@@ -178,6 +191,7 @@ class ReportScreen extends React.Component {
 			case 'daily':
 				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() == new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate()).getTime()) {
 					total +=content.total
+					customer +=content.customer
 					return true
 				} else {
 					return false
@@ -187,6 +201,7 @@ class ReportScreen extends React.Component {
 			case 'weekly':
 				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() >= new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate()).getTime() && new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() <= new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate() + 6).getTime()) {
 					total +=content.total
+					customer +=content.customer
 					return true
 				} else {
 					return false
@@ -196,6 +211,7 @@ class ReportScreen extends React.Component {
 			case 'monthly':
 				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth()).getTime() == new Date(this.state.date.getFullYear(), this.state.date.getMonth()).getTime()) {
 					total +=content.total
+					customer +=content.customer
 					return true
 				} else {
 					return false
@@ -205,6 +221,7 @@ class ReportScreen extends React.Component {
 			case 'yearly':
 				if(new Date(new Date(content.date).getFullYear()).getTime() == new Date(this.state.date.getFullYear()).getTime()) {
 					total +=content.total
+					customer +=content.customer
 					return true
 				} else {
 					return false
@@ -278,7 +295,7 @@ class ReportScreen extends React.Component {
 												</View>
 
 												<View style = {{ height: 40, justifyContent: 'center' }}>
-													<Text> {content.total} </Text>
+													<Text> {rupiah(content.total)} </Text>
 												</View>
 											</Touchable>
 										</View>
@@ -299,9 +316,9 @@ class ReportScreen extends React.Component {
 
 																	<View style = {{ flexDirection: 'row' }}>
 																		<Text> {product.quantity} </Text>
-																		<Text> {product.price} </Text>
+																		<Text> {rupiah(product.price)} </Text>
 																		<Text> {product.disc} % </Text>
-																		<Text> {product.subTotal} </Text>
+																		<Text> {rupiah(product.subTotal)} </Text>
 																	</View>
 																</View>
 															</View>
@@ -325,13 +342,25 @@ class ReportScreen extends React.Component {
 
 				<View style = { styles.stickyBottom }>
 					<View style = { styles.row }>
-						<View style = {{ flex: 1 }}>
-							<Text> Total </Text>
+						<View style = {{ flex: 1, flexDirection: 'row' }}>
+							<View style = {{ flex: 1 }}>
+								<Text> Konsumen </Text>
+							</View>
+
+							<View style = {{ flex: 1, alignItems: 'center' }}>
+								<Text> {customer} </Text>
+							</View>	
 						</View>
 
-						<View style = {{ flex: 2, alignItems: 'flex-end' }}>
-							<Text> {total} </Text>
-						</View>	
+						<View style = {{ flex: 1, flexDirection: 'row' }}>
+							<View style = {{ flex: 1 }}>
+								<Text> Total </Text>
+							</View>
+
+							<View style = {{ flex: 2, alignItems: 'flex-end' }}>
+								<Text> {rupiah(total)} </Text>
+							</View>	
+						</View>
 					</View>
 				</View>
 			</View>

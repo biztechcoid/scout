@@ -19,6 +19,10 @@ import {
 	Touchable
 } from '../../components'
 
+import{
+	rupiah
+} from '../../modules'
+
 import { connect } from 'react-redux'
 import {
 	addProduct,
@@ -448,8 +452,8 @@ class CategoryScreen extends React.Component {
 
 													<View style = {{ flexDirection: 'column' }}>
 														<Text> : {content.quantity} </Text>
-														<Text> : {content.cost} </Text>
-														<Text> : {content.price} </Text>
+														<Text> : {rupiah(content.cost)} </Text>
+														<Text> : {rupiah(content.price)} </Text>
 													</View>
 												</View>
 											</View>

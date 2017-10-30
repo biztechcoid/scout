@@ -13,7 +13,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const defaultProps = {
 	color: 'black',
-	pressColor: 'blue',
+	pressColor: 'white',
 	icons: 'Button',
 	style: {}
 }

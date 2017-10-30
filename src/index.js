@@ -9,6 +9,7 @@ import HomeAdminScreen from './routes/homeAdmin'
 import HomeScreen from './routes/home'
 import ScanQRScreen from './pages/scanQR'
 import CategoryScreen from './pages/category'
+import SearchScreen from './pages/search'
 
 
 const StackNavigatorConfig = {
@@ -57,6 +58,16 @@ const MobilePos = StackNavigator({
 		screen: CategoryScreen,
 		navigationOptions: {
 			// header: null
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	Search: {
+		screen: SearchScreen,
+		navigationOptions: {
+			header: null,
 			headerTintColor: 'white',
 			headerStyle: {
 				backgroundColor: '#6ecbe0'
