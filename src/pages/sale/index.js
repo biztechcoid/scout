@@ -21,7 +21,7 @@ import {
 	refreshing,
 	updateStock,
 	penjualan,
-	layout
+	// layout
 } from '../../redux/actions'
 
 import {
@@ -628,7 +628,7 @@ class SaleScreen extends React.Component {
 			height: evt.nativeEvent.layout.height
 		})
 
-		this.props.dispatchLayout(evt)
+		// this.props.dispatchLayout(evt)
 
 		this.width = evt.nativeEvent.layout.width
 		this.height = evt.nativeEvent.layout.height
@@ -701,7 +701,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
 	return {
-		dispatchLayout: (data) => dispatch(layout(data)),
+		// dispatchLayout: (data) => dispatch(layout(data)),
 		dispatchRefreshing: (data) => dispatch(refreshing(data)),
 		dispatchUpdateStock: (data) => dispatch(updateStock(data)),
 		dispatchPenjualan: (data) => dispatch(penjualan(data))

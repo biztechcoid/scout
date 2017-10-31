@@ -81,19 +81,19 @@ export const AppNavigator = StackNavigator({
 }, StackNavigatorConfig)
 
 
-// module.exports = MobilePos
+module.exports = AppNavigator
 
-const AppWithNavigationState = ({ dispatch, nav }) => (
+/*const AppWithNavigationState = ({ dispatch, nav }) => (
 	<AppNavigator navigation = { addNavigationHelpers({ dispatch, state: nav })}/>
-)
+)*/
 
 /*AppWithNavigationState.propsTypes = {
 	dispatch: PropsTypes.func.isRequired,
 	nav: PropsTypes.object.isRequired
 }*/
 
-const mapStateToProps = state => ({
+/*const mapStateToProps = state => ({
 	nav: state.nav
 })
 
-export default connect(mapStateToProps)(AppWithNavigationState)
+export default connect(mapStateToProps)(AppWithNavigationState)*/

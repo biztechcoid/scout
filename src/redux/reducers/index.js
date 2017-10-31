@@ -1,24 +1,20 @@
 import { combineReducers } from 'redux'
-import { NavigationActions } from 'react-navigation'
+/*import { NavigationActions } from 'react-navigation'
 
-import { AppNavigator } from '../..'
+import { AppNavigator } from '../..'*/
 
 import user from './user'
 import category from './category'
 import sale from './sale'
 
-const initialNavState = AppNavigator.router.getStateForAction(
-	AppNavigator.router.getActionForPathAndParams('Splash')/*,
-	AppNavigator.router.getStateForAction(
-		AppNavigator.router.getActionForPathAndParams('Login')
-	)*/
+/*const initialNavState = AppNavigator.router.getStateForAction(
+	AppNavigator.router.getActionForPathAndParams('Splash')
 )
 
 function nav(state = initialNavState, action) {
 	let nextState
 	switch(action.type) {
 		case 'LAYOUT':
-			console.log('ini layout')
 			nextState = AppNavigator.router.getStateForAction(action, state)
 
 		default:
@@ -26,13 +22,13 @@ function nav(state = initialNavState, action) {
 	}
 
 	return nextState || state
-}
+}*/
 
 const appReducer = combineReducers({
 	user,
 	category,
 	sale,
-	nav
+	// nav
 })
 
 const rootReducer = (state, action) => {

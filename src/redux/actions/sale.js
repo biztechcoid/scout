@@ -14,9 +14,9 @@ export function penjualan(data) {
 	}
 }
 
-export function layout(data) {
+/*export function layout(data) {
 	return {
 		type: 'LAYOUT',
 		data
 	}
-}
+}*/
