@@ -65,6 +65,11 @@ class CategoryScreen extends React.Component {
 		this.props.navigation.navigate('ScanQR', { type: 'barcodeProduct' })
 	}
 
+	/*
+	*
+	product
+	*
+	*/
 	_addProduct() {
 		if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
@@ -156,6 +161,81 @@ class CategoryScreen extends React.Component {
 				{ text: 'Batal' }
 			])
 	}
+	/**/
+
+	/*
+	*
+	sub product
+	*
+	*/
+	_addSubProduct() {
+		if(this.state.barcode == '' || this.state.barcode == null) {
+			Alert.alert(null, 'barcode product tidak valid')
+		} else if(this.state.product == '' || this.state.product == null) {
+			Alert.alert(null, 'nama product tidak valid')
+		} else if(this.state.cost == '' || this.state.cost == null) {
+			Alert.alert(null, 'cost product tidak valid')
+		} else if(this.state.price == '' || this.state.price == null) {
+			Alert.alert(null, 'price product tidak valid')
+		} else if(this.state.quantity == '' || this.state.quantity == null) {
+			Alert.alert(null, 'quantity product tidak valid')
+		} else {
+			var data = {
+				idCategory: this.props.navigation.state.params.content.idCategory,
+				barcode: this.state.barcode,
+				name: this.state.product,
+				cost: Number(this.state.cost),
+				price: Number(this.state.price),
+				quantity: Number(this.state.quantity)
+			}
+			this._setModalVisible(false)
+			this.props.dispatchAddProduct(data)
+			this.props.dispatchBarcodeProduct(null)
+			this.setState({
+				barcode: null,
+				product: null,
+				cost: null,
+				price: null,
+				quantity: null
+			})
+		}
+	}
+
+	_updateSubProduct() {
+		if(this.state.barcode == '' || this.state.barcode == null) {
+			Alert.alert(null, 'barcode product tidak valid')
+		} else if(this.state.product == '' || this.state.product == null) {
+			Alert.alert(null, 'nama product tidak valid')
+		} else if(this.state.cost == '' || this.state.cost == null) {
+			Alert.alert(null, 'cost product tidak valid')
+		} else if(this.state.price == '' || this.state.price == null) {
+			Alert.alert(null, 'price product tidak valid')
+		} else if(this.state.quantity == '' || this.state.quantity == null) {
+			Alert.alert(null, 'quantity product tidak valid')
+		} else {
+			var data = {
+				idCategory: this.props.navigation.state.params.content.idCategory,
+				idProduct: this.state.idProduct,
+				barcode: this.state.barcode,
+				name: this.state.product,
+				cost: this.state.cost,
+				price: this.state.price,
+				quantity: this.state.quantity
+			}
+			this._setModalVisible(false)
+			this.props.dispatchUpdateProduct(data)
+			this.props.dispatchBarcodeProduct(null)
+			this.setState({
+				idProduct: null,
+				barcode: null,
+				product: null,
+				cost: null,
+				price: null,
+				quantity: null
+			})
+		}
+	}
+	/**/
 
 	_collapse(index) {
 		const stateCopy = this.state
@@ -334,11 +414,13 @@ class CategoryScreen extends React.Component {
 					onRequestClose = { this._setSubProductModal.bind(this, false) }>
 					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
 						<View style = { styles.content }>
-							{this.state.idSubProduct == null ?
-								<Text> Add Sub-Product </Text>
-								:
-								<Text> Edit Sub-Product </Text>
-							}
+							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
+								{this.state.idSubProduct == null ?
+									<Text style = {{ fontWeight: 'bold' }}> Tambah Sub-Produk </Text>
+									:
+									<Text style = {{ fontWeight: 'bold' }}> Ubah Sub-Produk </Text>
+								}
+							</View>
 
 							<View style = { styles.row }>
 								<View style = {{ flex: 0.5 }}>
@@ -350,51 +432,98 @@ class CategoryScreen extends React.Component {
 								<View style = {{ flex: 2 }}>
 									<TextInput
 										returnKeyType = 'next'
-										onChangeText = { (text) => this.props.barcode == null ? this.setState({ barcode: text }) : this.setState({ barcode: this.props.barcode })}
+										onChangeText = { (text) => this.props.barcode == null ? this.setState({ sub_barcode: text }) : this.setState({ barcode: this.props.barcode })}
 										onSubmitEditing = { () => this._product.focus() }
 										placeholder = 'barcode'
-										value = { this.props.barcode == null ? this.state.barcode : this.props.barcode }/>
+										value = { this.props.barcode == null ? this.state.sub_barcode : this.props.barcode }/>
 								</View>
 							</View>
 
 							<ScrollView
 								style = {{ flex: 3 }}
 								keyboardShouldPersistTaps = 'always'>
-								<TextInput
-									ref = { (c) => this._product = c }
-									autoCapitalize = 'words'
-									returnKeyType = 'next'
-									onChangeText = { (text) => this.setState({ product: text })}
-									onSubmitEditing = { () => this._cost.focus() }
-									placeholder = 'product'
-									value = {this.state.product}/>
+								<View style = {{ flexDirection: 'row' }}>
+									<View style = {{ flexDirection: 'column' }}>
+										<View style = {{ height: 50, justifyContent: 'center' }}>
+											<Text> Produk </Text>
+										</View>
+										<View style = {{ height: 50, justifyContent: 'center' }}>
+											<Text> Biaya </Text>
+										</View>
+										<View style = {{ height: 50, justifyContent: 'center' }}>
+											<Text> Harga </Text>
+										</View>
+										<View style = {{ height: 50, justifyContent: 'center' }}>
+											<Text> Kuantitas </Text>
+										</View>
+									</View>
 
-								<TextInput
-									ref = { (c) => this._cost = c }
-									keyboardType = 'numeric'
-									returnKeyType = 'next'
-									onChangeText = { (text) => this.setState({ cost: text })}
-									onSubmitEditing = { () => this._price.focus() }
-									placeholder = 'cost'
-									value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
+									<View style = {{ flex: 1, flexDirection: 'column' }}>
+										<View style = {{ flexDirection: 'row' }}>
+											<View style = {{ height: 50, justifyContent: 'center' }}>
+												<Text> : </Text>
+											</View>
+											
+											<TextInput
+												ref = { (c) => this._product = c }
+												style = {{ flex: 1, height: 50 }}
+												autoCapitalize = 'words'
+												returnKeyType = 'next'
+												onChangeText = { (text) => this.setState({ product: text })}
+												onSubmitEditing = { () => this._cost.focus() }
+												placeholder = 'Produk'
+												value = {this.state.product}/>
+										</View>
 
-								<TextInput
-									ref = { (c) => this._price = c }
-									keyboardType = 'numeric'
-									returnKeyType = 'next'
-									onChangeText = { (text) => this.setState({ price: text })}
-									onSubmitEditing = { () => this._quantity.focus() }
-									placeholder = 'price'
-									value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
+										<View style = {{ flexDirection: 'row' }}>
+											<View style = {{ height: 50, justifyContent: 'center' }}>
+												<Text> : </Text>
+											</View>
+											
+											<TextInput
+												ref = { (c) => this._cost = c }
+												style = {{ flex: 1, height: 50 }}
+												keyboardType = 'numeric'
+												returnKeyType = 'next'
+												onChangeText = { (text) => this.setState({ cost: text })}
+												onSubmitEditing = { () => this._price.focus() }
+												placeholder = 'Biaya'
+												value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
+										</View>
 
-								<TextInput
-									ref = { (c) => this._quantity = c }
-									keyboardType = 'numeric'
-									returnKeyType = 'done'
-									onChangeText = { (text) => this.setState({ quantity: text })}
-									onSubmitEditing = { this.state.idProduct == null ? this._addProduct.bind(this) : this._updateProduct.bind(this) }
-									placeholder = 'quantity'
-									value = { this.state.quantity == null ? this.state.quantity : this.state.quantity.toString() }/>
+										<View style = {{ flexDirection: 'row' }}>
+											<View style = {{ height: 50, justifyContent: 'center' }}>
+												<Text> : </Text>
+											</View>
+											
+											<TextInput
+												ref = { (c) => this._price = c }
+												style = {{ flex: 1, height: 50 }}
+												keyboardType = 'numeric'
+												returnKeyType = 'next'
+												onChangeText = { (text) => this.setState({ price: text })}
+												onSubmitEditing = { () => this._quantity.focus() }
+												placeholder = 'Harga'
+												value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
+										</View>
+
+										<View style = {{ flexDirection: 'row' }}>
+											<View style = {{ height: 50, justifyContent: 'center' }}>
+												<Text> : </Text>
+											</View>
+											
+											<TextInput
+												ref = { (c) => this._quantity = c }
+												style = {{ flex: 1, height: 50 }}
+												keyboardType = 'numeric'
+												returnKeyType = 'done'
+												onChangeText = { (text) => this.setState({ quantity: text })}
+												onSubmitEditing = { this.state.idProduct == null ? this._addProduct.bind(this) : this._updateProduct.bind(this) }
+												placeholder = 'Kuantitas'
+												value = { this.state.quantity == null ? this.state.quantity : this.state.quantity.toString() }/>
+										</View>
+									</View>
+								</View>
 							</ScrollView>
 						</View>
 						
@@ -409,16 +538,16 @@ class CategoryScreen extends React.Component {
 										cost: null,
 										price: null,
 										quantity: null })}
-									name = 'Clear'/>
+									name = 'Hapus'/>
 
-								{this.state.idSubProduct == null ?
+								{this.state.idProduct == null ?
 									<Button
-										onPress = { this._addProduct.bind(this) }
-										name = 'Add'/>
+										onPress = { this._addSubProduct.bind(this) }
+										name = 'Tambah'/>
 									:
 									<Button
-										onPress = { this._updateProduct.bind(this) }
-										name = 'Edit'/>
+										onPress = { this._updateSubProduct.bind(this) }
+										name = 'Ubah'/>
 								}
 							</View>
 						</View>

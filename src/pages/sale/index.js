@@ -1,20 +1,27 @@
 import React from 'react'
 import {
 	Alert,
+	Dimensions,
 	Keyboard,
+	Platform,
 	RefreshControl,
 	ScrollView,
 	StyleSheet,
 	Text,
 	TextInput,
+	TouchableOpacity,
 	View
 } from 'react-native'
+const { width, height } = Dimensions.get('window')
+this.width = width
+this.height = height
 
 import { connect } from 'react-redux'
 import {
 	refreshing,
 	updateStock,
-	penjualan
+	penjualan,
+	layout
 } from '../../redux/actions'
 
 import {
@@ -30,7 +37,12 @@ import {
 
 
 class SaleScreen extends React.Component {
-	static navigationOptions = ({ navigation }) => ({
+	static navigationOptions = ({ navigation }) => /*console.log('=====', navigation)*/ ({
+		headerStyle: {
+			height: navigation.state.params ? navigation.state.params.width > navigation.state.params.height ? 0 : 56 : 56,
+			backgroundColor: '#6ecbe0'
+		},
+		tabBarVisible: navigation.state.params ? navigation.state.params.width > navigation.state.params.height ? false : true : true,
 		headerLeft: (
 			<ButtonIcons
 				onPress = { () => { navigation.navigate('DrawerOpen') }}
@@ -54,7 +66,10 @@ class SaleScreen extends React.Component {
 			data: [],
 			total: 0.00,
 			customer: 1
-		}
+		},
+
+		width: width,
+		height: height
 	}
 
 	_scanQR() {
@@ -363,235 +378,265 @@ class SaleScreen extends React.Component {
 
 	render() {
 		return(
-			<View style = { styles.container }>
-				<View style = {{ flex: 1 }}>
-					{/*
-					*
-					scan barcode
-					*
-					*/}
-					<View style = { styles.row }>
-						<View style = {{ flex: 0.5 }}>
-							<Button
-								onPress = { this._scanQR.bind(this) }
-								name = 'Scan' />
-						</View>
-
-						<View style = {{ flex: 2 }}>
-							<TextInput
-								ref = { (c) => this._barcode = c }
-								returnKeyType = 'search'
-								onChangeText = { (text) => this._search(text) }/>
-						</View>
-					</View>
-
-					{/*
-					*
-					list pembelian
-					*
-					*/}
-					<ScrollView
-						keyboardShouldPersistTaps = 'always'
-						style = {{ flex: 1 }}>
-						{this.state.sale.data.map((content, index) => {
-							return (
-								<View
-									key = { index }
-									style = {{ flex: 1, flexDirection: 'column', borderWidth: 0.5, borderColor: 'transparent', backgroundColor: index%2 == 0 ? '#ccc' : 'white' }}>
-									<View
-										style = {{ flex: 1 }}>
-										<View style = {{ flex: 1 }}>
-											<Text> {content.name} </Text>
-										</View>
-
-										<View style = {{ flex: 1, flexDirection: 'row' }}>
-											<View style = {{ flex: 0.5 }}>
-												<TextInput
-													ref = { (c) => this._quantity = c }
-													keyboardType = 'numeric'
-													returnKeyType = 'done'
-													underlineColorAndroid = 'transparent'
-													onChangeText = { (text) => this._editQuantity(index, content, text) }
-													onEndEditing = { this._updatePrice.bind(this) }
-													onSubmitEditing = { this._updatePrice.bind(this) }
-													style = {{ flex: 1, padding: 0, color: 'gray', borderWidth: 0.5 }}
-													value = { content.quantity.toString() }/>
-											</View>
-
-											<View style = {{ flex: 1, padding: 5, alignItems: 'flex-end' }}>
-												<Text> {rupiah(content.price)} </Text>
-											</View>
-
-											<View style = {{ flex: 1, flexDirection: 'row' }}>
-												<View style = {{ flex: 1 }}>
-													<TextInput
-														ref = { (c) => this._disc = c }
-														keyboardType = 'numeric'
-														returnKeyType = 'done'
-														underlineColorAndroid = 'transparent'
-														onChangeText = { (text) => this._editDisc(index, content, text) }
-														onEndEditing = { this._updatePrice.bind(this) }
-														onSubmitEditing = { this._updatePrice.bind(this) }
-														style = {{ flex: 1, padding: 0, color: 'gray', borderWidth: 0.5 }}
-														value = { content.disc.toString() }/>
-												</View>
-												
-												<View style = {{ padding: 5 }}>
-													<Text> % </Text>
-												</View>
-											</View>
-
-											<View style = {{ flex: 1, padding: 5, alignItems: 'flex-end' }}>
-												<Text> {rupiah(content.subTotal)} </Text>
-											</View>
-										</View>
-									</View>
-								</View>
-							)
-						})}
-
-						<View style = {{ flex: 1, height: 50, flexDirection: 'column', borderWidth: 0.5, borderColor: 'transparent', backgroundColor: this.state.sale.data.length%2 == 0 ? '#ccc' : 'white' }}>
-							<Touchable
-								style = {{ justifyContent: 'center' }}
-								onPress = { () => { this.props.navigation.navigate('Search', {type: 'list'}) }}>
-								<Text> Pilih Produk . . . </Text>
-							</Touchable>
-						</View>
-					</ScrollView>
-
-					<View style = { styles.row }>
-						<View style = {{ flex: 1, flexDirection: 'row' }}>
-							<View style = {{ flex: 2 }}>
-								<Text> Konsumen </Text>
-							</View>
-
-							<View style = {{ flex: 1 }}>
-								<TextInput
-									ref = { (c) => this._disc = c }
-									keyboardType = 'numeric'
-									returnKeyType = 'done'
-									underlineColorAndroid = 'transparent'
-									onChangeText = { (text) => this._editCustomer(text) }
-									onEndEditing = { () => { }}
-									onSubmitEditing = { () => { }}
-									style = {{ flex: 1, padding: 0, color: 'gray', borderWidth: 0.5 }}
-									value = { this.state.sale.customer.toString() }/>
-							</View>
-						</View>
-						
-						<View style = {{ flex: 1, flexDirection: 'row' }}>
-							<View style = {{ flex: 1 }}>
-								<Text> Total </Text>
-							</View>
-
-							<View style = {{ flex: 2, alignItems: 'flex-end' }}>
-								<Text> {rupiah(this.state.sale.total)} </Text>
-							</View>
-						</View>
-					</View>
-				</View>
-
-				{this.state.keyboard ?
-					null
-					:
+			<View
+				onLayout = { this._onLayout.bind(this) }
+				style = { styles.container }>
+				<View style = {{ flex: 1, flexDirection: this.state.width > this.state.height ? 'row' : 'column' }}>
 					<View style = {{ flex: 1 }}>
 						{/*
 						*
-						list inventory
+						scan barcode
 						*
 						*/}
-						{
+						{this.state.width > this.state.height ?
+							null
+							:
+							<View style = { styles.row }>
+								<View style = {{ flex: 0.5 }}>
+									<Button
+										onPress = { this._scanQR.bind(this) }
+										name = 'Scan' />
+								</View>
+
+								<View style = {{ flex: 2 }}>
+									<TextInput
+										ref = { (c) => this._barcode = c }
+										returnKeyType = 'search'
+										onChangeText = { (text) => this._search(text) }/>
+								</View>
+							</View>
+						}
+
+						{/*
+						*
+						list pembelian
+						*
+						*/}
 						<ScrollView
-							style = {{ flex: 1 }}
-							refreshControl = { this._renderRefresh() }>
-							{this.props.category.map((content, index) => {
-								/*
-								*
-								list category
-								*
-								*/
+							keyboardShouldPersistTaps = 'always'
+							style = {{ flex: 1, marginTop: 3 }}>
+							{this.state.sale.data.map((content, index) => {
 								return (
 									<View
 										key = { index }
-										style = {{ flex: 1 }}>
-										<View style = { styles.category }>
-											<Touchable
-												style = {{ height: 40, justifyContent: 'center' }}
-												onPress = { this._collapse.bind(this, index) }>
-												<View style = {{ flexDirection: 'row' }}>
-													<Text> {index + 1}. </Text>
+										style = {{ flex: 1, flexDirection: 'column', borderWidth: 0.5, borderColor: 'transparent', backgroundColor: index%2 == 0 ? '#ccc' : 'white' }}>
+										<View
+											style = {{ flex: 1 }}>
+											<View style = {{ flex: 1 }}>
+												<Text> {content.name} </Text>
+											</View>
 
-													<View style = {{ flexDirection: 'column' }}>
-														<Text> {content.name} </Text>
+											<View style = {{ flex: 1, flexDirection: 'row' }}>
+												<View style = {{ flex: 0.5 }}>
+													<TextInput
+														ref = { (c) => this._quantity = c }
+														keyboardType = 'numeric'
+														returnKeyType = 'done'
+														underlineColorAndroid = 'transparent'
+														onChangeText = { (text) => this._editQuantity(index, content, text) }
+														onEndEditing = { this._updatePrice.bind(this) }
+														onSubmitEditing = { this._updatePrice.bind(this) }
+														style = {{ flex: 1, padding: 0, color: 'gray', borderWidth: 0.5 }}
+														value = { content.quantity.toString() }/>
+												</View>
+
+												<View style = {{ flex: 1, padding: 5, alignItems: 'flex-end' }}>
+													<Text> {rupiah(content.price)} </Text>
+												</View>
+
+												<View style = {{ flex: 1, flexDirection: 'row' }}>
+													<View style = {{ flex: 1 }}>
+														<TextInput
+															ref = { (c) => this._disc = c }
+															keyboardType = 'numeric'
+															returnKeyType = 'done'
+															underlineColorAndroid = 'transparent'
+															onChangeText = { (text) => this._editDisc(index, content, text) }
+															onEndEditing = { this._updatePrice.bind(this) }
+															onSubmitEditing = { this._updatePrice.bind(this) }
+															style = {{ flex: 1, padding: 0, color: 'gray', borderWidth: 0.5 }}
+															value = { content.disc.toString() }/>
+													</View>
+													
+													<View style = {{ padding: 5 }}>
+														<Text> % </Text>
 													</View>
 												</View>
-											</Touchable>
-										</View>
 
-										{content.product.map((product, idx) => {
-											/*
-											*
-											list product
-											*
-											*/
-											return (
-												<View
-													key = { idx }>
-													{this.state.view[index] ?
-														<View
-															style = {[ styles.category, { marginLeft: 10 }]}>
-															<Touchable
-																onPress = { this._addSale.bind(this, content.idCategory, product) }>
-																<View style = {{ flex: 1, flexDirection: 'row' }}>
-																	<Text> {idx + 1}. </Text>
-
-																	<View style = {{ flex: 1, flexDirection: 'column' }}>
-																		<View style = {{ flex: 1 }}>
-																			<Text> {product.name} </Text>
-																		</View>
-
-																		<View style = {{ flex: 1, flexDirection: 'row' }}>
-																			<View style = {{ flex: 1 }}>
-																				<Text> qty: {product.quantity} </Text>
-																			</View>
-
-																			<View style = {{ flex: 1 }}>
-																				<Text> price: {rupiah(product.price)} </Text>
-																			</View>
-																		</View>
-																	</View>
-																</View>
-															</Touchable>
-														</View>
-														:
-														null
-													}
+												<View style = {{ flex: 1, padding: 5, alignItems: 'flex-end' }}>
+													<Text> {rupiah(content.subTotal)} </Text>
 												</View>
-											)
-										})}
+											</View>
+										</View>
 									</View>
 								)
 							})}
+
+							{/*<View style = {{ flex: 1, height: 50, flexDirection: 'column', borderWidth: 0.5, borderColor: 'transparent', backgroundColor: this.state.sale.data.length%2 == 0 ? '#ccc' : 'white' }}>
+								<Touchable
+									style = {{ justifyContent: 'center' }}
+									onPress = { () => { this.props.navigation.navigate('Search', {type: 'list'}) }}>
+									<Text> Pilih Produk . . . </Text>
+								</Touchable>
+							</View>*/}
 						</ScrollView>
-						}
 
-						<View style = {{height: 45 }}/>
+						<View style = { styles.row }>
+							<View style = {{ flex: 1, flexDirection: 'row' }}>
+								<View style = {{ flex: 2 }}>
+									<Text> Konsumen </Text>
+								</View>
 
-						<View style = { styles.stickyBottom }>
-							<View style = { styles.row }>
-								<Button
-									onPress = { this._clear.bind(this) }
-									name = 'Hapus' />
+								<View style = {{ flex: 1 }}>
+									<TextInput
+										ref = { (c) => this._disc = c }
+										keyboardType = 'numeric'
+										returnKeyType = 'done'
+										underlineColorAndroid = 'transparent'
+										onChangeText = { (text) => this._editCustomer(text) }
+										onEndEditing = { () => { }}
+										onSubmitEditing = { () => { }}
+										style = {{ flex: 1, padding: 0, color: 'gray', borderWidth: 0.5 }}
+										value = { this.state.sale.customer.toString() }/>
+								</View>
+							</View>
+							
+							<View style = {{ flex: 1, flexDirection: 'row' }}>
+								<View style = {{ flex: 1 }}>
+									<Text> Total </Text>
+								</View>
 
-								<Button
-									onPress = { this._done.bind(this) }
-									name = 'Selesai' />
+								<View style = {{ flex: 2, alignItems: 'flex-end' }}>
+									<Text> {rupiah(this.state.sale.total)} </Text>
+								</View>
 							</View>
 						</View>
 					</View>
-				}
+
+					{this.state.keyboard ?
+						null
+						:
+						<View style = {{ flex: 1, marginLeft:this.state.width > this.state.height ? 2 : 0 }}>
+							{/*
+							*
+							list inventory
+							*
+							*/}
+							{
+							<ScrollView
+								style = {{ flex: 1 }}
+								refreshControl = { this._renderRefresh() }>
+								{this.props.category.map((content, index) => {
+									/*
+									*
+									list category
+									*
+									*/
+									return (
+										<View
+											key = { index }
+											style = {{ flex: 1 }}>
+											<View style = { styles.category }>
+												<Touchable
+													style = {{ height: 40, justifyContent: 'center' }}
+													onPress = { this._collapse.bind(this, index) }>
+													<View style = {{ flexDirection: 'row' }}>
+														<Text> {index + 1}. </Text>
+
+														<View style = {{ flexDirection: 'column' }}>
+															<Text> {content.name} </Text>
+														</View>
+													</View>
+												</Touchable>
+											</View>
+
+											{content.product.map((product, idx) => {
+												/*
+												*
+												list product
+												*
+												*/
+												return (
+													<View
+														key = { idx }>
+														{this.state.view[index] ?
+															<View
+																style = {[ styles.category, { marginLeft: 10 }]}>
+																<Touchable
+																	onPress = { this._addSale.bind(this, content.idCategory, product) }>
+																	<View style = {{ flex: 1, flexDirection: 'row' }}>
+																		<Text> {idx + 1}. </Text>
+
+																		<View style = {{ flex: 1, flexDirection: 'column' }}>
+																			<View style = {{ flex: 1 }}>
+																				<Text> {product.name} </Text>
+																			</View>
+
+																			<View style = {{ flex: 1, flexDirection: 'row' }}>
+																				<View style = {{ flex: 1 }}>
+																					<Text> qty: {product.quantity} </Text>
+																				</View>
+
+																				<View style = {{ flex: 1 }}>
+																					<Text> price: {rupiah(product.price)} </Text>
+																				</View>
+																			</View>
+																		</View>
+																	</View>
+																</Touchable>
+															</View>
+															:
+															null
+														}
+													</View>
+												)
+											})}
+										</View>
+									)
+								})}
+							</ScrollView>
+							}
+
+							<View style = {{height: 45 }}/>
+
+							<View style = { styles.stickyBottom }>
+								{/*<TouchableOpacity
+									activeOpacity = {0.8}
+									onPress = { this._orientation.bind(thid) }
+									style = {{ width: 60, height: 60, borderRadius: Platform.OS == 'ios' ? 30 : 60, margin: 10, backgroundColor: '#1e8da5', borderWidth: 0.5, borderColor: '#ccc' }} />*/}
+
+								<View style = { styles.row }>
+									<Button
+										onPress = { this._clear.bind(this) }
+										name = 'Hapus' />
+
+									<Button
+										onPress = { this._done.bind(this) }
+										name = 'Selesai' />
+								</View>
+							</View>
+						</View>
+					}
+				</View>
 			</View>
 		)
+	}
+
+	_onLayout(evt) {
+		this.props.navigation.setParams({
+			width: evt.nativeEvent.layout.width,
+			height: evt.nativeEvent.layout.height
+		})
+
+		this.props.dispatchLayout(evt)
+
+		this.width = evt.nativeEvent.layout.width
+		this.height = evt.nativeEvent.layout.height
+
+		this.setState({
+			width: evt.nativeEvent.layout.width,
+			height: evt.nativeEvent.layout.height
+		})
 	}
 
 	_keyboardDidShow() {
@@ -627,6 +672,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	stickyBottom: {
+		alignItems: 'flex-end',
 		position: 'absolute',
 		left: 0,
 		right: 0,
@@ -646,6 +692,7 @@ const styles = StyleSheet.create({
 
 
 function mapStateToProps (state) {
+	console.log(state.nav)
 	return {
 		category: state.category.data,
 		refreshing: state.category.refreshing
@@ -654,6 +701,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
 	return {
+		dispatchLayout: (data) => dispatch(layout(data)),
 		dispatchRefreshing: (data) => dispatch(refreshing(data)),
 		dispatchUpdateStock: (data) => dispatch(updateStock(data)),
 		dispatchPenjualan: (data) => dispatch(penjualan(data))

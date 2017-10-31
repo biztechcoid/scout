@@ -30,6 +30,9 @@ import {
 
 class InventoryScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
+		headerStyle: {
+			backgroundColor: '#6ecbe0'
+		},
 		headerLeft: (
 			<ButtonIcons
 				onPress = { () => { navigation.navigate('DrawerOpen') }}

@@ -34,6 +34,9 @@ const customer = 0
 
 class ReportScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
+		headerStyle: {
+			backgroundColor: '#6ecbe0'
+		},
 		headerLeft: (
 			<ButtonIcons
 				onPress = { () => { navigation.navigate('DrawerOpen') }}

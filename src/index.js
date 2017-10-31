@@ -1,4 +1,8 @@
+import React from 'react'
+import PropsTypes from 'prop-types'
+import { connect } from 'react-redux'
 import {
+	addNavigationHelpers,
 	StackNavigator
 } from 'react-navigation'
 
@@ -17,7 +21,7 @@ const StackNavigatorConfig = {
 }
 
 
-const MobilePos = StackNavigator({
+export const AppNavigator = StackNavigator({
 	Splash: {
 		screen: SplashScreen,
 		navigationOptions: {
@@ -77,4 +81,19 @@ const MobilePos = StackNavigator({
 }, StackNavigatorConfig)
 
 
-module.exports = MobilePos
+// module.exports = MobilePos
+
+const AppWithNavigationState = ({ dispatch, nav }) => (
+	<AppNavigator navigation = { addNavigationHelpers({ dispatch, state: nav })}/>
+)
+
+/*AppWithNavigationState.propsTypes = {
+	dispatch: PropsTypes.func.isRequired,
+	nav: PropsTypes.object.isRequired
+}*/
+
+const mapStateToProps = state => ({
+	nav: state.nav
+})
+
+export default connect(mapStateToProps)(AppWithNavigationState)

@@ -13,3 +13,10 @@ export function penjualan(data) {
 		data
 	}
 }
+
+export function layout(data) {
+	return {
+		type: 'LAYOUT',
+		data
+	}
+}

@@ -55,9 +55,9 @@ const MyApp = DrawerNavigator({
 				navigationOptions: {
 					headerTitle: 'Scout',
 					headerTintColor: 'white',
-					headerStyle: {
+					/*headerStyle: {
 						backgroundColor: '#6ecbe0'
-					}
+					}*/
 				}
 			}
 		})

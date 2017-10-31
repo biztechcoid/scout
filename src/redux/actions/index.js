@@ -18,3 +18,4 @@ exports.updateStock = require('./category').updateStock
 
 exports.localStorageSale = require('./sale').localStorageSale
 exports.penjualan = require('./sale').penjualan
+exports.layout = require('./sale').layout
