@@ -319,8 +319,11 @@ class ReportScreen extends React.Component {
 
 																	<View style = {{ flexDirection: 'row' }}>
 																		<Text> {product.quantity} </Text>
+																		<Text> x </Text>
 																		<Text> {rupiah(product.price)} </Text>
+																		<Text> - </Text>
 																		<Text> {product.disc} % </Text>
+																		<Text> = </Text>
 																		<Text> {rupiah(product.subTotal)} </Text>
 																	</View>
 																</View>
@@ -341,7 +344,7 @@ class ReportScreen extends React.Component {
 					})}
 				</ScrollView>
 
-				<View style = {{height: 20 }}/>
+				<View style = {{height: 35 }}/>
 
 				<View style = { styles.stickyBottom }>
 					<View style = { styles.row }>
@@ -357,13 +360,23 @@ class ReportScreen extends React.Component {
 
 						<View style = {{ flex: 1, flexDirection: 'row' }}>
 							<View style = {{ flex: 1 }}>
-								<Text> Total </Text>
+								<Text> Total Transaksi </Text>
 							</View>
 
-							<View style = {{ flex: 2, alignItems: 'flex-end' }}>
-								<Text> {rupiah(total)} </Text>
+							<View style = {{ flex: 1, alignItems: 'flex-end' }}>
+								<Text> xx </Text>
 							</View>	
 						</View>
+					</View>
+
+					<View style = {{ flex: 1, flexDirection: 'row', backgroundColor: '#ccc' }}>
+						<View style = {{ flex: 1 }}>
+							<Text> Total </Text>
+						</View>
+
+						<View style = {{ flex: 1, alignItems: 'flex-end' }}>
+							<Text> {rupiah(total)} </Text>
+						</View>	
 					</View>
 				</View>
 			</View>

@@ -11,9 +11,9 @@ import LoginScreen from './pages/login'
 import HomeManagerScreen from './routes/homeManager'
 import HomeAdminScreen from './routes/homeAdmin'
 import HomeScreen from './routes/home'
-import ScanQRScreen from './pages/scanQR'
-import CategoryScreen from './pages/category'
-import SearchScreen from './pages/search'
+import ScanQRScreen from './pages/sale/scanQR'
+import CategoryScreen from './pages/inventory/product'
+import SearchScreen from './pages/sale/search'
 
 
 const StackNavigatorConfig = {

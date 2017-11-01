@@ -12,6 +12,7 @@ import {
 	TextInput
 } from 'react-native'
 const { width, height } = Dimensions.get('window')
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import { connect } from 'react-redux'
 import {
@@ -166,11 +167,28 @@ class InventoryScreen extends React.Component {
 									</View>
 								</Touchable>
 
-								<View style = {{ width: 40, height: 40 }}>
+								<ButtonIcons
+									style = {{ width: 40, height: 40 }}
+									onPress = { this.__updateCategory.bind(this, content) }
+									name = 'md-create'
+									color = 'grey'
+									size = { 20 }/>
+
+								<ButtonIcons
+									style = {{ width: 40, height: 40 }}
+									onPress = { this._deleteCategory.bind(this, content) }
+									name = 'md-close'
+									color = 'grey'
+									size = { 20 }/>
+
+								{/*<View style = {{ width: 40, height: 40 }}>
 									<Touchable
 										style = {{ justifyContent: 'center', alignItems: 'center'}}
 										onPress = { this.__updateCategory.bind(this, content) }>
-										<Text> E </Text>
+										<Ionicons
+											name = 'md-create'
+											size = { 20 }
+											color = 'grey'/>
 									</Touchable>
 								</View>
 
@@ -178,9 +196,12 @@ class InventoryScreen extends React.Component {
 									<Touchable
 										style = {{ justifyContent: 'center', alignItems: 'center'}}
 										onPress = { this._deleteCategory.bind(this, content) }>
-										<Text> X </Text>
+										<Ionicons
+											name = 'md-close'
+											size = { 20 }
+											color = 'grey'/>
 									</Touchable>
-								</View>
+								</View>*/}
 							</View>
 						)
 					})}

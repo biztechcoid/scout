@@ -182,3 +182,9 @@
 	* button clear ganti jadi hapus
 	* bug selesai penjualan
 	* bug hapus penjualan
+
+
+## 31/10/2017
+
+1. tab penjualan
+	* autorotate

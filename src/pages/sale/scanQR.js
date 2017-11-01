@@ -10,7 +10,7 @@ import { NavigationActions } from 'react-navigation'
 var back = NavigationActions.back({key: null})
 
 import { connect } from 'react-redux'
-import { barcodeProduct } from '../redux/actions/category'
+import { barcodeProduct } from '../../redux/actions/category'
 
 
 class ScanQRScreen extends React.Component {

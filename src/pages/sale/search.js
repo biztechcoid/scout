@@ -12,16 +12,16 @@ import {
 import { connect } from 'react-redux'
 import {
 	
-} from '../redux/actions'
+} from '../../redux/actions'
 
 import {
 	ButtonIcons,
 	Touchable
-} from '../components'
+} from '../../components'
 
 import {
 	rupiah
-} from '../modules'
+} from '../../modules'
 
 
 class SearchScreen extends React.Component {
@@ -103,7 +103,7 @@ class SearchScreen extends React.Component {
 				<View style = {{ height: 55, flexDirection: 'row', backgroundColor: '#6ecbe0' }}>
 					<ButtonIcons
 						onPress = { () => { this.props.navigation.goBack() }}
-						name = 'md-menu'
+						name = 'md-arrow-back'
 						color = 'white'
 						size = { 30 }/>
 
