@@ -675,7 +675,12 @@ class SaleScreen extends React.Component {
 								<ScrollView
 									style = {{ flex: 1 }}
 									refreshControl = { this._renderRefresh() }>
-									{this.props.category.map((content, index) => {
+									{this.props.category == null ?
+										<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+											<Text> tidak ada data </Text>
+										</View>
+										:
+										this.props.category.map((content, index) => {
 										/*
 										*
 										list category
@@ -742,7 +747,8 @@ class SaleScreen extends React.Component {
 												})}
 											</View>
 										)
-									})}
+										})
+									}
 								</ScrollView>
 							}
 
@@ -778,7 +784,6 @@ class SaleScreen extends React.Component {
 	}
 
 	_onLayout(evt) {
-		console.log(evt.nativeEvent.layout)
 		this.props.navigation.setParams({
 			width: evt.nativeEvent.layout.width,
 			height: evt.nativeEvent.layout.height,

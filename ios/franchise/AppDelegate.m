@@ -18,7 +18,9 @@
 {
   NSURL *jsCodeLocation;
 
+  // run in port 3000
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  // jsCodeLocation = [NSURL URLWithString:@"http://127.0.0.1:3000/index.bundle"];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"franchise"

@@ -152,7 +152,12 @@ class InventoryScreen extends React.Component {
 				</MyModal>
 
 				<ScrollView style = {{ flex: 1 }}>
-					{this.props.category.map((content, index) => {
+					{this.props.category == null ?
+						<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+							<Text> tidak ada data </Text>
+						</View>
+						:
+						this.props.category.map((content, index) => {
 						return (
 							<View
 								key = { index }
@@ -206,7 +211,8 @@ class InventoryScreen extends React.Component {
 								</View>*/}
 							</View>
 						)
-					})}
+						})
+					}
 				</ScrollView>
 
 				<View style = {{height: 45 }}/>

@@ -51,29 +51,29 @@ class LoginScreen extends React.Component {
 			cek data di local storage
 			*
 			*/
-			AsyncStorage.getItem('@Data', (err, resData) => {
-				if(err) {
-					return state
-				}
+			// AsyncStorage.getItem('@Data', (err, resData) => {
+			// 	if(err) {
+			// 		return state
+			// 	}
 
-				if(resData == null) {
-					return true
-				} else {
-					this.props.dispatchLocalStorageData(JSON.parse(resData))
-				}
-			})
+			// 	if(resData == null) {
+			// 		return true
+			// 	} else {
+			// 		this.props.dispatchLocalStorageData(JSON.parse(resData))
+			// 	}
+			// })
 
-			AsyncStorage.getItem('@Penjualan', (err, resData) => {
-				if(err) {
-					return state
-				}
+			// AsyncStorage.getItem('@Penjualan', (err, resData) => {
+			// 	if(err) {
+			// 		return state
+			// 	}
 
-				if(resData == null) {
-					return true
-				} else {
-					this.props.dispatchLocalStorageSale(JSON.parse(resData))
-				}
-			})
+			// 	if(resData == null) {
+			// 		return true
+			// 	} else {
+			// 		this.props.dispatchLocalStorageSale(JSON.parse(resData))
+			// 	}
+			// })
 			/**/
 
 			this.props.dispatchLogin(data)
@@ -115,8 +115,8 @@ class LoginScreen extends React.Component {
 							onChangeText = { (text) => this.setState({password: text }) }
 							onSubmitEditing = { this._login.bind(this) }
 							placeholder = 'Password'
-							value = {this.state.password}
-							secureTextEntry = {true}/>
+							secureTextEntry = {true}
+							value = {this.state.password}/>
 					</View>
 
 					<View style = {{ flex: 1 }}>

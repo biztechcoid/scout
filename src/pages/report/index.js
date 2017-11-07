@@ -283,7 +283,12 @@ class ReportScreen extends React.Component {
 				<ScrollView
 					style = {{ flex: 1 }}
 					/*refreshControl = { this._renderRefresh() }*/>
-					{this.props.sale.map((content, index) => {
+					{this.props.sale == null ?
+						<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+							<Text> tidak ada data </Text>
+						</View>
+						:
+						this.props.sale.map((content, index) => {
 						no = no + 1
 						return (
 							<View key = { index }>
@@ -343,7 +348,8 @@ class ReportScreen extends React.Component {
 								}
 							</View>
 						)
-					})}
+						})
+					}
 				</ScrollView>
 
 				<View style = {{height: 35 }}/>

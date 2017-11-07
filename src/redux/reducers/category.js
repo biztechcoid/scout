@@ -49,8 +49,8 @@ category
 
 
 const initialState = {
-	data: [],
-	ingredients: [],
+	data: null,
+	ingredients: null,
 	refreshing: false,
 	barcode: null
 }

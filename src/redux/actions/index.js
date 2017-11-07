@@ -1,16 +1,23 @@
 'use strict'
 
+/*
+*
+user
+*
+*/
+exports.registerUser = require('./user').registerUser
 exports.loginProcess = require('./user').loginProcess
 exports.login = require('./user').login
 exports.logout = require('./user').logout
 exports.setUser = require('./user').setUser
+exports.localStorageUsers = require('./user').localStorageUsers
 
-exports.localStorageData = require('./category').localStorageData
 /*
 *
 category
 *
 */
+exports.localStorageData = require('./category').localStorageData
 exports.addCategory = require('./category').addCategory
 exports.updateCategory = require('./category').updateCategory
 exports.deleteCategory = require('./category').deleteCategory

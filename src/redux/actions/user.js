@@ -1,5 +1,18 @@
 'use strict'
 
+
+export function localStorageUsers(data) {
+	return {
+		type: 'LOCAL_STORAGE_USERS',
+		data
+	}
+}
+export function registerUser(data) {
+	return {
+		type: 'REGISTER_USER',
+		data
+	}
+}
 export function loginProcess(data) {
 	return {
 		type: 'LOGIN_PROCESS',
