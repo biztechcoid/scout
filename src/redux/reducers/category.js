@@ -78,12 +78,14 @@ const CategoryReducers = (state = initialState, action) => {
 		*/
 		/*
 		action.data = {
+			idCabang: string,
 			name: string
 		}
 		*/
 		case 'ADD_CATEGORY':
 			const createData = {
 				idCategory: makeId(),
+				idCabang: action.data.idCabang,
 				name: action.data.name,
 				product: []
 			}

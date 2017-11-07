@@ -53,6 +53,22 @@ const UserReducers = (state = initialState, action) => {
 				}
 			}
 
+		/*
+		*
+		register
+		*
+		*/
+		/*
+		action.data: {
+			data: {
+				name: string,
+				email: string,
+				phone: string,
+				password: string
+			},
+			navigation: function
+		}
+		*/
 		case 'REGISTER_USER':
 			if(state.users == null) {
 				state.users = []
@@ -81,7 +97,6 @@ const UserReducers = (state = initialState, action) => {
 				phone: action.data.data.phone,
 				password: action.data.data.password,
 			}
-			// AsyncStorage.setItem('@Users', JSON.stringify([...state.users, register]))
 			AsyncStorage.multiSet([
 				['@Users', JSON.stringify([...state.users, register])],
 				['@Cabang', JSON.stringify([...state.cabang, cabang])]

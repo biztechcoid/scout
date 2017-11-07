@@ -3,6 +3,7 @@ import {
 	Alert,
 	Dimensions,
 	Keyboard,
+	ListView,
 	Modal,
 	View,
 	ScrollView,
@@ -35,6 +36,8 @@ import {
 	barcodeProduct
 } from '../../redux/actions'
 
+
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
 class ProductScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
@@ -593,22 +596,81 @@ class ProductScreen extends React.Component {
 				list product
 				*
 				*/}
-				<ScrollView style = {{ flex: 1 }}>
-					{this.props.category[this.props.navigation.state.params.index].product.map((content, index) => {
-						return (
-							<View key = { index }>
-								<View
-									style = { styles.product }>
-									<View style = {{ flex: 1, flexDirection: 'row' }}>
+				<ListView
+					dataSource = {ds.cloneWithRows(this.props.category[this.props.navigation.state.params.index].product)}
+					enableEmptySections = {true}
+					renderRow = {(content, section, row) =>
+						<View key = { Number(row) }>
+							<View
+								style = { styles.product }>
+								<View style = {{ flex: 1, flexDirection: 'row' }}>
+									<Touchable
+										onPress = { this._collapse.bind(this, Number(row)) }>
+										<View style = {{ flexDirection: 'column' }}>
+											<View style = {{ flexDirection: 'row' }}>
+												<Text> {Number(row) + 1}. </Text>
+
+												<View style = {{ flexDirection: 'column' }}>
+													<Text> {content.name} </Text>
+													
+													<View style = {{ flexDirection: 'row' }}>
+														<View style = {{ flexDirection: 'column' }}>
+															<Text> Stok </Text>
+															<Text> Biaya </Text>
+															<Text> Harga </Text>
+														</View>
+
+														<View style = {{ flexDirection: 'column' }}>
+															<Text> : {content.quantity} </Text>
+															<Text> : {rupiah(content.cost)} </Text>
+															<Text> : {rupiah(content.price)} </Text>
+														</View>
+													</View>
+												</View>
+											</View>
+
+										</View>
+									</Touchable>
+								</View>
+
+								<ButtonIcons
+									style = {{ width: 40, height: 40 }}
+									onPress = { this.__updateProduct.bind(this, content) }
+									name = 'md-create'
+									color = 'grey'
+									size = { 20 }/>
+
+								<ButtonIcons
+									style = {{ width: 40, height: 40 }}
+									onPress = { this._deleteProduct.bind(this, content) }
+									name = 'md-close'
+									color = 'grey'
+									size = { 20 }/>
+							</View>
+
+							{this.state.view[Number(row)] ?
+								content.subProduct == undefined || content.subProduct.length == 0 ?
+									<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10, height: 40 }]}>
 										<Touchable
-											onPress = { this._collapse.bind(this, index) }>
-											<View style = {{ flexDirection: 'column' }}>
-												<View style = {{ flexDirection: 'row' }}>
-													<Text> {index + 1}. </Text>
+											onPress = { this._setSubProductModal.bind(this, true, content.idProduct) }
+											style = {{ justifyContent: 'center' }}>
+											<Text> Tambah Sub-Produk </Text>
+										</Touchable>
+									</View>
+								:
+								<View>
+									<ListView
+										dataSource = {ds.cloneWithRows(content.subProduct)}
+										enableEmptySections = {true}
+										renderRow = {(subProduct, section, subRow) =>
+											<View
+												style = {[ styles.product, { flexDirection: 'row', marginLeft: 10 }]}>
+												<View style = {{ flex: 1, flexDirection: 'row' }}>
+													<Text> {Number(subRow) + 1}. </Text>
 
 													<View style = {{ flexDirection: 'column' }}>
-														<Text> {content.name} </Text>
-														
+														<Text> {subProduct.name} </Text>
+
 														<View style = {{ flexDirection: 'row' }}>
 															<View style = {{ flexDirection: 'column' }}>
 																<Text> Stok </Text>
@@ -617,126 +679,189 @@ class ProductScreen extends React.Component {
 															</View>
 
 															<View style = {{ flexDirection: 'column' }}>
-																<Text> : {content.quantity} </Text>
-																<Text> : {rupiah(content.cost)} </Text>
-																<Text> : {rupiah(content.price)} </Text>
+																<Text> : {subProduct.quantity} </Text>
+																<Text> : {rupiah(subProduct.cost)} </Text>
+																<Text> : {rupiah(subProduct.price)} </Text>
 															</View>
 														</View>
 													</View>
 												</View>
 
+												<ButtonIcons
+													style = {{ width: 40, height: 40 }}
+													onPress = { this.__updateSubProduct.bind(this, subProduct, content.idProduct) }
+													name = 'md-create'
+													color = 'grey'
+													size = { 20 }/>
+
+												<ButtonIcons
+													style = {{ width: 40, height: 40 }}
+													onPress = { this._deleteSubProduct.bind(this, subProduct, content.idProduct) }
+													name = 'md-close'
+													color = 'grey'
+													size = { 20 }/>
 											</View>
+									}/>
+
+									<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10, height: 40 }]}>
+										<Touchable
+											onPress = { this._setSubProductModal.bind(this, true, content.idProduct) }
+											style = {{ justifyContent: 'center' }}>
+											<Text> Tambah Sub-Produk </Text>
 										</Touchable>
 									</View>
-
-									<ButtonIcons
-										style = {{ width: 40, height: 40 }}
-										onPress = { this.__updateProduct.bind(this, content) }
-										name = 'md-create'
-										color = 'grey'
-										size = { 20 }/>
-
-									<ButtonIcons
-										style = {{ width: 40, height: 40 }}
-										onPress = { this._deleteProduct.bind(this, content) }
-										name = 'md-close'
-										color = 'grey'
-										size = { 20 }/>
-
-									{/*<View style = {{ width: 40, height: 40 }}>
-										<Touchable
-											style = {{ alignItems: 'center', justifyContent: 'center' }}
-											onPress = { this.__updateProduct.bind(this, content) }>
-											<Ionicons
-												name = 'md-create'
-												size = { 20 }
-												color = 'grey'/>
-										</Touchable>
-									</View>
-
-									<View style = {{ width: 40, height: 40 }}>
-										<Touchable
-											style = {{ alignItems: 'center', justifyContent: 'center' }}
-											onPress = { this._deleteProduct.bind(this, content) }>
-											<Ionicons
-												name = 'md-close'
-												size = { 20 }
-												color = 'grey'/>
-										</Touchable>
-									</View>*/}
 								</View>
+								:
+								null
+							}
+						</View>
+				}/>
+				{
+				// <ScrollView style = {{ flex: 1 }}>
+				// 	{this.props.category[this.props.navigation.state.params.index].product.map((content, index) => {
+				// 		return (
+				// 			<View key = { index }>
+				// 				<View
+				// 					style = { styles.product }>
+				// 					<View style = {{ flex: 1, flexDirection: 'row' }}>
+				// 						<Touchable
+				// 							onPress = { this._collapse.bind(this, index) }>
+				// 							<View style = {{ flexDirection: 'column' }}>
+				// 								<View style = {{ flexDirection: 'row' }}>
+				// 									<Text> {index + 1}. </Text>
 
-								{this.state.view[index] ?
-									content.subProduct == undefined || content.subProduct.length == 0 ?
-										<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10, height: 40 }]}>
-											<Touchable
-												onPress = { this._setSubProductModal.bind(this, true, content.idProduct) }
-												style = {{ justifyContent: 'center' }}>
-												<Text> Tambah Sub-Produk </Text>
-											</Touchable>
-										</View>
-									:
-									<View>
-										{content.subProduct.map((subProduct, index) => {
-											return (
-												<View
-													key = {index}
-													style = {[ styles.product, { flexDirection: 'row', marginLeft: 10 }]}>
-													<View style = {{ flex: 1, flexDirection: 'row' }}>
-														<Text> {index + 1}. </Text>
+				// 									<View style = {{ flexDirection: 'column' }}>
+				// 										<Text> {content.name} </Text>
+														
+				// 										<View style = {{ flexDirection: 'row' }}>
+				// 											<View style = {{ flexDirection: 'column' }}>
+				// 												<Text> Stok </Text>
+				// 												<Text> Biaya </Text>
+				// 												<Text> Harga </Text>
+				// 											</View>
 
-														<View style = {{ flexDirection: 'column' }}>
-															<Text> {subProduct.name} </Text>
+				// 											<View style = {{ flexDirection: 'column' }}>
+				// 												<Text> : {content.quantity} </Text>
+				// 												<Text> : {rupiah(content.cost)} </Text>
+				// 												<Text> : {rupiah(content.price)} </Text>
+				// 											</View>
+				// 										</View>
+				// 									</View>
+				// 								</View>
 
-															<View style = {{ flexDirection: 'row' }}>
-																<View style = {{ flexDirection: 'column' }}>
-																	<Text> Stok </Text>
-																	<Text> Biaya </Text>
-																	<Text> Harga </Text>
-																</View>
+				// 							</View>
+				// 						</Touchable>
+				// 					</View>
 
-																<View style = {{ flexDirection: 'column' }}>
-																	<Text> : {subProduct.quantity} </Text>
-																	<Text> : {rupiah(subProduct.cost)} </Text>
-																	<Text> : {rupiah(subProduct.price)} </Text>
-																</View>
-															</View>
-														</View>
-													</View>
+				// 					<ButtonIcons
+				// 						style = {{ width: 40, height: 40 }}
+				// 						onPress = { this.__updateProduct.bind(this, content) }
+				// 						name = 'md-create'
+				// 						color = 'grey'
+				// 						size = { 20 }/>
 
-													<ButtonIcons
-														style = {{ width: 40, height: 40 }}
-														onPress = { this.__updateSubProduct.bind(this, subProduct, content.idProduct) }
-														name = 'md-create'
-														color = 'grey'
-														size = { 20 }/>
+				// 					<ButtonIcons
+				// 						style = {{ width: 40, height: 40 }}
+				// 						onPress = { this._deleteProduct.bind(this, content) }
+				// 						name = 'md-close'
+				// 						color = 'grey'
+				// 						size = { 20 }/>
 
-													<ButtonIcons
-														style = {{ width: 40, height: 40 }}
-														onPress = { this._deleteSubProduct.bind(this, subProduct, content.idProduct) }
-														name = 'md-close'
-														color = 'grey'
-														size = { 20 }/>
-												</View>
-											)
-										})}
+				// 					{/*<View style = {{ width: 40, height: 40 }}>
+				// 						<Touchable
+				// 							style = {{ alignItems: 'center', justifyContent: 'center' }}
+				// 							onPress = { this.__updateProduct.bind(this, content) }>
+				// 							<Ionicons
+				// 								name = 'md-create'
+				// 								size = { 20 }
+				// 								color = 'grey'/>
+				// 						</Touchable>
+				// 					</View>
 
-										<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10, height: 40 }]}>
-											<Touchable
-												onPress = { this._setSubProductModal.bind(this, true, content.idProduct) }
-												style = {{ justifyContent: 'center' }}>
-												<Text> Tambah Sub-Produk </Text>
-											</Touchable>
-										</View>
-									</View>
-									:
-									null
-								}
-							</View>
-						)
+				// 					<View style = {{ width: 40, height: 40 }}>
+				// 						<Touchable
+				// 							style = {{ alignItems: 'center', justifyContent: 'center' }}
+				// 							onPress = { this._deleteProduct.bind(this, content) }>
+				// 							<Ionicons
+				// 								name = 'md-close'
+				// 								size = { 20 }
+				// 								color = 'grey'/>
+				// 						</Touchable>
+				// 					</View>*/}
+				// 				</View>
 
-					})}
-				</ScrollView>
+				// 				{this.state.view[index] ?
+				// 					content.subProduct == undefined || content.subProduct.length == 0 ?
+				// 						<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10, height: 40 }]}>
+				// 							<Touchable
+				// 								onPress = { this._setSubProductModal.bind(this, true, content.idProduct) }
+				// 								style = {{ justifyContent: 'center' }}>
+				// 								<Text> Tambah Sub-Produk </Text>
+				// 							</Touchable>
+				// 						</View>
+				// 					:
+				// 					<View>
+				// 						{content.subProduct.map((subProduct, index) => {
+				// 							return (
+				// 								<View
+				// 									key = {index}
+				// 									style = {[ styles.product, { flexDirection: 'row', marginLeft: 10 }]}>
+				// 									<View style = {{ flex: 1, flexDirection: 'row' }}>
+				// 										<Text> {index + 1}. </Text>
+
+				// 										<View style = {{ flexDirection: 'column' }}>
+				// 											<Text> {subProduct.name} </Text>
+
+				// 											<View style = {{ flexDirection: 'row' }}>
+				// 												<View style = {{ flexDirection: 'column' }}>
+				// 													<Text> Stok </Text>
+				// 													<Text> Biaya </Text>
+				// 													<Text> Harga </Text>
+				// 												</View>
+
+				// 												<View style = {{ flexDirection: 'column' }}>
+				// 													<Text> : {subProduct.quantity} </Text>
+				// 													<Text> : {rupiah(subProduct.cost)} </Text>
+				// 													<Text> : {rupiah(subProduct.price)} </Text>
+				// 												</View>
+				// 											</View>
+				// 										</View>
+				// 									</View>
+
+				// 									<ButtonIcons
+				// 										style = {{ width: 40, height: 40 }}
+				// 										onPress = { this.__updateSubProduct.bind(this, subProduct, content.idProduct) }
+				// 										name = 'md-create'
+				// 										color = 'grey'
+				// 										size = { 20 }/>
+
+				// 									<ButtonIcons
+				// 										style = {{ width: 40, height: 40 }}
+				// 										onPress = { this._deleteSubProduct.bind(this, subProduct, content.idProduct) }
+				// 										name = 'md-close'
+				// 										color = 'grey'
+				// 										size = { 20 }/>
+				// 								</View>
+				// 							)
+				// 						})}
+
+				// 						<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10, height: 40 }]}>
+				// 							<Touchable
+				// 								onPress = { this._setSubProductModal.bind(this, true, content.idProduct) }
+				// 								style = {{ justifyContent: 'center' }}>
+				// 								<Text> Tambah Sub-Produk </Text>
+				// 							</Touchable>
+				// 						</View>
+				// 					</View>
+				// 					:
+				// 					null
+				// 				}
+				// 			</View>
+				// 		)
+
+				// 	})}
+				// </ScrollView>
+				}
 
 				<View style = {{height: 45 }}/>
 
@@ -838,7 +963,7 @@ const styles = StyleSheet.create({
 function mapStateToProps (state) {
 	return {
 		barcode: state.category.barcode,
-		category: state.category.data
+		category: state.category.data,
 	}
 }
 

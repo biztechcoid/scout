@@ -4,6 +4,7 @@ import {
 	AsyncStorage,
 	Dimensions,
 	Keyboard,
+	ListView,
 	Modal,
 	View,
 	ScrollView,
@@ -28,6 +29,8 @@ import {
 	Touchable
 } from '../../components'
 
+
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
 class InventoryScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
@@ -56,6 +59,7 @@ class InventoryScreen extends React.Component {
 			Alert.alert(null, 'nama category tidak valid')
 		} else {
 			var data = {
+				idCabang: profile.idCabang,
 				name: this.state.category
 			}
 			this._setModalVisible(false)
@@ -151,71 +155,106 @@ class InventoryScreen extends React.Component {
 					</View>
 				</MyModal>
 
-				<ScrollView style = {{ flex: 1 }}>
-					{this.props.category == null ?
-						<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-							<Text> tidak ada data </Text>
-						</View>
-						:
-						this.props.category.map((content, index) => {
-						return (
-							<View
-								key = { index }
-								style = { styles.category }>
-								<Touchable
-									style = {{ justifyContent: 'center' }}
-									onPress = { () => this.props.navigation.navigate('Product', { index: index, content: content }) }>
-									<View style = {{ flexDirection: 'row' }}>
-										<Text> {index + 1}. </Text>
+				<ListView
+					dataSource = {ds.cloneWithRows(this.props.category)}
+					enableEmptySections = {true}
+					renderRow = {(content, section, row) =>
+						<View style = { styles.category }>
+							<Touchable
+								style = {{ justifyContent: 'center' }}
+								onPress = { () => this.props.navigation.navigate('Product', { index: Number(row), content: content }) }>
+								<View style = {{ flexDirection: 'row' }}>
+									<Text> {Number(row) + 1}. </Text>
 
-										<View style = {{ flexDirection: 'column' }}>
-											<Text> {content.name} </Text>
-										</View>
+									<View style = {{ flexDirection: 'column' }}>
+										<Text> {content.name} </Text>
 									</View>
-								</Touchable>
-
-								<ButtonIcons
-									style = {{ width: 40, height: 40 }}
-									onPress = { this.__updateCategory.bind(this, content) }
-									name = 'md-create'
-									color = 'grey'
-									size = { 20 }/>
-
-								<ButtonIcons
-									style = {{ width: 40, height: 40 }}
-									onPress = { this._deleteCategory.bind(this, content) }
-									name = 'md-close'
-									color = 'grey'
-									size = { 20 }/>
-
-								{/*<View style = {{ width: 40, height: 40 }}>
-									<Touchable
-										style = {{ justifyContent: 'center', alignItems: 'center'}}
-										onPress = { this.__updateCategory.bind(this, content) }>
-										<Ionicons
-											name = 'md-create'
-											size = { 20 }
-											color = 'grey'/>
-									</Touchable>
 								</View>
+							</Touchable>
 
-								<View style = {{ width: 40, height: 40 }}>
-									<Touchable
-										style = {{ justifyContent: 'center', alignItems: 'center'}}
-										onPress = { this._deleteCategory.bind(this, content) }>
-										<Ionicons
-											name = 'md-close'
-											size = { 20 }
-											color = 'grey'/>
-									</Touchable>
-								</View>*/}
-							</View>
-						)
-						})
-					}
-				</ScrollView>
+							<ButtonIcons
+								style = {{ width: 40, height: 40 }}
+								onPress = { this.__updateCategory.bind(this, content) }
+								name = 'md-create'
+								color = 'grey'
+								size = { 20 }/>
 
-				<View style = {{height: 45 }}/>
+							<ButtonIcons
+								style = {{ width: 40, height: 40 }}
+								onPress = { this._deleteCategory.bind(this, content) }
+								name = 'md-close'
+								color = 'grey'
+								size = { 20 }/>
+						</View>
+				}/>
+
+				{
+				// <ScrollView style = {{ flex: 1 }}>
+				// 	{this.props.category == null ?
+				// 		<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+				// 			<Text> tidak ada data </Text>
+				// 		</View>
+				// 		:
+				// 		this.props.category.map((content, index) => {
+				// 		return (
+				// 			<View
+				// 				key = { index }
+				// 				style = { styles.category }>
+				// 				<Touchable
+				// 					style = {{ justifyContent: 'center' }}
+				// 					onPress = { () => this.props.navigation.navigate('Product', { index: index, content: content }) }>
+				// 					<View style = {{ flexDirection: 'row' }}>
+				// 						<Text> {index + 1}. </Text>
+
+				// 						<View style = {{ flexDirection: 'column' }}>
+				// 							<Text> {content.name} </Text>
+				// 						</View>
+				// 					</View>
+				// 				</Touchable>
+
+				// 				<ButtonIcons
+				// 					style = {{ width: 40, height: 40 }}
+				// 					onPress = { this.__updateCategory.bind(this, content) }
+				// 					name = 'md-create'
+				// 					color = 'grey'
+				// 					size = { 20 }/>
+
+				// 				<ButtonIcons
+				// 					style = {{ width: 40, height: 40 }}
+				// 					onPress = { this._deleteCategory.bind(this, content) }
+				// 					name = 'md-close'
+				// 					color = 'grey'
+				// 					size = { 20 }/>
+
+				// 				{/*<View style = {{ width: 40, height: 40 }}>
+				// 					<Touchable
+				// 						style = {{ justifyContent: 'center', alignItems: 'center'}}
+				// 						onPress = { this.__updateCategory.bind(this, content) }>
+				// 						<Ionicons
+				// 							name = 'md-create'
+				// 							size = { 20 }
+				// 							color = 'grey'/>
+				// 					</Touchable>
+				// 				</View>
+
+				// 				<View style = {{ width: 40, height: 40 }}>
+				// 					<Touchable
+				// 						style = {{ justifyContent: 'center', alignItems: 'center'}}
+				// 						onPress = { this._deleteCategory.bind(this, content) }>
+				// 						<Ionicons
+				// 							name = 'md-close'
+				// 							size = { 20 }
+				// 							color = 'grey'/>
+				// 					</Touchable>
+				// 				</View>*/}
+				// 			</View>
+				// 		)
+				// 		})
+				// 	}
+				// </ScrollView>
+				}
+
+				<View style = {{height: 90 }}/>
 
 				{this.state.keyboard ?
 					null
@@ -310,7 +349,8 @@ const styles = StyleSheet.create({
 
 function mapStateToProps (state) {
 	return {
-		category: state.category.data
+		category: state.category.data,
+		profile: state.user.data
 	}
 }
 

@@ -188,3 +188,17 @@
 
 1. tab penjualan
 	* autorotate
+
+
+## 7/11/2017
+
+1. register
+	* register user with create cabang
+
+2. remove user role
+
+3. tab inventory
+	* sub-product
+	* manufacturing
+	* bahan baku
+	* category with idCabang

@@ -40,7 +40,7 @@ import {
 class SaleScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
 		headerStyle: {
-			paddingTop: navigation.state.params ? navigation.state.params.width > navigation.state.params.height && navigation.state.params.keyboard == false ? 0 : 20 : 20,
+			paddingTop: navigation.state.params ? navigation.state.params.width > navigation.state.params.height && navigation.state.params.keyboard == false ? 0 : Platform.OS == 'ios' ? 20 : 0 : 20,
 			height: navigation.state.params ? navigation.state.params.width > navigation.state.params.height && navigation.state.params.keyboard == false ? 0 : Platform.OS == 'ios' ? 64 : 56 : Platform.OS == 'ios' ? 64 : 56,
 			backgroundColor: '#6ecbe0'
 		},

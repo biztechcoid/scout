@@ -50,6 +50,14 @@ class SideMenuScreen extends React.Component {
 				<View style = {{ height: 40, borderWidth: 0.5, borderColor: '#ccc' }}>
 					<Touchable
 						style = {{ justifyContent: 'center' }}
+						onPress = { () => { }}>
+						<Text> Tambah User </Text>
+					</Touchable>
+				</View>
+
+				<View style = {{ height: 40, borderWidth: 0.5, borderColor: '#ccc' }}>
+					<Touchable
+						style = {{ justifyContent: 'center' }}
 						onPress = { this._logout.bind(this) }>
 						<Text> Logout </Text>
 					</Touchable>

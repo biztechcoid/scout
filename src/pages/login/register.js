@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+	Alert,
 	ScrollView,
 	Text,
 	TextInput,
@@ -30,10 +31,24 @@ class RegisterScreen extends React.Component {
 	}
 
 	_register() {
-		this.props.dispatchRegisterUser({
-			data: this.state,
-			navigation: this.props.navigation
-		})
+		if(this.state.name == '' || this.state.name == null) {
+			Alert.alert(null, 'nama tidak valid')
+		} else if(this.state.email == '' || this.state.email == null) {
+			Alert.alert(null, 'email tidak valid')
+		} else if(this.state.phone == '' || this.state.phone == null) {
+			Alert.alert(null, 'telepon tidak valid')
+		} else if(this.state.password == '' || this.state.password == null) {
+			Alert.alert(null, 'password tidak valid')
+		} else {
+			if(this.state.password === this.state.confirmPassword) {
+				this.props.dispatchRegisterUser({
+					data: this.state,
+					navigation: this.props.navigation
+				})
+			} else {
+				Alert.alert(null, 'ulangi password')
+			}
+		}
 	}
 
 	render() {
