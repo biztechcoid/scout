@@ -32,13 +32,14 @@ import {
 	addSubProduct,
 	updateSubProduct,
 	deleteSubProduct,
+	spliceIngredients,
 	barcodeProduct
 } from '../../redux/actions'
 
 
-class ProductScreen extends React.Component {
+class IngredientsScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
-		title: `Kategori ${ navigation.state.params.content.name }`
+		title: 'Manufacturing'
 	})
 
 	state = {
@@ -52,7 +53,8 @@ class ProductScreen extends React.Component {
 		price: null,
 		quantity: null,
 
-		view: [],
+		viewCategory: [],
+		viewProduct: [],
 		subProductModal: false,
 		idSubProduct: null,
 		// barcode: null,
@@ -193,7 +195,6 @@ class ProductScreen extends React.Component {
 				price: Number(this.state.price),
 				quantity: Number(this.state.quantity)
 			}
-			console.log(data)
 			this._setSubProductModal(false)
 			this.props.dispatchAddSubProduct(data)
 			this.props.dispatchBarcodeProduct(null)
@@ -271,12 +272,34 @@ class ProductScreen extends React.Component {
 	}
 	/**/
 
-	_collapse(index) {
+	_spliceIngredients(idCategory, idProduct, ingredients) {
+		var data = {
+			idCategory: idCategory,
+			idProduct: idProduct,
+			idIngredients: ingredients.idIngredients
+		}
+		Alert.alert(null, 'Anda yakin akan menghapus bahan baku ' + ingredients.name,
+			[
+				{ text: 'Yakin', onPress: () => this.props.dispatchSpliceIngredients(data) },
+				{ text: 'Batal' }
+			])
+	}
+
+	_collapse(idx, value) {
 		const stateCopy = this.state
 
-		stateCopy.view[index] = !stateCopy.view[index]
+		switch(value) {
+			case 'category':
+				stateCopy.viewCategory[idx] = !stateCopy.viewCategory[idx]
+				return this.setState(stateCopy)
 
-		this.setState(stateCopy)
+			case 'product':
+				stateCopy.viewProduct[idx] = !stateCopy.viewProduct[idx]
+				return this.setState(stateCopy)
+
+			default:
+				return this.setState(stateCopy)
+		}
 	}
 
 	render() {
@@ -450,7 +473,7 @@ class ProductScreen extends React.Component {
 						<View style = { styles.content }>
 							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
 								{this.state.idSubProduct == null ?
-									<Text style = {{ fontWeight: 'bold' }}> Tambah Sub-Produk </Text>
+									<Text style = {{ fontWeight: 'bold' }}> Tambah Bahan Baku </Text>
 									:
 									<Text style = {{ fontWeight: 'bold' }}> Ubah Sub-Produk </Text>
 								}
@@ -594,161 +617,150 @@ class ProductScreen extends React.Component {
 				*
 				*/}
 				<ScrollView style = {{ flex: 1 }}>
-					{this.props.category[this.props.navigation.state.params.index].product.map((content, index) => {
+					{this.props.category.map((category, idxCategory) => {
 						return (
-							<View key = { index }>
-								<View
-									style = { styles.product }>
-									<View style = {{ flex: 1, flexDirection: 'row' }}>
-										<Touchable
-											onPress = { this._collapse.bind(this, index) }>
+							<View key = { idxCategory }>
+								<View style = {[ styles.product, { height: 60 }]}>
+									<Touchable
+										style = {{ justifyContent: 'center' }}
+										onPress = { this._collapse.bind(this, idxCategory, 'category') }>
+										<View style = {{ flexDirection: 'row' }}>
+											<Text> {idxCategory + 1}. </Text>
+
 											<View style = {{ flexDirection: 'column' }}>
-												<View style = {{ flexDirection: 'row' }}>
-													<Text> {index + 1}. </Text>
-
-													<View style = {{ flexDirection: 'column' }}>
-														<Text> {content.name} </Text>
-														
-														<View style = {{ flexDirection: 'row' }}>
-															<View style = {{ flexDirection: 'column' }}>
-																<Text> Stok </Text>
-																<Text> Biaya </Text>
-																<Text> Harga </Text>
-															</View>
-
-															<View style = {{ flexDirection: 'column' }}>
-																<Text> : {content.quantity} </Text>
-																<Text> : {rupiah(content.cost)} </Text>
-																<Text> : {rupiah(content.price)} </Text>
-															</View>
-														</View>
-													</View>
-												</View>
-
+												<Text> {category.name} </Text>
 											</View>
-										</Touchable>
-									</View>
-
-									<ButtonIcons
-										style = {{ width: 40, height: 40 }}
-										onPress = { this.__updateProduct.bind(this, content) }
-										name = 'md-create'
-										color = 'grey'
-										size = { 20 }/>
-
-									<ButtonIcons
-										style = {{ width: 40, height: 40 }}
-										onPress = { this._deleteProduct.bind(this, content) }
-										name = 'md-close'
-										color = 'grey'
-										size = { 20 }/>
-
-									{/*<View style = {{ width: 40, height: 40 }}>
-										<Touchable
-											style = {{ alignItems: 'center', justifyContent: 'center' }}
-											onPress = { this.__updateProduct.bind(this, content) }>
-											<Ionicons
-												name = 'md-create'
-												size = { 20 }
-												color = 'grey'/>
-										</Touchable>
-									</View>
-
-									<View style = {{ width: 40, height: 40 }}>
-										<Touchable
-											style = {{ alignItems: 'center', justifyContent: 'center' }}
-											onPress = { this._deleteProduct.bind(this, content) }>
-											<Ionicons
-												name = 'md-close'
-												size = { 20 }
-												color = 'grey'/>
-										</Touchable>
-									</View>*/}
+										</View>
+									</Touchable>
 								</View>
 
-								{this.state.view[index] ?
-									content.subProduct == undefined || content.subProduct.length == 0 ?
-										<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10, height: 40 }]}>
-											<Touchable
-												onPress = { this._setSubProductModal.bind(this, true, content.idProduct) }
-												style = {{ justifyContent: 'center' }}>
-												<Text> Tambah Sub-Produk </Text>
-											</Touchable>
-										</View>
-									:
-									<View>
-										{content.subProduct.map((subProduct, index) => {
-											return (
+								{this.state.viewCategory[idxCategory] ?
+									category.product.map((product, idxProduct) => {
+										return (
+											<View key = { idxProduct }>
 												<View
-													key = {index}
-													style = {[ styles.product, { flexDirection: 'row', marginLeft: 10 }]}>
+													style = {[ styles.product, {marginLeft: 10 }]}>
 													<View style = {{ flex: 1, flexDirection: 'row' }}>
-														<Text> {index + 1}. </Text>
+														<Touchable
+															onPress = { this._collapse.bind(this, idxCategory + idxProduct, 'product') }>
+															<View style = {{ flexDirection: 'column' }}>
+																<View style = {{ flexDirection: 'row' }}>
+																	<Text> {idxProduct + 1}. </Text>
 
-														<View style = {{ flexDirection: 'column' }}>
-															<Text> {subProduct.name} </Text>
+																	<View style = {{ flexDirection: 'column' }}>
+																		<Text> {product.name} </Text>
+																		
+																		<View style = {{ flexDirection: 'row' }}>
+																			<View style = {{ flexDirection: 'column' }}>
+																				<Text> Stok </Text>
+																				<Text> Biaya </Text>
+																				<Text> Harga </Text>
+																			</View>
 
-															<View style = {{ flexDirection: 'row' }}>
-																<View style = {{ flexDirection: 'column' }}>
-																	<Text> Stok </Text>
-																	<Text> Biaya </Text>
-																	<Text> Harga </Text>
+																			<View style = {{ flexDirection: 'column' }}>
+																				<Text> : {product.quantity} </Text>
+																				<Text> : {rupiah(product.cost)} </Text>
+																				<Text> : {rupiah(product.price)} </Text>
+																			</View>
+																		</View>
+																	</View>
 																</View>
 
-																<View style = {{ flexDirection: 'column' }}>
-																	<Text> : {subProduct.quantity} </Text>
-																	<Text> : {rupiah(subProduct.cost)} </Text>
-																	<Text> : {rupiah(subProduct.price)} </Text>
-																</View>
 															</View>
-														</View>
+														</Touchable>
 													</View>
 
-													<ButtonIcons
+													{/*<ButtonIcons
 														style = {{ width: 40, height: 40 }}
-														onPress = { this.__updateSubProduct.bind(this, subProduct, content.idProduct) }
+														onPress = { this.__updateProduct.bind(this, product) }
 														name = 'md-create'
 														color = 'grey'
-														size = { 20 }/>
+														size = { 20 }/>*/}
 
-													<ButtonIcons
+													{/*<ButtonIcons
 														style = {{ width: 40, height: 40 }}
-														onPress = { this._deleteSubProduct.bind(this, subProduct, content.idProduct) }
+														onPress = { this._deleteProduct.bind(this, product) }
 														name = 'md-close'
 														color = 'grey'
-														size = { 20 }/>
+														size = { 20 }/>*/}
 												</View>
-											)
-										})}
 
-										<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 10, height: 40 }]}>
-											<Touchable
-												onPress = { this._setSubProductModal.bind(this, true, content.idProduct) }
-												style = {{ justifyContent: 'center' }}>
-												<Text> Tambah Sub-Produk </Text>
-											</Touchable>
-										</View>
-									</View>
+												{this.state.viewProduct[idxCategory + idxProduct] ?
+													product.ingredients == undefined || product.ingredients.length == 0 ?
+														<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 20, height: 40 }]}>
+															<Touchable
+																onPress = { () => this.props.navigation.navigate('BahanBaku', {idxCategory: idxCategory, idxProduct: idxProduct}) }
+																style = {{ justifyContent: 'center' }}>
+																<Text> Tambah Bahan Baku </Text>
+															</Touchable>
+														</View>
+													:
+													<View>
+														{product.ingredients.map((ingredients, index) => {
+															return (
+																<View
+																	key = {index}
+																	style = {[ styles.product, { flexDirection: 'row', marginLeft: 20 }]}>
+																	<View style = {{ flex: 1, flexDirection: 'row' }}>
+																		<Text> {index + 1}. </Text>
+
+																		<View style = {{ flexDirection: 'column' }}>
+																			<Text> {ingredients.name} </Text>
+
+																			<View style = {{ flexDirection: 'row' }}>
+																				<View style = {{ flexDirection: 'column' }}>
+																					<Text> Stok </Text>
+																					<Text> Biaya </Text>
+																					<Text> Harga </Text>
+																				</View>
+
+																				<View style = {{ flexDirection: 'column' }}>
+																					<Text> : {ingredients.quantity} </Text>
+																					<Text> : {rupiah(ingredients.cost)} </Text>
+																					<Text> : {rupiah(ingredients.price)} </Text>
+																				</View>
+																			</View>
+																		</View>
+																	</View>
+
+																	{/*<ButtonIcons
+																		style = {{ width: 40, height: 40 }}
+																		onPress = { this.__updateSubProduct.bind(this, ingredients, product.idProduct) }
+																		name = 'md-create'
+																		color = 'grey'
+																		size = { 20 }/>*/}
+
+																	<ButtonIcons
+																		style = {{ width: 40, height: 40 }}
+																		onPress = { this._spliceIngredients.bind(this, category.idCategory, product.idProduct, ingredients) }
+																		name = 'md-close'
+																		color = 'grey'
+																		size = { 20 }/>
+																</View>
+															)
+														})}
+
+														<View style = {[ styles.product, { flexDirection: 'column', marginLeft: 20, height: 40 }]}>
+															<Touchable
+																onPress = { () => this.props.navigation.navigate('BahanBaku', {idxCategory: idxCategory, idxProduct: idxProduct}) }
+																style = {{ justifyContent: 'center' }}>
+																<Text> Tambah Bahan Baku </Text>
+															</Touchable>
+														</View>
+													</View>
+													:
+													null
+												}
+											</View>
+										)
+									})
 									:
 									null
 								}
 							</View>
 						)
-
 					})}
 				</ScrollView>
-
-				<View style = {{height: 45 }}/>
-
-				{this.state.keyboard ?
-					null
-					:
-					<View style = { styles.stickyBottom }>
-						<Button
-							onPress = { this._setModalVisible.bind(this, true) }
-							name = 'Tambah Produk'/>
-					</View>
-				}
 			</View>
 		)
 	}
@@ -850,6 +862,7 @@ function mapDispatchToProps (dispatch) {
 		dispatchAddSubProduct: (data) => dispatch(addSubProduct(data)),
 		dispatchUpdateSubProduct: (data) => dispatch(updateSubProduct(data)),
 		dispatchDeleteSubProduct: (data) => dispatch(deleteSubProduct(data)),
+		dispatchSpliceIngredients: (data) => dispatch(spliceIngredients(data)),
 		dispatchBarcodeProduct: (data) => dispatch(barcodeProduct(data))
 	}
 }
@@ -857,4 +870,4 @@ function mapDispatchToProps (dispatch) {
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(ProductScreen)
+)(IngredientsScreen)

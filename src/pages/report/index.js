@@ -234,6 +234,7 @@ class ReportScreen extends React.Component {
 	}
 
 	render() {
+		var no = 0
 		return(
 			<View style = { styles.container }>
 				<View style = { styles.row }>
@@ -283,6 +284,7 @@ class ReportScreen extends React.Component {
 					style = {{ flex: 1 }}
 					/*refreshControl = { this._renderRefresh() }*/>
 					{this.props.sale.map((content, index) => {
+						no = no + 1
 						return (
 							<View key = { index }>
 								{this._renderValue(content, index) ?
@@ -293,7 +295,7 @@ class ReportScreen extends React.Component {
 												style = {{ flexDirection: 'row' }}
 												onPress = { this._collapse.bind(this, index) }>
 												<View style = {{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-													<Text> {index + 1}. </Text>
+													<Text> {no}. </Text>
 													<Text> {ddmmyyyy(content.date)} {new Date(content.date).getHours()}:{new Date(content.date).getMinutes()}:{new Date(content.date).getSeconds()} </Text>
 												</View>
 
@@ -364,7 +366,7 @@ class ReportScreen extends React.Component {
 							</View>
 
 							<View style = {{ flex: 1, alignItems: 'flex-end' }}>
-								<Text> xx </Text>
+								<Text> {no} </Text>
 							</View>	
 						</View>
 					</View>

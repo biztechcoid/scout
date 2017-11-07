@@ -38,12 +38,13 @@ import {
 
 
 class SaleScreen extends React.Component {
-	static navigationOptions = ({ navigation }) => /*console.log('=====', navigation)*/ ({
+	static navigationOptions = ({ navigation }) => ({
 		headerStyle: {
-			height: navigation.state.params ? navigation.state.params.width > navigation.state.params.height ? 0 : 56 : 56,
+			paddingTop: navigation.state.params ? navigation.state.params.width > navigation.state.params.height && navigation.state.params.keyboard == false ? 0 : 20 : 20,
+			height: navigation.state.params ? navigation.state.params.width > navigation.state.params.height && navigation.state.params.keyboard == false ? 0 : Platform.OS == 'ios' ? 64 : 56 : Platform.OS == 'ios' ? 64 : 56,
 			backgroundColor: '#6ecbe0'
 		},
-		tabBarVisible: navigation.state.params ? navigation.state.params.width > navigation.state.params.height ? false : true : true,
+		tabBarVisible: navigation.state.params ? navigation.state.params.width > navigation.state.params.height && navigation.state.params.keyboard == false ? false : true : true,
 		headerLeft: (
 			<ButtonIcons
 				onPress = { () => { navigation.navigate('DrawerOpen') }}
@@ -68,9 +69,14 @@ class SaleScreen extends React.Component {
 			total: 0.00,
 			customer: 1
 		},
-		search: '',
 		width: width,
-		height: height
+		height: height,
+
+		// search textbox
+		search: '',
+		// search value
+		searchValue: [],
+		searchVisible: false
 	}
 
 	_scanQR() {
@@ -369,17 +375,21 @@ class SaleScreen extends React.Component {
 	}
 
 	_search(text) {
-		this.setState({
-			search: text
-		})
+		const stateCopy = this.state
+		stateCopy.search = text
+		stateCopy.searchValue = []
+		this.setState(stateCopy)
 
 		for(var i in this.props.category) {
 			for(var j in this.props.category[i].product) {
-				if(this.props.category[i].product[j].name.toUpperCase().indexOf(this.state.search.toUpperCase()) > -1) {
-					console.log(this.props.category[i].product[j].name)
+				if(this.props.category[i].product[j].name.toUpperCase().indexOf(stateCopy.search.toUpperCase()) > -1) {
+					stateCopy.searchValue.push({ product: this.props.category[i].product[j], category: this.props.category[i] })
+					stateCopy.searchVisible = true
 				}
 			}
 		}
+
+		this.setState(stateCopy)
 	}
 
 	render() {
@@ -387,14 +397,14 @@ class SaleScreen extends React.Component {
 			<View
 				onLayout = { this._onLayout.bind(this) }
 				style = { styles.container }>
-				<View style = {{ flex: 1, flexDirection: this.state.width > this.state.height ? 'row' : 'column' }}>
+				<View style = {{ flex: 1, flexDirection: this.state.width > this.state.height && this.state.keyboard == false ? 'row' : 'column' }}>
 					<View style = {{ flex: 1 }}>
 						{/*
 						*
 						scan barcode
 						*
 						*/}
-						<View style = { styles.row }>
+						{/*<View style = { styles.row }>
 							<View style = {{ flex: 0.5 }}>
 								<Button
 									onPress = { this._scanQR.bind(this) }
@@ -407,7 +417,7 @@ class SaleScreen extends React.Component {
 									returnKeyType = 'search'
 									onChangeText = { (text) => this._search(text) }/>
 							</View>
-						</View>
+						</View>*/}
 
 						{/*
 						*
@@ -484,13 +494,13 @@ class SaleScreen extends React.Component {
 							</View>*/}
 						</ScrollView>
 
-						{this.width > this.height ?
+						{this.width > this.height && this.state.keyboard == false ?
 							<View style = {{ height: 65 }} />
 							:
 							null
 						}
 
-						{this.width > this.height ?
+						{this.width > this.height && this.state.keyboard == false ?
 							<View style = { styles.stickyBottom }>
 								<View style = { styles.row }>
 									<View style = {{ flex: 1, flexDirection: 'row' }}>
@@ -570,30 +580,47 @@ class SaleScreen extends React.Component {
 					{this.state.keyboard ?
 						null
 						:
-						<View style = {{ flex: 1, marginLeft:this.state.width > this.state.height ? 2 : 0 }}>
+						<View style = {{ flex: 1, marginLeft:this.state.width > this.state.height && this.state.keyboard == false ? 2 : 0 }}>
 							{/*
 							*
 							list inventory
 							*
 							*/}
-							{this.width > this.height ?
+							{this.width > this.height && this.state.keyboard == false ?
 								<View style = { styles.row }>
 									<View style = {{ flex: 2 }}>
 										<TextInput
 											ref = { (c) => this.__search = c }
 											returnKeyType = 'search'
-											onChangeText = { (text) => this._search(text) }/>
+											placeholder = 'Search'
+											value = {this.state.search}
+											onChangeText = { (text) => this._search(text) }
+											onSubmitEditing = { this._search.bind(this, this.state.search) }/>
 									</View>
 
 									<View style = {{ flex: 0.5 }}>
-										<Touchable
+										{this.state.searchValue.length == 0 ?
+											<ButtonIcons
+												onPress = { this._scanQR.bind(this) }
+												fontIcons = 'MaterialCommunityIcons'
+												name = 'barcode-scan'
+												size = { 25 }
+												color = 'grey'/>
+											:
+											<ButtonIcons
+												onPress = { () => this.setState({ searchVisible: false, searchValue: [], search: '' })}
+												name = 'md-close'
+												size = { 25 }
+												color = 'grey'/>
+										}
+										{/*<Touchable
 											style = {{ justifyContent: 'center', alignItems: 'center'}}
 											onPress = { this._search.bind(this, this.state.search) }>
 											<Ionicons
-												name = 'md-search'
+												name = 'barcode-scan'
 												size = { 25 }
 												color = 'grey'/>
-										</Touchable>
+										</Touchable>*/}
 										{/*<Button
 											onPress = { this._scanQR.bind(this) }
 											name = 'Scan' />*/}
@@ -602,80 +629,124 @@ class SaleScreen extends React.Component {
 								:
 								null
 							}
-							<ScrollView
-								style = {{ flex: 1 }}
-								refreshControl = { this._renderRefresh() }>
-								{this.props.category.map((content, index) => {
-									/*
-									*
-									list category
-									*
-									*/
-									return (
-										<View
-											key = { index }
-											style = {{ flex: 1 }}>
-											<View style = { styles.category }>
-												<Touchable
-													style = {{ height: 40, justifyContent: 'center' }}
-													onPress = { this._collapse.bind(this, index) }>
-													<View style = {{ flexDirection: 'row' }}>
-														<Text> {index + 1}. </Text>
 
-														<View style = {{ flexDirection: 'column' }}>
-															<Text> {content.name} </Text>
-														</View>
-													</View>
-												</Touchable>
-											</View>
-
-											{content.product.map((product, idx) => {
-												/*
-												*
-												list product
-												*
-												*/
+							{this.width > this.height && this.state.keyboard == false ?
+								this.state.searchVisible ?
+									<View style = {{ flex: 1 }}>
+										<ScrollView style = {{ flex: 1 }}>
+											{this.state.searchValue.map((content, index) => {
 												return (
 													<View
-														key = { idx }>
-														{this.state.view[index] ?
-															<View
-																style = {[ styles.category, { marginLeft: 10 }]}>
-																<Touchable
-																	onPress = { this._addSale.bind(this, content.idCategory, product) }>
-																	<View style = {{ flex: 1, flexDirection: 'row' }}>
-																		<Text> {idx + 1}. </Text>
+														key = { index }
+														style = { styles.category }>
+														<Touchable
+															onPress = { () => {
+																this._addSale(content.category.idCategory, content.product)
+																this.setState({ searchVisible: false }) 
+															}}>
+															<Text> {content.product.name} </Text>
+														</Touchable>
+													</View>
+												)
+											})
+											}
+										</ScrollView>
+										
+										{/*<View style = { styles.stickyBottom }>
+											<View style = {{ flex: 1 }} >
+												<View style = { styles.category }>
+													<Touchable
+														onPress = { () => this.setState({ searchVisible: false })}>
+														<Text> Cancel </Text>
+													</Touchable>
+												</View>
+											</View>
+										</View>*/}
+									</View>
+									:
+									null
+								:
+								null
+							}
 
-																		<View style = {{ flex: 1, flexDirection: 'column' }}>
-																			<View style = {{ flex: 1 }}>
-																				<Text> {product.name} </Text>
-																			</View>
+							{this.state.searchVisible ?
+								null
+								:
+								<ScrollView
+									style = {{ flex: 1 }}
+									refreshControl = { this._renderRefresh() }>
+									{this.props.category.map((content, index) => {
+										/*
+										*
+										list category
+										*
+										*/
+										return (
+											<View
+												key = { index }
+												style = {{ flex: 1 }}>
+												<View style = { styles.category }>
+													<Touchable
+														style = {{ height: 40, justifyContent: 'center' }}
+														onPress = { this._collapse.bind(this, index) }>
+														<View style = {{ flexDirection: 'row' }}>
+															<Text> {index + 1}. </Text>
 
-																			<View style = {{ flex: 1, flexDirection: 'row' }}>
+															<View style = {{ flexDirection: 'column' }}>
+																<Text> {content.name} </Text>
+															</View>
+														</View>
+													</Touchable>
+												</View>
+
+												{content.product.map((product, idx) => {
+													/*
+													*
+													list product
+													*
+													*/
+													return (
+														<View
+															key = { idx }>
+															{this.state.view[index] ?
+																<View
+																	style = {[ styles.category, { marginLeft: 10 }]}>
+																	<Touchable
+																		onPress = { this._addSale.bind(this, content.idCategory, product) }>
+																		<View style = {{ flex: 1, flexDirection: 'row' }}>
+																			<Text> {idx + 1}. </Text>
+
+																			<View style = {{ flex: 1, flexDirection: 'column' }}>
 																				<View style = {{ flex: 1 }}>
-																					<Text> Stok: {product.quantity} </Text>
+																					<Text> {product.name} </Text>
 																				</View>
 
-																				<View style = {{ flex: 1 }}>
-																					<Text> Harga: {rupiah(product.price)} </Text>
+																				<View style = {{ flex: 1, flexDirection: 'row' }}>
+																					<View style = {{ flex: 1 }}>
+																						<Text> Stok: {product.quantity} </Text>
+																					</View>
+
+																					<View style = {{ flex: 1 }}>
+																						<Text> Harga: {rupiah(product.price)} </Text>
+																					</View>
 																				</View>
 																			</View>
 																		</View>
-																	</View>
-																</Touchable>
-															</View>
-															:
-															null
-														}
-													</View>
-												)
-											})}
-										</View>
-									)
-								})}
-							</ScrollView>
+																	</Touchable>
+																</View>
+																:
+																null
+															}
+														</View>
+													)
+												})}
+											</View>
+										)
+									})}
+								</ScrollView>
+							}
 
-							{this.width > this.height ?
+							{this.width > this.height && this.state.keyboard == false ?
 								null
 								:
 								<View>
@@ -707,12 +778,12 @@ class SaleScreen extends React.Component {
 	}
 
 	_onLayout(evt) {
+		console.log(evt.nativeEvent.layout)
 		this.props.navigation.setParams({
 			width: evt.nativeEvent.layout.width,
-			height: evt.nativeEvent.layout.height
+			height: evt.nativeEvent.layout.height,
+			keyboard: this.state.keyboard
 		})
-
-		// this.props.dispatchLayout(evt)
 
 		this.width = evt.nativeEvent.layout.width
 		this.height = evt.nativeEvent.layout.height
@@ -756,7 +827,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	stickyBottom: {
-		alignItems: 'flex-end',
+		// alignItems: 'flex-end',
 		position: 'absolute',
 		left: 0,
 		right: 0,
@@ -776,7 +847,6 @@ const styles = StyleSheet.create({
 
 
 function mapStateToProps (state) {
-	console.log(state.nav)
 	return {
 		category: state.category.data,
 		refreshing: state.category.refreshing

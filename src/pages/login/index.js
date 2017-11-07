@@ -18,12 +18,12 @@ import {
 	login,
 	localStorageData,
 	localStorageSale
-} from '../redux/actions'
+} from '../../redux/actions'
 
 import {
 	Button,
 	MyModal
-} from '../components'
+} from '../../components'
 
 
 class LoginScreen extends React.Component {
@@ -87,7 +87,7 @@ class LoginScreen extends React.Component {
 	render() {
 		return(
 			<ScrollView
-				style = { styles.container }
+				style = {{ flex: 1, padding: 5, backgroundColor: 'white' }}
 				keyboardShouldPersistTaps = 'always'>
 				<MyModal
 					visible = { this.props.loginProcess }
@@ -105,7 +105,7 @@ class LoginScreen extends React.Component {
 							returnKeyType = 'next'
 							onChangeText = { (text) => this.setState({email: text }) }
 							onSubmitEditing = { () => this._password.focus() }
-							placeholder = 'email'
+							placeholder = 'Email'
 							value = {this.state.email}/>
 
 						<TextInput
@@ -114,15 +114,19 @@ class LoginScreen extends React.Component {
 							returnKeyType = 'done'
 							onChangeText = { (text) => this.setState({password: text }) }
 							onSubmitEditing = { this._login.bind(this) }
-							placeholder = 'password'
+							placeholder = 'Password'
 							value = {this.state.password}
 							secureTextEntry = {true}/>
 					</View>
 
-					<View style = { styles.content }>
+					<View style = {{ flex: 1 }}>
 						<Button
 							onPress = { this._login.bind(this) }
 							name = 'Login' />
+
+						<Button
+							onPress = { () => this.props.navigation.navigate('Register') }
+							name = 'Register' />
 					</View>
 				</View>
 			</ScrollView>
@@ -132,9 +136,7 @@ class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-		height: height / 2,
-		padding: 5,
-		backgroundColor: 'white'
+		height: (height / 2) - 10
 	},
 	content: {
 		flex: 1,

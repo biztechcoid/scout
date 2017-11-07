@@ -106,6 +106,8 @@ class InventoryScreen extends React.Component {
 		return(
 			<View style = { styles.container }>
 				<MyModal
+					top = {0.5}
+					left = {0.5}
 					visible = { this.state.modalVisible }
 					onRequestClose = { this._setModalVisible.bind(this, false) }>
 					<View style = {{ flex: 1, width: width - 20, height: height / 4, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
@@ -157,7 +159,7 @@ class InventoryScreen extends React.Component {
 								style = { styles.category }>
 								<Touchable
 									style = {{ justifyContent: 'center' }}
-									onPress = { () => this.props.navigation.navigate('Category', { index: index, content: content }) }>
+									onPress = { () => this.props.navigation.navigate('Product', { index: index, content: content }) }>
 									<View style = {{ flexDirection: 'row' }}>
 										<Text> {index + 1}. </Text>
 
@@ -213,9 +215,17 @@ class InventoryScreen extends React.Component {
 					null
 					:
 					<View style = { styles.stickyBottom }>
-						<Button
-							onPress = { this._setModalVisible.bind(this, true) }
-							name = 'Tambah Kategori'/>
+						<View style = {{ marginBottom: 5 }}>
+							<Button
+								onPress = { () => this.props.navigation.navigate('Ingredients') }
+								name = 'Manufacturing'/>
+						</View>
+
+						<View>
+							<Button
+								onPress = { this._setModalVisible.bind(this, true) }
+								name = 'Tambah Kategori'/>
+						</View>
 					</View>
 				}
 			</View>

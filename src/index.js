@@ -8,11 +8,15 @@ import {
 
 import SplashScreen from './pages/splash'
 import LoginScreen from './pages/login'
+import RegisterScreen from './pages/login/register'
+import CabangScreen from './pages/login/cabang'
 import HomeManagerScreen from './routes/homeManager'
 import HomeAdminScreen from './routes/homeAdmin'
 import HomeScreen from './routes/home'
 import ScanQRScreen from './pages/sale/scanQR'
-import CategoryScreen from './pages/inventory/product'
+import ProductScreen from './pages/inventory/product'
+import IngredientsScreen from './pages/inventory/ingredients'
+import BahanBakuScreen from './pages/inventory/bahanBaku'
 import SearchScreen from './pages/sale/search'
 
 
@@ -32,6 +36,26 @@ export const AppNavigator = StackNavigator({
 		screen: LoginScreen,
 		navigationOptions: {
 			header: null
+		}
+	},
+	Register: {
+		screen: RegisterScreen,
+		navigationOptions: {
+			// header: null,
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	Cabang: {
+		screen: CabangScreen,
+		navigationOptions: {
+			// header: null,
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
 		}
 	},
 	HomeManager: {
@@ -58,8 +82,28 @@ export const AppNavigator = StackNavigator({
 			header: null
 		}
 	},
-	Category: {
-		screen: CategoryScreen,
+	Product: {
+		screen: ProductScreen,
+		navigationOptions: {
+			// header: null
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	Ingredients: {
+		screen: IngredientsScreen,
+		navigationOptions: {
+			// header: null
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	BahanBaku: {
+		screen: BahanBakuScreen,
 		navigationOptions: {
 			// header: null
 			headerTintColor: 'white',

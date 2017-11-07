@@ -86,7 +86,19 @@ class SplashScreen extends React.Component {
 			if(resData == null) {
 				return true
 			} else {
-				this.props.dispatchLocalStorageData(JSON.parse(resData))
+				this.props.dispatchLocalStorageData({data: JSON.parse(resData)})
+			}
+		})
+
+		AsyncStorage.getItem('@Ingredients', (err, resData) => {
+			if(err) {
+				return state
+			}
+
+			if(resData == null) {
+				return true
+			} else {
+				this.props.dispatchLocalStorageData({ingredients: JSON.parse(resData)})
 			}
 		})
 
