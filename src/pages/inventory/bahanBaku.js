@@ -198,6 +198,7 @@ class BahanBakuScreen extends React.Component {
 				<MyModal
 					top = {0.5}
 					left = {0.5}
+					contentStyle = {{ flex: 3 }}
 					visible = { this.state.modalVisible }
 					onRequestClose = { this._setModalVisible.bind(this, false) }>
 					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>

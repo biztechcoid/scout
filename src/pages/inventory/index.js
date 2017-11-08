@@ -59,7 +59,7 @@ class InventoryScreen extends React.Component {
 			Alert.alert(null, 'nama category tidak valid')
 		} else {
 			var data = {
-				idCabang: profile.idCabang,
+				idCabang: this.props.profile.idCabang,
 				name: this.state.category
 			}
 			this._setModalVisible(false)

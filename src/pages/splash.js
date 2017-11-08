@@ -42,7 +42,9 @@ class SplashScreen extends React.Component {
 			@Data
 			*
 			*/
-			this.props.dispatchLocalStorageData({data: JSON.parse(res[1][1])})
+			if(JSON.parse(res[1][1]) !== null) {
+				this.props.dispatchLocalStorageData({data: JSON.parse(res[1][1])})
+			}
 			/**/
 
 			/*
@@ -50,7 +52,9 @@ class SplashScreen extends React.Component {
 			@Ingredients
 			*
 			*/
-			this.props.dispatchLocalStorageData({ingredients: JSON.parse(res[2][1])})
+			if(JSON.parse(res[2][1]) !== null) {
+				this.props.dispatchLocalStorageData({ingredients: JSON.parse(res[2][1])})
+			}
 			/**/
 
 			/*
@@ -58,7 +62,9 @@ class SplashScreen extends React.Component {
 			@Penjualan
 			*
 			*/
-			this.props.dispatchLocalStorageSale(JSON.parse(res[3][1]))
+			if(JSON.parse(res[3][1]) !== null) {
+				this.props.dispatchLocalStorageSale(JSON.parse(res[3][1]))
+			}
 			/**/
 
 			/*
@@ -66,7 +72,9 @@ class SplashScreen extends React.Component {
 			@Users
 			*
 			*/
-			this.props.dispatchLocalStorageUsers({users: JSON.parse(res[4][1])})
+			if(JSON.parse(res[4][1]) !== null) {
+				this.props.dispatchLocalStorageUsers({users: JSON.parse(res[4][1])})
+			}
 			/**/
 
 			/*
@@ -74,7 +82,9 @@ class SplashScreen extends React.Component {
 			@Cabang
 			*
 			*/
-			this.props.dispatchLocalStorageUsers({cabang: JSON.parse(res[5][1])})
+			if(JSON.parse(res[5][1]) !== null) {
+				this.props.dispatchLocalStorageUsers({cabang: JSON.parse(res[5][1])})
+			}
 			/**/
 
 			/*

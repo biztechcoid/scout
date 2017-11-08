@@ -31,9 +31,9 @@ user
 */
 
 const initialState = {
-	users: null,
-	cabang: null,
-	data: null,
+	users: [],
+	cabang: [],
+	data: [],
 	navigation: null,
 	process: false
 }
@@ -70,19 +70,12 @@ const UserReducers = (state = initialState, action) => {
 		}
 		*/
 		case 'REGISTER_USER':
-			if(state.users == null) {
-				state.users = []
-			} else {
-				for(var i in state.users) {
-					if(state.users[i].email.toUpperCase() == action.data.data.email.toUpperCase()) {
-						// user sudah terdaftar
-						Alert.alert(null, 'user ' + action.data.data.email + ' sudah terdaftar')
-						return state
-					}
+			for(var i in state.users) {
+				if(state.users[i].email.toUpperCase() == action.data.data.email.toUpperCase()) {
+					// user sudah terdaftar
+					Alert.alert(null, 'user ' + action.data.data.email + ' sudah terdaftar')
+					return state
 				}
-			}
-			if(state.cabang == null) {
-				state.cabang = []
 			}
 			const cabang = {
 				idCabang: makeId(),
