@@ -196,7 +196,6 @@ class ProductScreen extends React.Component {
 				price: Number(this.state.price),
 				quantity: Number(this.state.quantity)
 			}
-			console.log(data)
 			this._setSubProductModal(false)
 			this.props.dispatchAddSubProduct(data)
 			this.props.dispatchBarcodeProduct(null)

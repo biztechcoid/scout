@@ -3,6 +3,7 @@ import {
 	Alert,
 	Dimensions,
 	Keyboard,
+	ListView,
 	Platform,
 	RefreshControl,
 	ScrollView,
@@ -37,6 +38,8 @@ import {
 } from '../../modules'
 
 
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+
 class SaleScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
 		headerStyle: {
@@ -64,6 +67,7 @@ class SaleScreen extends React.Component {
 	state = {
 		keyboard: false,
 		view: [],
+		viewSubProduct: [],
 		sale: {
 			data: [],
 			total: 0.00,
@@ -104,6 +108,14 @@ class SaleScreen extends React.Component {
 		const stateCopy = this.state
 
 		stateCopy.view[index] = !stateCopy.view[index]
+
+		this.setState(stateCopy)
+	}
+
+	_collapseSubProduct(index) {
+		const stateCopy = this.state
+
+		stateCopy.viewSubProduct[index] = !stateCopy.viewSubProduct[index]
 
 		this.setState(stateCopy)
 	}
@@ -680,22 +692,22 @@ class SaleScreen extends React.Component {
 											<Text> tidak ada data </Text>
 										</View>
 										:
-										this.props.category.map((content, index) => {
-										/*
-										*
-										list category
-										*
-										*/
-										return (
-											<View
-												key = { index }
-												style = {{ flex: 1 }}>
+										<ListView
+											dataSource = {ds.cloneWithRows(this.props.category)}
+											enableEmptySections = {true}
+											renderRow = {(content, section, index) =>
+											/*
+											*
+											list category
+											*
+											*/
+											<View style = {{ flex: 1 }}>
 												<View style = { styles.category }>
 													<Touchable
 														style = {{ height: 40, justifyContent: 'center' }}
-														onPress = { this._collapse.bind(this, index) }>
+														onPress = { this._collapse.bind(this, Number(index)) }>
 														<View style = {{ flexDirection: 'row' }}>
-															<Text> {index + 1}. </Text>
+															<Text> {Number(index) + 1}. </Text>
 
 															<View style = {{ flexDirection: 'column' }}>
 																<Text> {content.name} </Text>
@@ -704,22 +716,22 @@ class SaleScreen extends React.Component {
 													</Touchable>
 												</View>
 
-												{content.product.map((product, idx) => {
+												{this.state.view[Number(index)] ?
 													/*
 													*
 													list product
 													*
 													*/
-													return (
-														<View
-															key = { idx }>
-															{this.state.view[index] ?
-																<View
-																	style = {[ styles.category, { marginLeft: 10 }]}>
+													<ListView
+														dataSource = {ds.cloneWithRows(content.product)}
+														enableEmptySections = {true}
+														renderRow = {(product, section, idx) =>
+															<View>
+																<View style = {[ styles.category, { flexDirection: 'row', marginLeft: 10 }]}>
 																	<Touchable
 																		onPress = { this._addSale.bind(this, content.idCategory, product) }>
 																		<View style = {{ flex: 1, flexDirection: 'row' }}>
-																			<Text> {idx + 1}. </Text>
+																			<Text> {Number(idx) + 1}. </Text>
 
 																			<View style = {{ flex: 1, flexDirection: 'column' }}>
 																				<View style = {{ flex: 1 }}>
@@ -738,16 +750,54 @@ class SaleScreen extends React.Component {
 																			</View>
 																		</View>
 																	</Touchable>
+
+																	<ButtonIcons
+																		onPress = { this._collapseSubProduct.bind(this, Number(index) + Number(idx)) }
+																		name = { this.state.viewSubProduct[Number(index) + Number(idx)] ? 'ios-arrow-up' : 'ios-arrow-down' }
+																		color = 'grey'
+																		size = { 20 }/>
 																</View>
-																:
-																null
-															}
-														</View>
-													)
-												})}
+
+																{this.state.viewSubProduct[Number(index) + Number(idx)] ?
+																	<ListView
+																		dataSource = {ds.cloneWithRows(product.subProduct)}
+																		enableEmptySections = {true}
+																		renderRow = {(subProduct, section, row) =>
+																		<View style = {[ styles.category, { marginLeft: 20 }]}>
+																			<Touchable
+																				onPress = { this._addSale.bind(this, content.idCategory, subProduct) }>
+																				<View style = {{ flex: 1, flexDirection: 'row' }}>
+																					<Text> {Number(row) + 1}. </Text>
+
+																					<View style = {{ flex: 1, flexDirection: 'column' }}>
+																						<View style = {{ flex: 1 }}>
+																							<Text> {subProduct.name} </Text>
+																						</View>
+
+																						<View style = {{ flex: 1, flexDirection: 'row' }}>
+																							<View style = {{ flex: 1 }}>
+																								<Text> Stok: {subProduct.quantity} </Text>
+																							</View>
+
+																							<View style = {{ flex: 1 }}>
+																								<Text> Harga: {rupiah(subProduct.price)} </Text>
+																							</View>
+																						</View>
+																					</View>
+																				</View>
+																			</Touchable>
+																		</View>
+																	}/>
+																	:
+																	null
+																}
+															</View>
+													}/>
+													:
+													null
+												}
 											</View>
-										)
-										})
+										}/>
 									}
 								</ScrollView>
 							}
@@ -759,11 +809,6 @@ class SaleScreen extends React.Component {
 									<View style = {{height: 45 }}/>
 
 									<View style = { styles.stickyBottom }>
-										{/*<TouchableOpacity
-											activeOpacity = {0.8}
-											onPress = { this._orientation.bind(thid) }
-											style = {{ width: 60, height: 60, borderRadius: Platform.OS == 'ios' ? 30 : 60, margin: 10, backgroundColor: '#1e8da5', borderWidth: 0.5, borderColor: '#ccc' }} />*/}
-
 										<View style = { styles.row }>
 											<Button
 												onPress = { this._clear.bind(this) }
@@ -832,14 +877,12 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	stickyBottom: {
-		// alignItems: 'flex-end',
 		position: 'absolute',
 		left: 0,
 		right: 0,
 		bottom: 0
 	},
 	category: {
-		flex: 1,
 		padding: 5,
 		marginTop: 2.5,
 		marginBottom: 2.5,
@@ -860,7 +903,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
 	return {
-		// dispatchLayout: (data) => dispatch(layout(data)),
 		dispatchRefreshing: (data) => dispatch(refreshing(data)),
 		dispatchUpdateStock: (data) => dispatch(updateStock(data)),
 		dispatchPenjualan: (data) => dispatch(penjualan(data))
