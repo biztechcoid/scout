@@ -50,7 +50,7 @@ class SideMenuScreen extends React.Component {
 				<View style = {{ height: 40, borderWidth: 0.5, borderColor: '#ccc' }}>
 					<Touchable
 						style = {{ justifyContent: 'center' }}
-						onPress = { () => { }}>
+						onPress = { () => this.props.screenProps.navigate('Register', {type: 'Tambah User'}) }>
 						<Text> Tambah User </Text>
 					</Touchable>
 				</View>

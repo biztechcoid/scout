@@ -1,6 +1,7 @@
 import React from 'react'
 import {
 	Alert,
+	Picker,
 	ScrollView,
 	Text,
 	TextInput,
@@ -19,7 +20,7 @@ import {
 
 class RegisterScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
-		title: 'Register'
+		title: navigation.state.params.type
 	})
 
 	state = {
@@ -27,7 +28,11 @@ class RegisterScreen extends React.Component {
 		email: null,
 		phone: null,
 		password: null,
-		confirmPassword: null
+		confirmPassword: null,
+
+		cabang: null,
+		namaCabang: null,
+		ket: null
 	}
 
 	_register() {
@@ -49,6 +54,27 @@ class RegisterScreen extends React.Component {
 				Alert.alert(null, 'ulangi password')
 			}
 		}
+	}
+
+	_chooseCabang(value) {
+		const stateCopy = this.state
+
+		if(value === 'addCabang' || value === null) {
+			stateCopy.cabang = value
+		} else {
+			for(var i in this.props.cabang) {
+				if(this.props.cabang[i].idCabang === value) {
+					stateCopy.cabang = value
+					stateCopy.namaCabang = this.props.cabang[i].name
+					stateCopy.ket = this.props.cabang[i].ket
+				}
+			}
+		}
+		this.setState(stateCopy)
+	}
+
+	_addUser() {
+
 	}
 
 	render() {
@@ -78,6 +104,39 @@ class RegisterScreen extends React.Component {
 							<View style = {{ height: 45, justifyContent: 'center' }}>
 								<Text> Ulangi Password </Text>
 							</View>
+
+							{this.props.navigation.state.params.type === 'Register' ?
+								null
+								:
+								<View style = {{ height: 45, justifyContent: 'center' }}>
+									<Text> Cabang </Text>
+								</View>
+							}
+
+							{this.state.cabang === 'addCabang' ?
+								<View>
+									<View style = {{ height: 45, justifyContent: 'center' }}>
+										<Text> Nama Cabang </Text>
+									</View>
+
+									<View style = {{ height: 45, justifyContent: 'center' }}>
+										<Text> Keterangan </Text>
+									</View>
+								</View>
+								:
+								this.state.cabang === null ?
+									null
+									:
+									<View>
+										<View style = {{ height: 45, justifyContent: 'center' }}>
+											<Text> Nama Cabang </Text>
+										</View>
+
+										<View style = {{ height: 45, justifyContent: 'center' }}>
+											<Text> Keterangan </Text>
+										</View>
+									</View>
+							}
 						</View>
 
 						<View style = {{ flex: 1, flexDirection: 'column' }}>
@@ -158,7 +217,7 @@ class RegisterScreen extends React.Component {
 									ref = { (c) => this._confirmPassword = c }
 									autoCapitalize = 'none'
 									// keyboardType = 'email-address'
-									returnKeyType = 'next'
+									returnKeyType = 'done'
 									onChangeText = { (text) => this.setState({confirmPassword: text }) }
 									onSubmitEditing = { this._register.bind(this) }
 									placeholder = 'Ulangi Password'
@@ -166,14 +225,94 @@ class RegisterScreen extends React.Component {
 									style = {{ flex: 1, height: 45 }}
 									value = {this.state.confirmPassword}/>
 							</View>
+
+							{this.props.navigation.state.params.type === 'Register' ?
+								null
+								:
+								<View style = {{ flexDirection: 'row' }}>
+									<View style = {{ justifyContent: 'center' }}>
+										<Text> : </Text>
+									</View>
+
+									<Picker
+										style = {{ flex: 1, height: 45 }}
+										selectedValue={this.state.cabang}
+										onValueChange={(itemValue, itemIndex) => this._chooseCabang(itemValue, itemIndex) }>
+										<Picker.Item label = '-- Pilih Cabang --' value = {null} />
+										{this.props.cabang.map((cabang, index) =>
+											<Picker.Item key = {index} label = {cabang.name} value = {cabang.idCabang} />
+											)}
+										<Picker.Item label = 'Tambah Cabang' value = 'addCabang' />
+									</Picker>
+								</View>
+							}
+
+							{this.state.cabang === 'addCabang' ?
+								<View>
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ justifyContent: 'center' }}>
+											<Text> : </Text>
+										</View>
+
+										<TextInput
+											ref = { (c) => this._cabang = c }
+											autoCapitalize = 'none'
+											// keyboardType = 'email-address'
+											returnKeyType = 'next'
+											onChangeText = { (text) => this.setState({namaCabang: text }) }
+											onSubmitEditing = { () => this._keterangan.focus() }
+											placeholder = 'Nama Cabang'
+											secureTextEntry = {true}
+											style = {{ flex: 1, height: 45 }}
+											value = {this.state.confirmPassword}/>
+									</View>
+
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ justifyContent: 'center' }}>
+											<Text> : </Text>
+										</View>
+
+										<TextInput
+											ref = { (c) => this._keterangan = c }
+											autoCapitalize = 'none'
+											// keyboardType = 'email-address'
+											returnKeyType = 'next'
+											onChangeText = { (text) => this.setState({ket: text }) }
+											onSubmitEditing = { this._addUser.bind(this) }
+											placeholder = 'Keterangan'
+											secureTextEntry = {true}
+											style = {{ flex: 1, height: 45 }}
+											value = {this.state.confirmPassword}/>
+									</View>
+								</View>
+								:
+								this.state.cabang === null ?
+									null
+									:
+									<View>
+										<View style = {{ flex: 1, height: 45, justifyContent: 'center' }}>
+											<Text> : {this.state.namaCabang} </Text>
+										</View>
+
+										<View style = {{ flex: 1, height: 45, justifyContent: 'center' }}>
+											<Text> : {this.state.ket} </Text>
+										</View>
+									</View>
+							}
 						</View>
 					</View>
 				</View>
 
 				<View style = {{ marginTop: 10 }}>
-					<Button
-						onPress = { this._register.bind(this) }
-						name = 'Register' />
+					{this.props.navigation.state.params.type === 'Register' ?
+						<Button
+							onPress = { this._register.bind(this) }
+							name = 'Register' />
+						:
+						<Button
+							onPress = { this._addUser.bind(this) }
+							name = 'Tambah User' />
+					}
 				</View>
 			</ScrollView>
 		)
@@ -182,6 +321,7 @@ class RegisterScreen extends React.Component {
 
 function mapStateToProps (state) {
 	return {
+		cabang: state.user.cabang
 	}
 }
 

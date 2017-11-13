@@ -125,7 +125,7 @@ class LoginScreen extends React.Component {
 							name = 'Login' />
 
 						<Button
-							onPress = { () => this.props.navigation.navigate('Register') }
+							onPress = { () => this.props.navigation.navigate('Register', {type: 'Register'}) }
 							name = 'Register' />
 					</View>
 				</View>

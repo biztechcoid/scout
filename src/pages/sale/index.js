@@ -37,8 +37,8 @@ import {
 	rupiah
 } from '../../modules'
 
-
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+
 
 class SaleScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
@@ -79,6 +79,7 @@ class SaleScreen extends React.Component {
 		// search textbox
 		search: '',
 		// search value
+
 		searchValue: [],
 		searchVisible: false
 	}
@@ -120,7 +121,7 @@ class SaleScreen extends React.Component {
 		this.setState(stateCopy)
 	}
 
-	_addSale(idCategory, product) {
+	_addSale(idCategory, product, subProduct) {
 		for(var i in this.props.category) {
 			if(this.props.category[i].idCategory === idCategory) {
 				for(var j in this.props.category[i].product) {
@@ -247,6 +248,58 @@ class SaleScreen extends React.Component {
 			}
 		}
 		this._scrollSell.scrollToEnd({animated: true})
+	}
+
+	_addSaleSubProduct(idCategory, idProduct, subProduct) {
+		const stateCopy = this.state
+		if(stateCopy.sale.data.length === 0) {
+			return Alert.alert(null, 'silahkan pilih product terlebih dahulu')
+		} else {
+			for(var i in stateCopy.sale.data) {
+				if(stateCopy.sale.data[i].idCategory === idCategory) {
+					if(stateCopy.sale.data[i].idProduct === idProduct) {
+						if(stateCopy.sale.data[i].idSubProduct === subProduct.idSubProduct) {
+							/*
+							*
+							sub product sudah ada
+							*
+							*/
+							return Alert.alert(null, subProduct.name + ' sudah ada di pembelian')
+						} else {
+							var data = {
+								idCategory: idCategory,
+								idProduct: idProduct,
+								idSubProduct: subProduct.idSubProduct,
+								name: subProduct.name,
+								price: subProduct.price,
+								cost: subProduct.cost,
+								quantity: 1,
+								disc: 0,
+								subTotal: (1 * subProduct.price) - ((1 * subProduct.price) * (0 / 100))
+							}
+						}
+					} else {
+						return Alert.alert(null, 'silahkan pilih product terlebih dahulu')
+					}
+				} else {
+					return Alert.alert(null, 'silahkan pilih product terlebih dahulu')
+				}
+			}
+			/*
+			*
+			sum total
+			*
+			*/
+			var total = 0
+			for(var j in stateCopy.sale.data) {
+				total += stateCopy.sale.data[j].subTotal
+			}
+
+			stateCopy.sale.total = total + data.subTotal
+			stateCopy.sale.data.splice(i + 1, 0, data)
+
+			this.setState(stateCopy)
+		}
 	}
 
 	// _removeSale(product) {
@@ -440,11 +493,11 @@ class SaleScreen extends React.Component {
 							ref = { (c) => this._scrollSell = c }
 							keyboardShouldPersistTaps = 'always'
 							style = {{ flex: 1, marginTop: 3 }}>
-							{this.state.sale.data.map((content, index) => {
-								return (
-									<View
-										key = { index }
-										style = {{ flex: 1, flexDirection: 'column', borderWidth: 0.5, borderColor: 'transparent', backgroundColor: index%2 == 0 ? '#ccc' : 'white' }}>
+							<ListView
+								dataSource = {ds.cloneWithRows(this.state.sale.data)}
+								enableEmptySections = {true}
+								renderRow = {(content, section, index) =>
+									<View style = {{ flex: 1, flexDirection: 'column', borderWidth: 0.5, borderColor: 'transparent', backgroundColor: Number(index)%2 == 0 ? '#ccc' : 'white' }}>
 										<View
 											style = {{ flex: 1 }}>
 											<View style = {{ flex: 1 }}>
@@ -458,7 +511,7 @@ class SaleScreen extends React.Component {
 														keyboardType = 'numeric'
 														returnKeyType = 'done'
 														underlineColorAndroid = 'transparent'
-														onChangeText = { (text) => this._editQuantity(index, content, text) }
+														onChangeText = { (text) => this._editQuantity(Number(index), content, text) }
 														onEndEditing = { this._updatePrice.bind(this) }
 														onSubmitEditing = { this._updatePrice.bind(this) }
 														style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderWidth: 0.5 }}
@@ -476,7 +529,7 @@ class SaleScreen extends React.Component {
 															keyboardType = 'numeric'
 															returnKeyType = 'done'
 															underlineColorAndroid = 'transparent'
-															onChangeText = { (text) => this._editDisc(index, content, text) }
+															onChangeText = { (text) => this._editDisc(Number(index), content, text) }
 															onEndEditing = { this._updatePrice.bind(this) }
 															onSubmitEditing = { this._updatePrice.bind(this) }
 															style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderWidth: 0.5 }}
@@ -494,8 +547,7 @@ class SaleScreen extends React.Component {
 											</View>
 										</View>
 									</View>
-								)
-							})}
+							}/>
 
 							{/*<View style = {{ flex: 1, height: 50, flexDirection: 'column', borderWidth: 0.5, borderColor: 'transparent', backgroundColor: this.state.sale.data.length%2 == 0 ? '#ccc' : 'white' }}>
 								<Touchable
@@ -646,22 +698,21 @@ class SaleScreen extends React.Component {
 								this.state.searchVisible ?
 									<View style = {{ flex: 1 }}>
 										<ScrollView style = {{ flex: 1 }}>
-											{this.state.searchValue.map((content, index) => {
-												return (
-													<View
-														key = { index }
-														style = { styles.category }>
-														<Touchable
-															onPress = { () => {
-																this._addSale(content.category.idCategory, content.product)
-																this.setState({ searchVisible: false }) 
-															}}>
-															<Text> {content.product.name} </Text>
-														</Touchable>
-													</View>
-												)
-											})
-											}
+
+											<ListView
+												dataSource = {ds.cloneWithRows(this.state.searchValue)}
+												enableEmptySections = {true}
+												renderRow = {(content, section, index) =>
+												<View style = { styles.category }>
+													<Touchable
+														onPress = { () => {
+															this._addSale(content.category.idCategory, content.product)
+															this.setState({ searchVisible: false }) 
+														}}>
+														<Text> {content.product.name} </Text>
+													</Touchable>
+												</View>
+											}/>
 										</ScrollView>
 										
 										{/*<View style = { styles.stickyBottom }>
@@ -759,13 +810,18 @@ class SaleScreen extends React.Component {
 																</View>
 
 																{this.state.viewSubProduct[Number(index) + Number(idx)] ?
+																	/*
+																	*
+																	list sub product
+																	*
+																	*/
 																	<ListView
 																		dataSource = {ds.cloneWithRows(product.subProduct)}
 																		enableEmptySections = {true}
 																		renderRow = {(subProduct, section, row) =>
 																		<View style = {[ styles.category, { marginLeft: 20 }]}>
 																			<Touchable
-																				onPress = { this._addSale.bind(this, content.idCategory, subProduct) }>
+																				onPress = { this._addSaleSubProduct.bind(this, content.idCategory, product.idProduct, subProduct) }>
 																				<View style = {{ flex: 1, flexDirection: 'row' }}>
 																					<Text> {Number(row) + 1}. </Text>
 

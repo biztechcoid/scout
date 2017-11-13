@@ -1,13 +1,14 @@
 import React from 'react'
 import {
 	Dimensions,
-	View,
-	RefreshControl,
+	ListView,
 	Picker,
+	RefreshControl,
 	ScrollView,
 	StyleSheet,
 	Text,
-	TextInput
+	TextInput,
+	View
 } from 'react-native'
 const { width, height } = Dimensions.get('window')
 
@@ -31,6 +32,9 @@ import {
 const first = new Date().getDate() - new Date().getDay()
 const total = 0
 const customer = 0
+const no = 0
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+
 
 class ReportScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
@@ -77,6 +81,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 
 			case 'weekly':
@@ -85,6 +90,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 
 			case 'monthly':
@@ -93,6 +99,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 
 			case 'yearly':
@@ -101,6 +108,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 		}
 	}
@@ -113,6 +121,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 
 			case 'weekly':
@@ -121,6 +130,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 
 			case 'monthly':
@@ -129,6 +139,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 
 			case 'yearly':
@@ -137,6 +148,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 		}
 	}
@@ -150,6 +162,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 
 			case 'weekly':
@@ -159,6 +172,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 
 			case 'monthly':
@@ -168,6 +182,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 
 			case 'yearly':
@@ -177,6 +192,7 @@ class ReportScreen extends React.Component {
 				})
 				total = 0
 				customer = 0
+				no = 0
 				break
 		}
 	}
@@ -190,11 +206,15 @@ class ReportScreen extends React.Component {
 	}
 
 	_renderValue(content, index) {
+		total = 0
+		customer = 0
+		no = 0
 		switch(this.state.value) {
 			case 'daily':
 				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() == new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate()).getTime()) {
 					total +=content.total
 					customer +=content.customer
+					no += 1
 					return true
 				} else {
 					return false
@@ -205,6 +225,7 @@ class ReportScreen extends React.Component {
 				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() >= new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate()).getTime() && new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() <= new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate() + 6).getTime()) {
 					total +=content.total
 					customer +=content.customer
+					no += 1
 					return true
 				} else {
 					return false
@@ -215,6 +236,7 @@ class ReportScreen extends React.Component {
 				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth()).getTime() == new Date(this.state.date.getFullYear(), this.state.date.getMonth()).getTime()) {
 					total +=content.total
 					customer +=content.customer
+					no += 1
 					return true
 				} else {
 					return false
@@ -225,6 +247,7 @@ class ReportScreen extends React.Component {
 				if(new Date(new Date(content.date).getFullYear()).getTime() == new Date(this.state.date.getFullYear()).getTime()) {
 					total +=content.total
 					customer +=content.customer
+					no += 1
 					return true
 				} else {
 					return false
@@ -234,7 +257,6 @@ class ReportScreen extends React.Component {
 	}
 
 	render() {
-		var no = 0
 		return(
 			<View style = { styles.container }>
 				<View style = { styles.row }>
@@ -288,17 +310,17 @@ class ReportScreen extends React.Component {
 							<Text> tidak ada data </Text>
 						</View>
 						:
-						this.props.sale.map((content, index) => {
-						no = no + 1
-						return (
-							<View key = { index }>
-								{this._renderValue(content, index) ?
+						<ListView
+							dataSource = {ds.cloneWithRows(this.props.sale)}
+							enableEmptySections = {true}
+							renderRow = {(content, section, index) => 
+							<View>
+								{this._renderValue(content, Number(index)) ?
 									<View style = {{ flex: 1, flexDirection: 'column' }}>
-										<View
-											style = { styles.category }>
+										<View style = { styles.category }>
 											<Touchable
 												style = {{ flexDirection: 'row' }}
-												onPress = { this._collapse.bind(this, index) }>
+												onPress = { this._collapse.bind(this, Number(index)) }>
 												<View style = {{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
 													<Text> {no}. </Text>
 													<Text> {ddmmyyyy(content.date)} {new Date(content.date).getHours()}:{new Date(content.date).getMinutes()}:{new Date(content.date).getSeconds()} </Text>
@@ -310,15 +332,17 @@ class ReportScreen extends React.Component {
 											</Touchable>
 										</View>
 
-										{content.data == undefined ? null : content.data.map((product, idx) => {
-											return (
-												<View key = { idx }>
-													{this.state.view[index] ?
+										{content.data == undefined ? null : <ListView
+											dataSource = {ds.cloneWithRows(content.data)}
+											enableEmptySections = {true}
+											renderRow = {(product, section, idx) =>
+												<View>
+													{this.state.view[Number(index)] ?
 														<View
 															style = {[ styles.category, { marginLeft: 10 }]}>
 															<View style = {{ flexDirection: 'row' }}>
 																<View>
-																	<Text> {idx + 1}. </Text>
+																	<Text> {Number(idx) + 1}. </Text>
 																</View>
 
 																<View>
@@ -340,15 +364,13 @@ class ReportScreen extends React.Component {
 														null
 													}
 												</View>
-											)
-										})}
+										}/>}
 									</View>
 									:
 									null
 								}
 							</View>
-						)
-						})
+						}/>
 					}
 				</ScrollView>
 
@@ -408,7 +430,7 @@ const styles = StyleSheet.create({
 		bottom: 5
 	},
 	category: {
-		flex: 1,
+		// flex: 1,
 		padding: 5,
 		marginTop: 2.5,
 		marginBottom: 2.5,
