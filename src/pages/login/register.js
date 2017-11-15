@@ -10,7 +10,8 @@ import {
 
 import { connect } from 'react-redux'
 import {
-	registerUser
+	registerUser,
+	addUser
 } from '../../redux/actions'
 
 import {
@@ -31,6 +32,7 @@ class RegisterScreen extends React.Component {
 		confirmPassword: null,
 
 		cabang: null,
+		pusat: null,
 		namaCabang: null,
 		ket: null
 	}
@@ -61,12 +63,30 @@ class RegisterScreen extends React.Component {
 
 		if(value === 'addCabang' || value === null) {
 			stateCopy.cabang = value
+			stateCopy.namaCabang = null
+			stateCopy.ket = null
 		} else {
-			for(var i in this.props.cabang) {
-				if(this.props.cabang[i].idCabang === value) {
+			for(var i in this.props.store) {
+				if(this.props.store[i].idPusat === value) {
 					stateCopy.cabang = value
-					stateCopy.namaCabang = this.props.cabang[i].name
-					stateCopy.ket = this.props.cabang[i].ket
+					stateCopy.namaCabang = this.props.store[i].name
+					stateCopy.ket = this.props.store[i].ket
+				}
+			}
+		}
+		this.setState(stateCopy)
+	}
+
+	_choosePusat(value) {
+		const stateCopy = this.state
+
+		if(value === 'addPusat' || value === null) {
+			stateCopy.pusat = value
+		} else {
+			for(var i in this.props.store) {
+				if(this.props.store[i].idPusat === value) {
+					stateCopy.pusat = value
+					stateCopy.idPusat = this.props.store[i].idPusat
 				}
 			}
 		}
@@ -74,7 +94,27 @@ class RegisterScreen extends React.Component {
 	}
 
 	_addUser() {
+		const stateCopy = this.state
 
+		if(stateCopy.name == '' || stateCopy.name == null) {
+			Alert.alert(null, 'nama tidak valid')
+		} else if(stateCopy.email == '' || stateCopy.email == null) {
+			Alert.alert(null, 'email tidak valid')
+		} else if(stateCopy.phone == '' || stateCopy.phone == null) {
+			Alert.alert(null, 'telepon tidak valid')
+		} else if(stateCopy.password == '' || stateCopy.password == null) {
+			Alert.alert(null, 'password tidak valid')
+		} else {
+			if(stateCopy.password === stateCopy.confirmPassword) {
+				if(stateCopy.cabang === null) {
+					Alert.alert(null, 'cabang tidak valid')
+				} else {
+					this.props.dispatchAddUser(stateCopy)
+				}
+			} else {
+				Alert.alert(null, 'ulangi password')
+			}
+		}
 	}
 
 	render() {
@@ -116,7 +156,11 @@ class RegisterScreen extends React.Component {
 							{this.state.cabang === 'addCabang' ?
 								<View>
 									<View style = {{ height: 45, justifyContent: 'center' }}>
-										<Text> Nama Cabang </Text>
+										<Text> Pusat </Text>
+									</View>
+
+									<View style = {{ height: 45, justifyContent: 'center' }}>
+										<Text> Nama </Text>
 									</View>
 
 									<View style = {{ height: 45, justifyContent: 'center' }}>
@@ -129,7 +173,7 @@ class RegisterScreen extends React.Component {
 									:
 									<View>
 										<View style = {{ height: 45, justifyContent: 'center' }}>
-											<Text> Nama Cabang </Text>
+											<Text> Nama </Text>
 										</View>
 
 										<View style = {{ height: 45, justifyContent: 'center' }}>
@@ -147,7 +191,6 @@ class RegisterScreen extends React.Component {
 
 								<TextInput
 									autoCapitalize = 'words'
-									// keyboardType = 'email-address'
 									returnKeyType = 'next'
 									onChangeText = { (text) => this.setState({name: text }) }
 									onSubmitEditing = { () => this._email.focus() }
@@ -198,7 +241,6 @@ class RegisterScreen extends React.Component {
 								<TextInput
 									ref = { (c) => this._password = c }
 									autoCapitalize = 'none'
-									// keyboardType = 'email-address'
 									returnKeyType = 'next'
 									onChangeText = { (text) => this.setState({password: text }) }
 									onSubmitEditing = { () => this._confirmPassword.focus() }
@@ -216,10 +258,9 @@ class RegisterScreen extends React.Component {
 								<TextInput
 									ref = { (c) => this._confirmPassword = c }
 									autoCapitalize = 'none'
-									// keyboardType = 'email-address'
 									returnKeyType = 'done'
 									onChangeText = { (text) => this.setState({confirmPassword: text }) }
-									onSubmitEditing = { this._register.bind(this) }
+									onSubmitEditing = { this.props.navigation.state.params.type === 'Register' ? this._register.bind(this) : this._addUser.bind(this) }
 									placeholder = 'Ulangi Password'
 									secureTextEntry = {true}
 									style = {{ flex: 1, height: 45 }}
@@ -239,8 +280,8 @@ class RegisterScreen extends React.Component {
 										selectedValue={this.state.cabang}
 										onValueChange={(itemValue, itemIndex) => this._chooseCabang(itemValue, itemIndex) }>
 										<Picker.Item label = '-- Pilih Cabang --' value = {null} />
-										{this.props.cabang.map((cabang, index) =>
-											<Picker.Item key = {index} label = {cabang.name} value = {cabang.idCabang} />
+										{this.props.store.map((store, index) =>
+											<Picker.Item key = {index} label = {store.name} value = {store.idPusat} />
 											)}
 										<Picker.Item label = 'Tambah Cabang' value = 'addCabang' />
 									</Picker>
@@ -254,17 +295,32 @@ class RegisterScreen extends React.Component {
 											<Text> : </Text>
 										</View>
 
+										<Picker
+											style = {{ flex: 1, height: 45 }}
+											selectedValue={this.state.pusat}
+											onValueChange={(itemValue, itemIndex) => this._choosePusat(itemValue, itemIndex) }>
+											<Picker.Item label = '-- Pilih Pusat --' value = {null} />
+											{this.props.store.map((store, index) =>
+												<Picker.Item key = {index} label = {store.name} value = {store.idPusat} />
+												)}
+											<Picker.Item label = 'Tambah Pusat' value = 'addPusat' />
+										</Picker>
+									</View>
+
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ justifyContent: 'center' }}>
+											<Text> : </Text>
+										</View>
+
 										<TextInput
 											ref = { (c) => this._cabang = c }
-											autoCapitalize = 'none'
-											// keyboardType = 'email-address'
+											autoCapitalize = 'words'
 											returnKeyType = 'next'
 											onChangeText = { (text) => this.setState({namaCabang: text }) }
 											onSubmitEditing = { () => this._keterangan.focus() }
-											placeholder = 'Nama Cabang'
-											secureTextEntry = {true}
+											placeholder = 'Nama'
 											style = {{ flex: 1, height: 45 }}
-											value = {this.state.confirmPassword}/>
+											value = {this.state.namaCabang}/>
 									</View>
 
 									<View style = {{ flexDirection: 'row' }}>
@@ -275,14 +331,12 @@ class RegisterScreen extends React.Component {
 										<TextInput
 											ref = { (c) => this._keterangan = c }
 											autoCapitalize = 'none'
-											// keyboardType = 'email-address'
-											returnKeyType = 'next'
+											returnKeyType = 'done'
 											onChangeText = { (text) => this.setState({ket: text }) }
 											onSubmitEditing = { this._addUser.bind(this) }
 											placeholder = 'Keterangan'
-											secureTextEntry = {true}
 											style = {{ flex: 1, height: 45 }}
-											value = {this.state.confirmPassword}/>
+											value = {this.state.ket}/>
 									</View>
 								</View>
 								:
@@ -321,13 +375,14 @@ class RegisterScreen extends React.Component {
 
 function mapStateToProps (state) {
 	return {
-		cabang: state.user.cabang
+		store: state.user.store
 	}
 }
 
 function mapDispatchToProps (dispatch) {
 	return {
-		dispatchRegisterUser: (data) => dispatch(registerUser(data))
+		dispatchRegisterUser: (data) => dispatch(registerUser(data)),
+		dispatchAddUser: (data) => dispatch(addUser(data))
 	}
 }
 

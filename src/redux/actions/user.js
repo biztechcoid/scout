@@ -13,6 +13,12 @@ export function registerUser(data) {
 		data
 	}
 }
+export function addUser(data) {
+	return {
+		type: 'ADD_USER',
+		data
+	}
+}
 export function loginProcess(data) {
 	return {
 		type: 'LOGIN_PROCESS',

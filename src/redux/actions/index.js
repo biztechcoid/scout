@@ -6,6 +6,7 @@ user
 *
 */
 exports.registerUser = require('./user').registerUser
+exports.addUser = require('./user').addUser
 exports.loginProcess = require('./user').loginProcess
 exports.login = require('./user').login
 exports.logout = require('./user').logout
