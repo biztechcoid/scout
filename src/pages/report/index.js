@@ -393,13 +393,13 @@ class ReportScreen extends React.Component {
 								<Text> Total Transaksi </Text>
 							</View>
 
-							<View style = {{ flex: 1, alignItems: 'flex-end' }}>
+							<View style = {{ flex: 0.5, alignItems: 'flex-end' }}>
 								<Text> {no} </Text>
 							</View>	
 						</View>
 					</View>
 
-					<View style = {{ flex: 1, flexDirection: 'row', backgroundColor: '#ccc' }}>
+					<View style = {{ flex: 1, flexDirection: 'row', borderBottomWidth:0.5,borderColor:'#ededed' }}>
 						<View style = {{ flex: 1 }}>
 							<Text> Total </Text>
 						</View>
@@ -436,8 +436,8 @@ const styles = StyleSheet.create({
 		marginBottom: 2.5,
 		borderRadius: 5,
 		borderWidth: 0.5,
-		borderColor: 'darkgrey',
-		backgroundColor: '#ccc'
+		borderColor: '#e4e5e5',
+		backgroundColor: '#f2f2f2'
 	}
 })
 

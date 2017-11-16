@@ -8,7 +8,8 @@ import {
 	TextInput,
 	View,
 	ScrollView,
-	StyleSheet
+	StyleSheet,
+	Image
 } from 'react-native'
 const { width, height } = Dimensions.get('window')
 
@@ -34,7 +35,7 @@ class LoginScreen extends React.Component {
 
 	_login() {
 		if(this.state.email == '' || this.state.password == '' || this.state.email == null || this.state.password == null) {
-			Alert.alert(null, 'email atau password tidak valid')
+			Alert.alert(null, 'Email atau password tidak valid')
 		} else {
 			this._loginProcess(true)
 			
@@ -86,8 +87,8 @@ class LoginScreen extends React.Component {
 
 	render() {
 		return(
-			<ScrollView
-				style = {{ flex: 1, padding: 5, backgroundColor: 'white' }}
+			<View
+				style = {{ flex: 1, padding: 5, backgroundColor: '#353535' }}
 				keyboardShouldPersistTaps = 'always'>
 				<MyModal
 					visible = { this.props.loginProcess }
@@ -95,22 +96,30 @@ class LoginScreen extends React.Component {
 					<ActivityIndicator size = 'large' color= '#6ecbe0' />
 				</MyModal>
 
-				<View style = { styles.container }/>
+				<View style = { styles.containerlogo }>
+				    <View style = { styles.logo }>
+                        <Image style = { styles.logoimg } source={require('./img/logo-500px.png')} />
+				    </View>
+				</View>
 
 				<View style = { styles.container }>
 					<View style = { styles.content }>
-						<TextInput
+						<TextInput style = { styles.txt }
 							autoCapitalize = 'none'
 							keyboardType = 'email-address'
+							placeholderTextColor = '#919191'
+							underlineColorAndroid = '#6b6b6b'
 							returnKeyType = 'next'
 							onChangeText = { (text) => this.setState({email: text }) }
 							onSubmitEditing = { () => this._password.focus() }
 							placeholder = 'Email'
 							value = {this.state.email}/>
 
-						<TextInput
+						<TextInput style = { styles.txt }
 							ref = { (c) => this._password = c }
 							autoCapitalize = 'none'
+							placeholderTextColor = '#919191'
+							underlineColorAndroid = '#6b6b6b'
 							returnKeyType = 'done'
 							onChangeText = { (text) => this.setState({password: text }) }
 							onSubmitEditing = { this._login.bind(this) }
@@ -121,32 +130,64 @@ class LoginScreen extends React.Component {
 
 					<View style = {{ flex: 1 }}>
 						<Button
+						    color= '#f08519'
 							onPress = { this._login.bind(this) }
-							name = 'Login' />
-
-						<Button
-							onPress = { () => this.props.navigation.navigate('Register', {type: 'Register'}) }
-							name = 'Register' />
+							name = 'MASUK' />
 					</View>
 				</View>
-			</ScrollView>
+				<View style = { styles.stickyBottom }>
+			        <Text
+			        onPress = { () => this.props.navigation.navigate('Register', {type: 'Register'}) }
+			        style = {{ textAlign:'center' }}>
+			            Belum Punya Akun ? &nbsp;
+			            <Text style={{color: '#2278a5'}}>
+                                 DAFTAR
+                            </Text>
+			        </Text>
+				</View>
+			</View>
 		)
 	}
 }
 
 const styles = StyleSheet.create({
 	container: {
-		height: (height / 2) - 10
+		height: (height / 2) - 10,
+		width: '85%',
+		marginLeft:'7.5%',
+		marginRight:'7.5%'
+	},
+	containerlogo: {
+		height: (height / 2) - 10,
+        alignItems: 'center'
+	},
+	logo: {
+		flex: 1,
+		width:'80%',
+		justifyContent: 'center',
+	},
+	logoimg: {
+        flex: 1,
+        width: null,
+        height: null,
+        resizeMode: 'contain'
+	},
+	txt: {
+        color:'#FFF',
 	},
 	content: {
 		flex: 1,
 		justifyContent: 'center'
 	},
 	stickyBottom: {
+		flex: 1,
+		justifyContent: 'center',
 		position: 'absolute',
-		left: 5,
-		right: 5,
-		bottom: 5
+		bottom: 0,
+		left:0,
+		backgroundColor:'#FFF',
+		width:(width),
+		padding:10,
 	}
 })
 

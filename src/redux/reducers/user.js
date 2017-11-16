@@ -94,7 +94,7 @@ const UserReducers = (state = initialState, action) => {
 				['@Users', JSON.stringify([...state.users, register])],
 				['@Cabang', JSON.stringify([...state.cabang, cabang])]
 			], (err) => console.log(err))
-			Alert.alert(null, 'register user berhasil', [{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
+			Alert.alert(null, 'Pendaftaran berhasil, silahkan masuk', [{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
 			return {
 				...state,
 				cabang: [...state.cabang, cabang],
@@ -123,7 +123,7 @@ const UserReducers = (state = initialState, action) => {
 		*/
 		case 'LOGIN':
 			if(state.users == null || state.users.length == 0) {
-				Alert.alert(null, 'user atau password salah')
+				Alert.alert(null, 'User atau password salah')
 			} else {
 				for(var i in state.users) {
 					if(state.users[i].email.toUpperCase() == action.data.data.email.toUpperCase()) {
@@ -143,11 +143,11 @@ const UserReducers = (state = initialState, action) => {
 							}
 						} else {
 							// password salah
-							Alert.alert(null, 'user atau password salah')
+							Alert.alert(null, 'User atau password salah')
 						}
 					} else {
 						// user tidak ada
-						Alert.alert(null, 'user atau password salah')
+						Alert.alert(null, 'User atau password salah')
 					}
 				}
 			}

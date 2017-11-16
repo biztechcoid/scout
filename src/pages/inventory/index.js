@@ -99,7 +99,7 @@ class InventoryScreen extends React.Component {
 		var data = {
 			idCategory: content.idCategory
 		}
-		Alert.alert(null, 'Anda yakin akan menghapus category '+ content.name,
+		Alert.alert(null, 'Anda yakin akan menghapus kategori '+ content.name,
 			[
 				{ text: 'Yakin', onPress: () => this.props.dispatchDeleteCategory(data) },
 				{ text: 'Batal' }
@@ -114,7 +114,7 @@ class InventoryScreen extends React.Component {
 					left = {0.5}
 					visible = { this.state.modalVisible }
 					onRequestClose = { this._setModalVisible.bind(this, false) }>
-					<View style = {{ flex: 1, width: width - 20, height: height / 4, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
+					<View style = {{ flex: 1, width: width - 20, height: height / 4, padding: 15, borderRadius: 5, backgroundColor: 'white' }}>
 						<View style = { styles.content }>
 							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
 								{this.state.idCategory == null ?
@@ -124,22 +124,25 @@ class InventoryScreen extends React.Component {
 								}
 							</View>
 
-							<View style = {{ flex: 2 }}>
+							<View style = {{ flex: 2,marginTop:20, }}>
 								<TextInput
 									autoCapitalize = 'words'
 									returnKeyType = 'done'
+									underlineColorAndroid = '#ececec'
 									onChangeText = { (text) => this.setState({ category: text })}
 									onSubmitEditing = { this.state.idCategory == null ? this._addCategory.bind(this) : this._updateCategory.bind(this) }
-									placeholder = 'Kategori'
+									placeholder = 'Nama Kategori'
 									value = {this.state.category}/>
 							</View>
 						</View>
 						
 						<View style = { styles.content }>
-							<View style = { styles.row }>
+							<View style = { styles.stickyBottom }>
 								<Button
+						            color= '#94abb6'
 									onPress = { () => this.setState({ category: null })}
 									name = 'Hapus'/>
+								<Text>&nbsp;</Text>
 
 								{this.state.idCategory == null ?
 									<Button
@@ -164,8 +167,6 @@ class InventoryScreen extends React.Component {
 								style = {{ justifyContent: 'center' }}
 								onPress = { () => this.props.navigation.navigate('Product', { index: Number(row), content: content }) }>
 								<View style = {{ flexDirection: 'row' }}>
-									<Text> {Number(row) + 1}. </Text>
-
 									<View style = {{ flexDirection: 'column' }}>
 										<Text> {content.name} </Text>
 									</View>
@@ -263,13 +264,13 @@ class InventoryScreen extends React.Component {
 						<View style = {{ marginBottom: 5 }}>
 							<Button
 								onPress = { () => this.props.navigation.navigate('Ingredients') }
-								name = 'Manufacturing'/>
+								name = 'BAHAN BAKU'/>
 						</View>
 
 						<View>
 							<Button
 								onPress = { this._setModalVisible.bind(this, true) }
-								name = 'Tambah Kategori'/>
+								name = 'TAMBAH KATEGORI'/>
 						</View>
 					</View>
 				}
@@ -336,13 +337,14 @@ const styles = StyleSheet.create({
 	category: {
 		flex: 1,
 		flexDirection: 'row',
-		padding: 5,
+		paddingLeft: 10,
+		padding:5,
 		marginTop: 2.5,
 		marginBottom: 2.5,
 		borderRadius: 5,
 		borderWidth: 0.5,
-		borderColor: 'darkgrey',
-		backgroundColor: '#ccc'
+		borderColor: '#f2c9a0',
+		backgroundColor: '#fcecc2'
 	}
 })
 

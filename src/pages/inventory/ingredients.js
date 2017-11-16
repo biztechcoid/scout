@@ -39,7 +39,7 @@ import {
 
 class IngredientsScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
-		title: 'Manufacturing'
+		title: 'BAHAN BAKU'
 	})
 
 	state = {
@@ -336,6 +336,7 @@ class IngredientsScreen extends React.Component {
 								<View style = {{ flex: 2 }}>
 									<TextInput
 										returnKeyType = 'next'
+									    underlineColorAndroid = '#ececec'
 										onChangeText = { (text) => this.props.barcode == null ? this.setState({ barcode: text }) : this.setState({ barcode: this.props.barcode })}
 										onSubmitEditing = { () => this._product.focus() }
 										placeholder = 'Barcode'
@@ -344,7 +345,7 @@ class IngredientsScreen extends React.Component {
 							</View>
 
 							<ScrollView
-								style = {{ flex: 3 }}
+								style = {{ flex: 3, width:'90%', marginLeft:'5%', marginRight:'5%' }}
 								keyboardShouldPersistTaps = 'always'>
 								<View style = {{ flexDirection: 'row' }}>
 									<View style = {{ flexDirection: 'column' }}>
@@ -473,7 +474,7 @@ class IngredientsScreen extends React.Component {
 						<View style = { styles.content }>
 							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
 								{this.state.idSubProduct == null ?
-									<Text style = {{ fontWeight: 'bold' }}> Tambah Bahan Baku </Text>
+									<Text style = {{ fontWeight: 'bold' }}> Bahan Baku </Text>
 									:
 									<Text style = {{ fontWeight: 'bold' }}> Ubah Sub-Produk </Text>
 								}
@@ -691,7 +692,7 @@ class IngredientsScreen extends React.Component {
 															<Touchable
 																onPress = { () => this.props.navigation.navigate('BahanBaku', {idxCategory: idxCategory, idxProduct: idxProduct}) }
 																style = {{ justifyContent: 'center' }}>
-																<Text> Tambah Bahan Baku </Text>
+																<Text> Bahan Baku </Text>
 															</Touchable>
 														</View>
 													:
@@ -825,7 +826,10 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	},
 	row: {
-		flexDirection: 'row'
+		flexDirection: 'row',
+		width:'90%',
+		marginLeft:'5%',
+		marginRight:'5%'
 	},
 	stickyBottom: {
 		position: 'absolute',
@@ -836,13 +840,14 @@ const styles = StyleSheet.create({
 	product: {
 		flex: 1,
 		flexDirection: 'row',
-		padding: 5,
+		paddingLeft: 10,
+		padding:5,
 		marginTop: 2.5,
 		marginBottom: 2.5,
 		borderRadius: 5,
 		borderWidth: 0.5,
-		borderColor: 'darkgrey',
-		backgroundColor: '#ccc'
+		borderColor: '#f2c9a0',
+		backgroundColor: '#fcecc2'
 	}
 })
 
