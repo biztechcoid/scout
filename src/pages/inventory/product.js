@@ -295,7 +295,7 @@ class ProductScreen extends React.Component {
 					left = {0.5}
 					contentStyle = {{ flex: 3 }}
 					onRequestClose = { this._setModalVisible.bind(this, false) }>
-					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
+					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 15, borderRadius: 5, backgroundColor: 'white' }}>
 						<View style = { styles.content }>
 							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
 								{this.state.idProduct == null ?
@@ -314,6 +314,7 @@ class ProductScreen extends React.Component {
 
 								<View style = {{ flex: 2 }}>
 									<TextInput
+									    underlineColorAndroid = '#ececec'
 										returnKeyType = 'next'
 										onChangeText = { (text) => this.props.barcode == null ? this.setState({ barcode: text }) : this.setState({ barcode: this.props.barcode })}
 										onSubmitEditing = { () => this._product.focus() }
@@ -352,6 +353,7 @@ class ProductScreen extends React.Component {
 												style = {{ flex: 1, height: 50 }}
 												autoCapitalize = 'words'
 												returnKeyType = 'next'
+									            underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ product: text })}
 												onSubmitEditing = { () => this._cost.focus() }
 												placeholder = 'Produk'
@@ -367,6 +369,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._cost = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
+									            underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
@@ -383,6 +386,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._price = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
+									            underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
@@ -399,6 +403,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._quantity = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
+									            underlineColorAndroid = '#ececec'
 												returnKeyType = 'done'
 												onChangeText = { (text) => this.setState({ quantity: text })}
 												onSubmitEditing = { this.state.idProduct == null ? this._addProduct.bind(this) : this._updateProduct.bind(this) }
@@ -422,6 +427,7 @@ class ProductScreen extends React.Component {
 										price: null,
 										quantity: null })}
 									name = 'Hapus'/>
+								<Text>&nbsp;</Text>
 
 								{this.state.idProduct == null ?
 									<Button
@@ -468,15 +474,16 @@ class ProductScreen extends React.Component {
 								<View style = {{ flex: 2 }}>
 									<TextInput
 										returnKeyType = 'next'
+									            underlineColorAndroid = '#ececec'
 										onChangeText = { (text) => this.props.barcode == null ? this.setState({ barcode: text }) : this.setState({ barcode: this.props.barcode })}
 										onSubmitEditing = { () => this._product.focus() }
-										placeholder = 'barcode'
+										placeholder = 'Barcode'
 										value = { this.props.barcode == null ? this.state.barcode : this.props.barcode }/>
 								</View>
 							</View>
 
 							<ScrollView
-								style = {{ flex: 3 }}
+								style = {{ flex: 3,width:'90%',marginLeft:'5%',marginRight:'5%' }}
 								keyboardShouldPersistTaps = 'always'>
 								<View style = {{ flexDirection: 'row' }}>
 									<View style = {{ flexDirection: 'column' }}>
@@ -504,6 +511,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._product = c }
 												style = {{ flex: 1, height: 50 }}
 												autoCapitalize = 'words'
+									            underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ product: text })}
 												onSubmitEditing = { () => this._cost.focus() }
@@ -520,6 +528,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._cost = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
+									            underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
@@ -536,6 +545,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._price = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
+									            underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
@@ -553,6 +563,7 @@ class ProductScreen extends React.Component {
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
 												returnKeyType = 'done'
+									            underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ quantity: text })}
 												onSubmitEditing = { this.state.idSubProduct == null ? this._addSubProduct.bind(this) : this._updateSubProduct.bind(this) }
 												placeholder = 'Kuantitas'
@@ -937,7 +948,10 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
 	},
 	row: {
-		flexDirection: 'row'
+		flexDirection: 'row',
+		width:'90%',
+		marginLeft:'5%',
+		marginRight:'5%'
 	},
 	stickyBottom: {
 		position: 'absolute',
@@ -948,13 +962,14 @@ const styles = StyleSheet.create({
 	product: {
 		flex: 1,
 		flexDirection: 'row',
-		padding: 5,
+		paddingLeft: 10,
+		padding:5,
 		marginTop: 2.5,
 		marginBottom: 2.5,
 		borderRadius: 5,
 		borderWidth: 0.5,
-		borderColor: 'darkgrey',
-		backgroundColor: '#ccc'
+		borderColor: '#f2c9a0',
+		backgroundColor: '#fcecc2'
 	}
 })
 

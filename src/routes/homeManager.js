@@ -13,7 +13,7 @@ import SideMenu from '../pages/sidemenu'
 
 const TabNavigatorConfig = {
 	tabBarPosition: 'top',
-	swipeEnabled: true,
+	swipeEnabled: false,
 	animationEnabled: true,
 	lazy: false,
 	tabBarOptions: {
@@ -53,7 +53,7 @@ const MyApp = DrawerNavigator({
 			HomeScreen: {
 				screen: HomeScreen,
 				navigationOptions: {
-					headerTitle: 'Scout',
+					headerTitle: 'SCOUT - Franchise & POS',
 					headerTintColor: 'white',
 					/*headerStyle: {
 						backgroundColor: '#6ecbe0'

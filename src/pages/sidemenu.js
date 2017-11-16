@@ -2,7 +2,8 @@ import React from 'react'
 import {
 	AsyncStorage,
 	Text,
-	View
+	View,
+	Image
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -24,21 +25,29 @@ class SideMenuScreen extends React.Component {
 
 	render() {
 		return (
+		<View>
+			<View style={{ backgroundColor:'#353535' }}>
+				<View style = {{ height: 40,marginTop:20,marginBottom:20, borderWidth: 0, borderBottomWidth: 0, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+                    <View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center',width:'100%'}}>
+                        <View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
+                            <Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('./login/img/logo-500px.png')} />
+                        </View>
+                    </View>
+				</View>
+			</View>
 			<View>
 				{this.props.user ?
-					<View style = {{ padding: 5 }}>
+					<View style = {{ width:'90%',marginLeft:'5%',marginRight:'5%', marginTop:20 }}>
 						<View style = {{ flexDirection: 'row' }}>
 							<View>
 								<Text> Email </Text>
 								<Text> Name </Text>
-								<Text> Level </Text>
-								<Text> Last Login </Text>
+								<Text> Terakhir Masuk </Text>
 							</View>
 
 							<View>
 								<Text> : { this.props.user.email } </Text>
 								<Text> : { this.props.user.name } </Text>
-								<Text> : { this.props.user.level } </Text>
 								<Text> : { date(this.props.user.lastLogin) } </Text>
 							</View>
 						</View>
@@ -47,7 +56,7 @@ class SideMenuScreen extends React.Component {
 					null
 				}
 
-				<View style = {{ height: 40, borderWidth: 0.5, borderColor: '#ccc' }}>
+				<View style = {{ height: 40,marginTop:20, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 					<Touchable
 						style = {{ justifyContent: 'center' }}
 						onPress = { () => this.props.screenProps.navigate('Register', {type: 'Tambah User'}) }>
@@ -55,14 +64,15 @@ class SideMenuScreen extends React.Component {
 					</Touchable>
 				</View>
 
-				<View style = {{ height: 40, borderWidth: 0.5, borderColor: '#ccc' }}>
+				<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 					<Touchable
 						style = {{ justifyContent: 'center' }}
 						onPress = { this._logout.bind(this) }>
-						<Text> Logout </Text>
+						<Text> Keluar </Text>
 					</Touchable>
 				</View>
 			</View>
+		</View>
 		)
 	}
 }

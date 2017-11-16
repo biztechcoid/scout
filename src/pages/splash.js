@@ -3,7 +3,8 @@ import {
 	AsyncStorage,
 	Text,
 	View,
-	Keyboard
+	Keyboard,
+	Image
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -17,8 +18,10 @@ import {
 class SplashScreen extends React.Component {
 	render() {
 		return(
-			<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#61b5c7' }}>
-				<Text> Splash </Text>
+			<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#353535' }}>
+                 <View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
+                    <Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('./login/img/logo-500px.png')} />
+			     </View>
 			</View>
 		)
 	}
@@ -30,7 +33,7 @@ class SplashScreen extends React.Component {
 				index: 0,
 				actions: [{ type: 'Navigation/NAVIGATE', routeName: pages }]
 			})
-		}, 1)
+		}, 1500)
 	}
 
 	componentDidMount() {

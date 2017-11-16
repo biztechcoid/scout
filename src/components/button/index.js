@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 
 const defaultProps = {
-	color: '#1e8da5',
+	color: '#61c5da',
 	pressColor: 'white',
 	name: 'Button',
 	textStyle: {}
@@ -67,7 +67,7 @@ const styles =  StyleSheet.create({
 	button: {
 		height: 40,
 		borderRadius: 5,
-		borderWidth: 1,
+		borderWidth: 0,
 		borderColor: '#ccc'
 	},
 	opacity: {

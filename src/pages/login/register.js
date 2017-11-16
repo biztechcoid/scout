@@ -39,13 +39,13 @@ class RegisterScreen extends React.Component {
 
 	_register() {
 		if(this.state.name == '' || this.state.name == null) {
-			Alert.alert(null, 'nama tidak valid')
+			Alert.alert(null, 'Nama tidak valid')
 		} else if(this.state.email == '' || this.state.email == null) {
-			Alert.alert(null, 'email tidak valid')
+			Alert.alert(null, 'Email tidak valid')
 		} else if(this.state.phone == '' || this.state.phone == null) {
-			Alert.alert(null, 'telepon tidak valid')
+			Alert.alert(null, 'Telepon tidak valid')
 		} else if(this.state.password == '' || this.state.password == null) {
-			Alert.alert(null, 'password tidak valid')
+			Alert.alert(null, 'Password tidak valid')
 		} else {
 			if(this.state.password === this.state.confirmPassword) {
 				this.props.dispatchRegisterUser({
@@ -53,7 +53,7 @@ class RegisterScreen extends React.Component {
 					navigation: this.props.navigation
 				})
 			} else {
-				Alert.alert(null, 'ulangi password')
+				Alert.alert(null, 'Ulangi password')
 			}
 		}
 	}
@@ -122,7 +122,7 @@ class RegisterScreen extends React.Component {
 			<ScrollView
 				style = {{ flex: 1, padding: 5, backgroundColor: 'white' }}
 				keyboardShouldPersistTaps = 'always'>
-				<View style = {{ flex: 1 }}>
+				<View style = {{ flex: 1,width:'95%',paddingLeft:'2.5%',paddingRight:'2.5%', }}>
 					<View style = {{ flexDirection: 'row' }} >
 						<View style = {{ flexDirection: 'column' }}>
 							<View style = {{ height: 45, justifyContent: 'center' }}>
@@ -192,9 +192,10 @@ class RegisterScreen extends React.Component {
 								<TextInput
 									autoCapitalize = 'words'
 									returnKeyType = 'next'
+							        underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({name: text }) }
 									onSubmitEditing = { () => this._email.focus() }
-									placeholder = 'Nama'
+									//placeholder = 'Nama'
 									style = {{ flex: 1, height: 45 }}
 									value = {this.state.name}/>
 							</View>
@@ -209,9 +210,10 @@ class RegisterScreen extends React.Component {
 									autoCapitalize = 'none'
 									keyboardType = 'email-address'
 									returnKeyType = 'next'
+							        underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({email: text }) }
 									onSubmitEditing = { () => this._phone.focus() }
-									placeholder = 'Email'
+									//placeholder = 'Email'
 									style = {{ flex: 1, height: 45 }}
 									value = {this.state.email}/>
 							</View>
@@ -226,9 +228,10 @@ class RegisterScreen extends React.Component {
 									autoCapitalize = 'none'
 									keyboardType = 'phone-pad'
 									returnKeyType = 'next'
+							        underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({phone: text }) }
 									onSubmitEditing = { () => this._password.focus() }
-									placeholder = 'Telepon'
+									//placeholder = 'Telepon'
 									style = {{ flex: 1, height: 45 }}
 									value = {this.state.phone}/>
 							</View>
@@ -242,9 +245,10 @@ class RegisterScreen extends React.Component {
 									ref = { (c) => this._password = c }
 									autoCapitalize = 'none'
 									returnKeyType = 'next'
+							        underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({password: text }) }
 									onSubmitEditing = { () => this._confirmPassword.focus() }
-									placeholder = 'Password'
+									//placeholder = 'Password'
 									secureTextEntry = {true}
 									style = {{ flex: 1, height: 45 }}
 									value = {this.state.password}/>
@@ -259,9 +263,10 @@ class RegisterScreen extends React.Component {
 									ref = { (c) => this._confirmPassword = c }
 									autoCapitalize = 'none'
 									returnKeyType = 'done'
+							    underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({confirmPassword: text }) }
 									onSubmitEditing = { this.props.navigation.state.params.type === 'Register' ? this._register.bind(this) : this._addUser.bind(this) }
-									placeholder = 'Ulangi Password'
+									//placeholder = 'Ulangi Password'
 									secureTextEntry = {true}
 									style = {{ flex: 1, height: 45 }}
 									value = {this.state.confirmPassword}/>
@@ -357,11 +362,11 @@ class RegisterScreen extends React.Component {
 					</View>
 				</View>
 
-				<View style = {{ marginTop: 10 }}>
+				<View style = {{ marginTop: 20,width:'95%',marginLeft:'2.5%',marginRight:'2.5%' }}>
 					{this.props.navigation.state.params.type === 'Register' ?
 						<Button
 							onPress = { this._register.bind(this) }
-							name = 'Register' />
+							name = 'DAFTAR' />
 						:
 						<Button
 							onPress = { this._addUser.bind(this) }

@@ -398,8 +398,8 @@ class SaleScreen extends React.Component {
 		if(stateCopy.sale.data.length > 0) {
 			Alert.alert(null, 'Anda yakin ingin menghapus pembelian ?',
 				[
-					{ text: 'yakin', onPress: () => this.setState({sale: { data: [], total: 0.00, customer: 1 }})},
-					{ text: 'tidak' }
+					{ text: 'Yakin', onPress: () => this.setState({sale: { data: [], total: 0.00, customer: 1 }})},
+					{ text: 'Batal' }
 				])
 		}
 	}
@@ -413,7 +413,7 @@ class SaleScreen extends React.Component {
 		*
 		*/
 		if(stateCopy.sale.data.length === 0) {
-			return Alert.alert(null, 'belum ada daftar pembelian')
+			return Alert.alert(null, 'Belum ada daftar pembelian')
 		}
 		/**/
 
@@ -423,19 +423,19 @@ class SaleScreen extends React.Component {
 		*
 		*/
 		if(stateCopy.sale.total == 0) {
-			return Alert.alert(null, 'pembelian anda tidak valid')
+			return Alert.alert(null, 'Pembelian anda tidak valid')
 		}
 		/**/
 
-		Alert.alert(null, 'Anda yakin sudah selesai berbelanja ?',
+		Alert.alert(null, 'Anda yakin transaksi valid ?',
 			[
-				{ text: 'yakin', onPress: () => {
+				{ text: 'Yakin', onPress: () => {
 					stateCopy.sale['date'] = new Date()
 					this.props.dispatchUpdateStock(stateCopy.sale)
 					this.props.dispatchPenjualan(stateCopy.sale)
 					this.setState({sale: { data: [], total: 0.00, customer: 1 }})
 				}},
-				{ text: 'tidak' }
+				{ text: 'Tidak' }
 			])
 	}
 
@@ -497,15 +497,17 @@ class SaleScreen extends React.Component {
 								dataSource = {ds.cloneWithRows(this.state.sale.data)}
 								enableEmptySections = {true}
 								renderRow = {(content, section, index) =>
-									<View style = {{ flex: 1, flexDirection: 'column', borderWidth: 0.5, borderColor: 'transparent', backgroundColor: Number(index)%2 == 0 ? '#ccc' : 'white' }}>
+									<View style = {{ flex: 1, flexDirection: 'column', borderBottomWidth: 0.5, borderColor: '#ececec', /*backgroundColor: Number(index)%2 == 0 ? '#ccc' : 'white' */ }}>
 										<View
 											style = {{ flex: 1 }}>
-											<View style = {{ flex: 1 }}>
+											<View style = {{ flex: 1,flexDirection:'row' }}>
 												<Text> {content.name} </Text>
+												<Text>@ {rupiah(content.price)} </Text>
 											</View>
 
 											<View style = {{ flex: 1, flexDirection: 'row' }}>
-												<View style = {{ flex: 0.5 }}>
+												<View style = {{ flex: 0.5,flexDirection:'row',paddingLeft:5,paddingRight:5 }}>
+												    <Text style={{ fontSize:11, }}>Qty :</Text>
 													<TextInput
 														ref = { (c) => this._quantity = c }
 														keyboardType = 'numeric'
@@ -514,16 +516,13 @@ class SaleScreen extends React.Component {
 														onChangeText = { (text) => this._editQuantity(Number(index), content, text) }
 														onEndEditing = { this._updatePrice.bind(this) }
 														onSubmitEditing = { this._updatePrice.bind(this) }
-														style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderWidth: 0.5 }}
+														style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderBottomWidth: 0.5, borderColor:'#ececec' }}
 														value = { content.quantity.toString() }/>
 												</View>
 
-												<View style = {{ flex: 1, padding: 5, alignItems: 'flex-end' }}>
-													<Text> {rupiah(content.price)} </Text>
-												</View>
-
-												<View style = {{ flex: 1, flexDirection: 'row' }}>
-													<View style = {{ flex: 1 }}>
+												<View style = {{ flex: 0.8,flexDirection:'row',paddingLeft:5 }}>
+													<View style = {{ flex: 0.5, flexDirection: 'row' }}>
+													<Text style={{ fontSize:11, }}>Disc :</Text>
 														<TextInput
 															ref = { (c) => this._disc = c }
 															keyboardType = 'numeric'
@@ -532,7 +531,7 @@ class SaleScreen extends React.Component {
 															onChangeText = { (text) => this._editDisc(Number(index), content, text) }
 															onEndEditing = { this._updatePrice.bind(this) }
 															onSubmitEditing = { this._updatePrice.bind(this) }
-															style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderWidth: 0.5 }}
+															style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderBottomWidth: 0.5, borderColor:'#ececec' }}
 															value = { content.disc.toString() }/>
 													</View>
 													
@@ -541,7 +540,7 @@ class SaleScreen extends React.Component {
 													</View>
 												</View>
 
-												<View style = {{ flex: 1, padding: 5, alignItems: 'flex-end' }}>
+												<View style = {{ flex: 0.7, padding: 5, alignItems: 'flex-end' }}>
 													<Text> {rupiah(content.subTotal)} </Text>
 												</View>
 											</View>
@@ -581,7 +580,7 @@ class SaleScreen extends React.Component {
 												onChangeText = { (text) => this._editCustomer(text) }
 												onEndEditing = { () => { }}
 												onSubmitEditing = { () => { }}
-												style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderWidth: 0.5 }}
+												style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderWidth: 0, borderBottomWidth:0.5, borderColor:'#ededed' }}
 												value = { this.state.sale.customer.toString() }/>
 										</View>
 									</View>
@@ -601,7 +600,7 @@ class SaleScreen extends React.Component {
 									<Button
 										onPress = { this._clear.bind(this) }
 										name = 'Hapus' />
-
+                                    <Text>&nbsp;</Text>
 									<Button
 										onPress = { this._done.bind(this) }
 										name = 'Selesai' />
@@ -623,7 +622,7 @@ class SaleScreen extends React.Component {
 											onChangeText = { (text) => this._editCustomer(text) }
 											onEndEditing = { () => { }}
 											onSubmitEditing = { () => { }}
-											style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderWidth: 0.5 }}
+											style = {{ flex: 1, padding: 0, margin: 0, height: 20, color: 'gray', borderWidth: 0, borderBottomWidth:0.5, borderColor:'#ededed' }}
 											value = { this.state.sale.customer.toString() }/>
 									</View>
 								</View>
@@ -740,7 +739,7 @@ class SaleScreen extends React.Component {
 									refreshControl = { this._renderRefresh() }>
 									{this.props.category == null ?
 										<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-											<Text> tidak ada data </Text>
+											<Text> Tidak ada data </Text>
 										</View>
 										:
 										<ListView
@@ -758,7 +757,6 @@ class SaleScreen extends React.Component {
 														style = {{ height: 40, justifyContent: 'center' }}
 														onPress = { this._collapse.bind(this, Number(index)) }>
 														<View style = {{ flexDirection: 'row' }}>
-															<Text> {Number(index) + 1}. </Text>
 
 															<View style = {{ flexDirection: 'column' }}>
 																<Text> {content.name} </Text>
@@ -777,26 +775,16 @@ class SaleScreen extends React.Component {
 														dataSource = {ds.cloneWithRows(content.product)}
 														enableEmptySections = {true}
 														renderRow = {(product, section, idx) =>
-															<View>
-																<View style = {[ styles.category, { flexDirection: 'row', marginLeft: 10 }]}>
+															<View style={{ flex:1,}}>
+																<View style = {[ styles.category, { marginLeft: 10, flexDirection:'row',/*width:'20%', */}]}>
 																	<Touchable
+														                style = {{ height: 40, justifyContent: 'center' }}
 																		onPress = { this._addSale.bind(this, content.idCategory, product) }>
-																		<View style = {{ flex: 1, flexDirection: 'row' }}>
-																			<Text> {Number(idx) + 1}. </Text>
+																		<View style = {{ flexDirection: 'row'}}>
 
 																			<View style = {{ flex: 1, flexDirection: 'column' }}>
-																				<View style = {{ flex: 1 }}>
+																				<View style = {{}}>
 																					<Text> {product.name} </Text>
-																				</View>
-
-																				<View style = {{ flex: 1, flexDirection: 'row' }}>
-																					<View style = {{ flex: 1 }}>
-																						<Text> Stok: {product.quantity} </Text>
-																					</View>
-
-																					<View style = {{ flex: 1 }}>
-																						<Text> Harga: {rupiah(product.price)} </Text>
-																					</View>
 																				</View>
 																			</View>
 																		</View>
@@ -822,22 +810,11 @@ class SaleScreen extends React.Component {
 																		<View style = {[ styles.category, { marginLeft: 20 }]}>
 																			<Touchable
 																				onPress = { this._addSaleSubProduct.bind(this, content.idCategory, product.idProduct, subProduct) }>
-																				<View style = {{ flex: 1, flexDirection: 'row' }}>
-																					<Text> {Number(row) + 1}. </Text>
+																				<View style = {{ flex: 1, flexDirection: 'column' }}>
 
-																					<View style = {{ flex: 1, flexDirection: 'column' }}>
+																					<View style = {{ flex: 0.25, flexDirection: 'column' }}>
 																						<View style = {{ flex: 1 }}>
-																							<Text> {subProduct.name} </Text>
-																						</View>
-
-																						<View style = {{ flex: 1, flexDirection: 'row' }}>
-																							<View style = {{ flex: 1 }}>
-																								<Text> Stok: {subProduct.quantity} </Text>
-																							</View>
-
-																							<View style = {{ flex: 1 }}>
-																								<Text> Harga: {rupiah(subProduct.price)} </Text>
-																							</View>
+																							<Text style={{}}> {subProduct.name} </Text>
 																						</View>
 																					</View>
 																				</View>
@@ -869,7 +846,7 @@ class SaleScreen extends React.Component {
 											<Button
 												onPress = { this._clear.bind(this) }
 												name = 'Hapus' />
-
+								            <Text>&nbsp;</Text>
 											<Button
 												onPress = { this._done.bind(this) }
 												name = 'Selesai' />
@@ -939,13 +916,14 @@ const styles = StyleSheet.create({
 		bottom: 0
 	},
 	category: {
-		padding: 5,
+		paddingLeft: 10,
 		marginTop: 2.5,
 		marginBottom: 2.5,
 		borderRadius: 5,
+		minHeight:50,
 		borderWidth: 0.5,
-		borderColor: 'darkgrey',
-		backgroundColor: '#ccc'
+		borderColor: '#f2c9a0',
+		backgroundColor: '#fcecc2'
 	}
 })
 

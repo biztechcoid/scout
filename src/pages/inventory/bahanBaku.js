@@ -205,7 +205,7 @@ class BahanBakuScreen extends React.Component {
 						<View style = { styles.content }>
 							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
 								{this.state.idIngredients == null ?
-									<Text style = {{ fontWeight: 'bold' }}> Tambah Bahan Baku </Text>
+									<Text style = {{ fontWeight: 'bold' }}> Bahan Baku </Text>
 									:
 									<Text style = {{ fontWeight: 'bold' }}> Ubah Bahan Baku </Text>
 								}
@@ -258,9 +258,11 @@ class BahanBakuScreen extends React.Component {
 												style = {{ flex: 1, height: 50 }}
 												autoCapitalize = 'words'
 												returnKeyType = 'next'
+												placeholder = 'Produk'
+									            underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ product: text })}
 												onSubmitEditing = { () => this._cost.focus() }
-												placeholder = 'Produk'
+
 												value = {this.state.product}/>
 										</View>
 
@@ -273,6 +275,7 @@ class BahanBakuScreen extends React.Component {
 												ref = { (c) => this._cost = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
+									            underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
@@ -290,6 +293,7 @@ class BahanBakuScreen extends React.Component {
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
 												returnKeyType = 'next'
+									            underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
 												placeholder = 'Harga'
@@ -306,6 +310,7 @@ class BahanBakuScreen extends React.Component {
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
 												returnKeyType = 'done'
+									            underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ quantity: text })}
 												onSubmitEditing = { this.state.idProduct == null ? this._addIngredients.bind(this) : this._updateIngredients.bind(this) }
 												placeholder = 'Kuantitas'
@@ -470,13 +475,14 @@ const styles = StyleSheet.create({
 	bahanBaku: {
 		flex: 1,
 		flexDirection: 'row',
-		padding: 5,
+		paddingLeft: 10,
+		padding:5,
 		marginTop: 2.5,
 		marginBottom: 2.5,
 		borderRadius: 5,
 		borderWidth: 0.5,
-		borderColor: 'darkgrey',
-		backgroundColor: '#ccc'
+		borderColor: '#e4e5e5',
+		backgroundColor: '#f2f2f2'
 	}
 })
 
