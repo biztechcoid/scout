@@ -29,6 +29,7 @@ import {
 import {
 	Button,
 	ButtonIcons,
+	MyModal,
 	Touchable
 } from '../../components'
 
@@ -81,7 +82,12 @@ class SaleScreen extends React.Component {
 		// search value
 
 		searchValue: [],
-		searchVisible: false
+		searchVisible: false,
+
+		discount: 0,
+		change: 0,
+
+		modal: false
 	}
 
 	_scanQR() {
@@ -431,12 +437,17 @@ class SaleScreen extends React.Component {
 			[
 				{ text: 'Yakin', onPress: () => {
 					stateCopy.sale['date'] = new Date()
-					this.props.dispatchUpdateStock(stateCopy.sale)
-					this.props.dispatchPenjualan(stateCopy.sale)
-					this.setState({sale: { data: [], total: 0.00, customer: 1 }})
+					// this.props.dispatchUpdateStock(stateCopy.sale)
+					// this.props.dispatchPenjualan(stateCopy.sale)
+					this._modal()
+					// this.setState({sale: { data: [], total: 0.00, customer: 1 }})
 				}},
 				{ text: 'Tidak' }
 			])
+	}
+
+	_modal() {
+		this.setState({modal: !this.state.modal})
 	}
 
 	_search(text) {
@@ -462,6 +473,83 @@ class SaleScreen extends React.Component {
 			<View
 				onLayout = { this._onLayout.bind(this) }
 				style = { styles.container }>
+
+				<MyModal
+					top = {0.5}
+					left = {0.5}
+					visible = { this.state.modal }
+					onRequestClose = { this._modal.bind(this) }>
+					<View style = {{ flex: 1, width: width - 20, height: height / 4, padding: 15, borderRadius: 5, backgroundColor: 'white' }}>
+						<View style = {{ flexDirection: 'row', height: 30, justifyContent: 'center' }}>
+							<View style = {{ flex: 1 }}>
+								<Text> Sub Total </Text>
+							</View>
+
+							<View style = {{ flex: 1, width: width / 2, alignItems: 'flex-end' }}>
+								<Text> {this.state.sale.total} </Text>
+							</View>
+						</View>
+
+						<View style = {{ flexDirection: 'row', height: 30, justifyContent: 'center' }}>
+							<View style = {{ flex: 1 }}>
+								<Text> Disc </Text>
+							</View>
+
+							<View style = {{ flex: 1, width: width / 2, alignItems: 'flex-end' }}>
+								<TextInput
+									ref = { (c) => this._subTotal = c }
+									keyboardType = 'numeric'
+									returnKeyType = 'done'
+									underlineColorAndroid = 'transparent'
+									onChangeText = { (text) => this.setState({discount: Number(text)}) }
+									// onEndEditing = { this._updatePrice.bind(this) }
+									// onSubmitEditing = { this._updatePrice.bind(this) }
+									style = {{ flex: 1, padding: 0, margin: 0, width: width / 2, height: 20, color: 'gray', borderBottomWidth: 0.5, borderColor:'#ececec' }}
+									value = { this.state.discount.toString() }/>
+							</View>
+						</View>
+						
+						<View style = {{ flexDirection: 'row', height: 30, justifyContent: 'center' }}>
+							<View style = {{ flex: 1 }}>
+								<Text> Total </Text>
+							</View>
+							
+							<View style = {{ flex: 1, width: width / 2, alignItems: 'flex-end' }}>
+								<Text> {this.state.sale.total - this.state.discount} </Text>
+							</View>
+						</View>
+						
+						<View style = {{ flexDirection: 'row', height: 30, justifyContent: 'center' }}>
+							<View style = {{ flex: 1 }}>
+								<Text> Tunai </Text>
+							</View>
+
+							<View style = {{ flex: 1, width: width / 2, alignItems: 'flex-end' }}>
+								<TextInput
+									ref = { (c) => this._change = c }
+									keyboardType = 'numeric'
+									returnKeyType = 'done'
+									underlineColorAndroid = 'transparent'
+									onChangeText = { (text) => this.setState({change: Number(text)}) }
+									// onEndEditing = { this._updatePrice.bind(this) }
+									// onSubmitEditing = { this._updatePrice.bind(this) }
+									style = {{ flex: 1, padding: 0, margin: 0, width: width / 2, height: 20, color: 'gray', borderBottomWidth: 0.5, borderColor:'#ececec' }}
+									value = { this.state.change.toString() }/>
+							</View>
+						</View>
+						
+						<View style = {{ flexDirection: 'row', height: 30, justifyContent: 'center' }}>
+							<View style = {{ flex: 1 }}>
+								<Text> Kembali </Text>
+							</View>
+
+							<View style = {{ flex: 1, width: width / 2, alignItems: 'flex-end' }}>
+								<Text> {this.state.change - (this.state.sale.total - this.state.discount)} </Text>
+							</View>
+						</View>
+					</View>
+				</MyModal>
+
 				<View style = {{ flex: 1, flexDirection: this.state.width > this.state.height && this.state.keyboard == false ? 'row' : 'column' }}>
 					<View style = {{ flex: 1 }}>
 						{/*
@@ -743,6 +831,7 @@ class SaleScreen extends React.Component {
 										</View>
 										:
 										<ListView
+											contentContainerStyle = {{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}
 											dataSource = {ds.cloneWithRows(this.props.category)}
 											enableEmptySections = {true}
 											renderRow = {(content, section, index) =>
@@ -751,7 +840,7 @@ class SaleScreen extends React.Component {
 											list category
 											*
 											*/
-											<View style = {{ flex: 1 }}>
+											<View style = {{ /*flex: 1, */width: (width / 2) - 10, marginLeft: 2, marginRight: 2 }}>
 												<View style = { styles.category }>
 													<Touchable
 														style = {{ height: 40, justifyContent: 'center' }}
