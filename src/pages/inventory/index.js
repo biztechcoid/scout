@@ -6,6 +6,7 @@ import {
 	Keyboard,
 	ListView,
 	Modal,
+	NetInfo,
 	View,
 	ScrollView,
 	StyleSheet,
@@ -43,6 +44,9 @@ class InventoryScreen extends React.Component {
 				name = 'md-menu'
 				color = 'white'
 				size = { 30 }/>
+		),
+		headerRight: (
+			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connectionInfo === 'none' ? 'red' : 'green' : 'red' }}/>
 		)
 	})
 
@@ -304,9 +308,37 @@ class InventoryScreen extends React.Component {
 		})
 	}
 
+	handleFirstConnectivityChange(connectionInfo) {
+		// console.log('First change, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+		
+		this.props.navigation.setParams({
+			connectionInfo: connectionInfo.type
+		})
+		
+		NetInfo.removeEventListener(
+			'connectionChange',
+			this.handleFirstConnectivityChange.bind(this)
+		)
+	}
+
 	componentWillMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
 		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
+	}
+
+	componentDidMount() {
+		NetInfo.getConnectionInfo().then((connectionInfo) => {
+			// console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+
+			this.props.navigation.setParams({
+				connectionInfo: connectionInfo.type
+			})
+		})
+
+		NetInfo.addEventListener(
+			'connectionChange',
+			this.handleFirstConnectivityChange.bind(this)
+		)
 	}
 
 	componentWillUnmount() {

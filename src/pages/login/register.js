@@ -109,7 +109,10 @@ class RegisterScreen extends React.Component {
 				if(stateCopy.cabang === null) {
 					Alert.alert(null, 'cabang tidak valid')
 				} else {
-					this.props.dispatchAddUser(stateCopy)
+					this.props.dispatchAddUser({
+						data: stateCopy,
+						navigation: this.props.navigation
+					})
 				}
 			} else {
 				Alert.alert(null, 'ulangi password')
@@ -155,9 +158,9 @@ class RegisterScreen extends React.Component {
 
 							{this.state.cabang === 'addCabang' ?
 								<View>
-									<View style = {{ height: 45, justifyContent: 'center' }}>
+									{/*<View style = {{ height: 45, justifyContent: 'center' }}>
 										<Text> Pusat </Text>
-									</View>
+									</View>*/}
 
 									<View style = {{ height: 45, justifyContent: 'center' }}>
 										<Text> Nama </Text>
@@ -285,8 +288,9 @@ class RegisterScreen extends React.Component {
 										selectedValue={this.state.cabang}
 										onValueChange={(itemValue, itemIndex) => this._chooseCabang(itemValue, itemIndex) }>
 										<Picker.Item label = '-- Pilih Cabang --' value = {null} />
-										{this.props.store.map((store, index) =>
-											<Picker.Item key = {index} label = {store.name} value = {store.idPusat} />
+										<Picker.Item label = {this.props.store[0].name} value = {this.props.store[0].idPusat} />
+										{this.props.store[0].cabang.map((store, index) =>
+											<Picker.Item key = {index} label = {store.name} value = {store.idCabang} />
 											)}
 										<Picker.Item label = 'Tambah Cabang' value = 'addCabang' />
 									</Picker>
@@ -295,7 +299,7 @@ class RegisterScreen extends React.Component {
 
 							{this.state.cabang === 'addCabang' ?
 								<View>
-									<View style = {{ flexDirection: 'row' }}>
+									{/*<View style = {{ flexDirection: 'row' }}>
 										<View style = {{ justifyContent: 'center' }}>
 											<Text> : </Text>
 										</View>
@@ -310,7 +314,7 @@ class RegisterScreen extends React.Component {
 												)}
 											<Picker.Item label = 'Tambah Pusat' value = 'addPusat' />
 										</Picker>
-									</View>
+									</View>*/}
 
 									<View style = {{ flexDirection: 'row' }}>
 										<View style = {{ justifyContent: 'center' }}>

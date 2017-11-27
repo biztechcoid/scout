@@ -8,7 +8,8 @@ import {
 const defaultProps = {
 	animationType: 'fade',
 	top: 1,
-	left: 1
+	left: 1,
+	cancelable: true
 }
 
 /*
@@ -55,13 +56,13 @@ class MyModal extends React.Component {
 				onRequestClose = { this.props.onRequestClose }>
 				<TouchableOpacity
 					activeOpacity = { 1 }
-					onPress = { this.props.onRequestClose }
+					onPress = { this.props.cancelable ? this.props.onRequestClose : () => {}}
 					style = {{ flex: this.props.top, backgroundColor: 'rgba(0, 0, 0, .5)' }}/>
 					
 				<View style = {[{ flex: 1, flexDirection: 'row' }, this.props.contentStyle ]}>
 					<TouchableOpacity
 						activeOpacity = { 1 }
-						onPress = { this.props.onRequestClose }
+						onPress = { this.props.cancelable ? this.props.onRequestClose : () => {}}
 						style = {{ flex: this.props.left, backgroundColor: 'rgba(0, 0, 0, .5)' }}/>
 
 					<View style = {{ backgroundColor: 'rgba(0, 0, 0, .5)' }}>
@@ -70,13 +71,13 @@ class MyModal extends React.Component {
 
 					<TouchableOpacity
 						activeOpacity = { 1 }
-						onPress = { this.props.onRequestClose }
+						onPress = { this.props.cancelable ? this.props.onRequestClose : () => {}}
 						style = {{ flex: this.props.left, backgroundColor: 'rgba(0, 0, 0, .5)' }}/>
 				</View>
 
 				<TouchableOpacity
 					activeOpacity = { 1 }
-					onPress = { this.props.onRequestClose }
+					onPress = { this.props.cancelable ? this.props.onRequestClose : () => {}}
 					style = {{ flex: this.props.top, backgroundColor: 'rgba(0, 0, 0, .5)' }}/>
 			</Modal>
 		)

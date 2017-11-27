@@ -61,7 +61,6 @@ const UserReducers = (state = initialState, action) => {
 	switch(action.type) {
 		case 'LOCAL_STORAGE_USERS':
 			if(action.data.users == undefined) {
-				console.log(action.data.store)
 				return {
 					...state,
 					store: action.data.store
@@ -130,63 +129,22 @@ const UserReducers = (state = initialState, action) => {
 		*/
 		case 'ADD_USER':
 			var store, addUser
-			if(action.data.cabang === 'addCabang' && action.data.pusat === 'addPusat') {
-				/*
-				*
-				add new pusat
-				*
-				*/
-				console.log('add pusat', action.data)
+			console.log('add cabang', action.data.data)
 				store = {
-					idPusat: makeId(),
-					name: action.data.namaCabang,
-					ket: action.data.ket,
-					cabang: []
+					idCabang: makeId(),
+					name: action.data.data.namaCabang,
+					ket: action.data.data.ket
 				}
+				state.store[0].cabang = [...state.store[0].cabang, store]
+					
 				addUser = {
 					idUser: makeId(),
-					idPusat: store.idPusat,
-					idCabang: null,
-					name: action.data.name,
-					email: action.data.email,
-					phone: action.data.phone,
-					password: action.data.password
-				}
-				AsyncStorage.multiSet([
-					['@Users', JSON.stringify([...state.users, addUser])],
-					['@Store', JSON.stringify([...state.store, store])]
-				], (err) => console.log(err))
-				Alert.alert(null, 'register user berhasil', [{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
-				return {
-					...state,
-					store: [...state.store, store],
-					users: [...state.users, addUser]
-				}
-			} else if(action.data.cabang === 'addCabang' && action.data.pusat === action.data.idPusat) {
-				/*
-				*
-				add new cabang
-				*
-				*/
-				console.log('add cabang', action.data)
-				for(var i in state.store) {
-					if(state.store[i].idPusat === action.data.idPusat) {
-						store = {
-							idCabang: makeId(),
-							name: action.data.namaCabang,
-							ket: action.data.ket
-						}
-						state.store[i].cabang = [...state.store[i].cabang, store]
-					}
-				}
-				addUser = {
-					idUser: makeId(),
-					idPusat: action.data.idPusat,
+					idPusat: state.store[0].idPusat,
 					idCabang: store.idCabang,
-					name: action.data.name,
-					email: action.data.email,
-					phone: action.data.phone,
-					password: action.data.password
+					name: action.data.data.name,
+					email: action.data.data.email,
+					phone: action.data.data.phone,
+					password: action.data.data.password
 				}
 				AsyncStorage.multiSet([
 					['@Users', JSON.stringify([...state.users, addUser])],
@@ -198,35 +156,104 @@ const UserReducers = (state = initialState, action) => {
 					store: [...state.store],
 					users: [...state.users, addUser]
 				}
-			} else if(action.data.cabang === 'addCabang' && action.data.pusat === null) {
-				Alert.alert(null, 'silahkan pilih pusat')
-			}  else {
-				/*
-				*
-				choose pusat or cabang
-				*
-				*/
-				console.log('choose', action.data)
-				addUser = {
-					idUser: makeId(),
-					idPusat: action.data.idPusat,
-					idCabang: action.data.idCabang,
-					name: action.data.name,
-					email: action.data.email,
-					phone: action.data.phone,
-					password: action.data.password
-				}
-				AsyncStorage.multiSet([
-					['@Users', JSON.stringify([...state.users, addUser])],
-					['@Store', JSON.stringify([...state.store])]
-				], (err) => console.log(err))
-				Alert.alert(null, 'register user berhasil', [{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
-				return {
-					...state,
-					users: [...state.users, addUser]
-				}
-			}
-			return state
+
+			// if(action.data.cabang === 'addCabang' && action.data.pusat === 'addPusat') {
+			// 	/*
+			// 	*
+			// 	add new pusat
+			// 	*
+			// 	*/
+			// 	console.log('add pusat', action.data)
+			// 	store = {
+			// 		idPusat: makeId(),
+			// 		name: action.data.namaCabang,
+			// 		ket: action.data.ket,
+			// 		cabang: []
+			// 	}
+			// 	addUser = {
+			// 		idUser: makeId(),
+			// 		idPusat: store.idPusat,
+			// 		idCabang: null,
+			// 		name: action.data.name,
+			// 		email: action.data.email,
+			// 		phone: action.data.phone,
+			// 		password: action.data.password
+			// 	}
+			// 	AsyncStorage.multiSet([
+			// 		['@Users', JSON.stringify([...state.users, addUser])],
+			// 		['@Store', JSON.stringify([...state.store, store])]
+			// 	], (err) => console.log(err))
+			// 	Alert.alert(null, 'register user berhasil', [{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
+			// 	return {
+			// 		...state,
+			// 		store: [...state.store, store],
+			// 		users: [...state.users, addUser]
+			// 	}
+			// } else if(action.data.cabang === 'addCabang' && action.data.pusat === action.data.idPusat) {
+			// 	/*
+			// 	*
+			// 	add new cabang
+			// 	*
+			// 	*/
+			// 	console.log('add cabang', action.data)
+			// 	for(var i in state.store) {
+			// 		if(state.store[i].idPusat === action.data.idPusat) {
+			// 			store = {
+			// 				idCabang: makeId(),
+			// 				name: action.data.namaCabang,
+			// 				ket: action.data.ket
+			// 			}
+			// 			state.store[i].cabang = [...state.store[i].cabang, store]
+			// 		}
+			// 	}
+			// 	addUser = {
+			// 		idUser: makeId(),
+			// 		idPusat: action.data.idPusat,
+			// 		idCabang: store.idCabang,
+			// 		name: action.data.name,
+			// 		email: action.data.email,
+			// 		phone: action.data.phone,
+			// 		password: action.data.password
+			// 	}
+			// 	AsyncStorage.multiSet([
+			// 		['@Users', JSON.stringify([...state.users, addUser])],
+			// 		['@Store', JSON.stringify([...state.store])]
+			// 	], (err) => console.log(err))
+			// 	Alert.alert(null, 'register user berhasil', [{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
+			// 	return {
+			// 		...state,
+			// 		store: [...state.store],
+			// 		users: [...state.users, addUser]
+			// 	}
+			// } else if(action.data.cabang === 'addCabang' && action.data.pusat === null) {
+			// 	Alert.alert(null, 'silahkan pilih pusat')
+			// }  else {
+			// 	/*
+			// 	*
+			// 	choose pusat or cabang
+			// 	*
+			// 	*/
+			// 	console.log('choose', action.data)
+			// 	addUser = {
+			// 		idUser: makeId(),
+			// 		idPusat: action.data.idPusat,
+			// 		idCabang: action.data.idCabang,
+			// 		name: action.data.name,
+			// 		email: action.data.email,
+			// 		phone: action.data.phone,
+			// 		password: action.data.password
+			// 	}
+			// 	AsyncStorage.multiSet([
+			// 		['@Users', JSON.stringify([...state.users, addUser])],
+			// 		['@Store', JSON.stringify([...state.store])]
+			// 	], (err) => console.log(err))
+			// 	Alert.alert(null, 'register user berhasil', [{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
+			// 	return {
+			// 		...state,
+			// 		users: [...state.users, addUser]
+			// 	}
+			// }
+			// return state
 
 		case 'LOGIN_PROCESS':
 			return {
@@ -272,11 +299,10 @@ const UserReducers = (state = initialState, action) => {
 							// password salah
 							Alert.alert(null, 'User atau password salah')
 						}
-					} else {
-						// user tidak ada
-						Alert.alert(null, 'User atau password salah')
 					}
 				}
+				// user tidak ada
+				Alert.alert(null, 'User atau password salah')
 			}
 
 			/*const user = null

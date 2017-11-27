@@ -2,6 +2,7 @@ import React from 'react'
 import {
 	Dimensions,
 	ListView,
+	NetInfo,
 	Picker,
 	RefreshControl,
 	ScrollView,
@@ -47,6 +48,9 @@ class ReportScreen extends React.Component {
 				name = 'md-menu'
 				color = 'white'
 				size = { 30 }/>
+		),
+		headerRight: (
+			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connectionInfo === 'none' ? 'red' : 'green' : 'red' }}/>
 		)
 	})
 
@@ -410,6 +414,34 @@ class ReportScreen extends React.Component {
 					</View>
 				</View>
 			</View>
+		)
+	}
+
+	handleFirstConnectivityChange(connectionInfo) {
+		// console.log('First change, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+		
+		this.props.navigation.setParams({
+			connectionInfo: connectionInfo.type
+		})
+		
+		NetInfo.removeEventListener(
+			'connectionChange',
+			this.handleFirstConnectivityChange.bind(this)
+		)
+	}
+
+	componentDidMount() {
+		NetInfo.getConnectionInfo().then((connectionInfo) => {
+			// console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+
+			this.props.navigation.setParams({
+				connectionInfo: connectionInfo.type
+			})
+		})
+
+		NetInfo.addEventListener(
+			'connectionChange',
+			this.handleFirstConnectivityChange.bind(this)
 		)
 	}
 }
