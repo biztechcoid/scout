@@ -2,5 +2,9 @@
     {
         "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/release/mipmap-xxhdpi/ic_launcher.png",
         "source": "/home/stefanus/Documents/react-native/franchise/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/res/merged/release/mipmap-xxhdpi/ic_launcher.png",
+        "source": "/home/stefanus/Documents/react-native-franchise/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
     }
 ]
