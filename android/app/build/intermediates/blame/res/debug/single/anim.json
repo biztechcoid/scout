@@ -56,20 +56,20 @@
         "source": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/anim/abc_popup_enter.xml"
     },
     {
-        "merged": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/res/merged/debug/anim/fade_in.xml",
-        "source": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.49.3/res/anim/fade_in.xml"
-    },
-    {
         "merged": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/res/merged/debug/anim/abc_slide_out_top.xml",
         "source": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/anim/abc_slide_out_top.xml"
     },
     {
-        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/anim/abc_slide_in_top.xml",
-        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/anim/abc_slide_in_top.xml"
+        "merged": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/res/merged/debug/anim/fade_in.xml",
+        "source": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.49.3/res/anim/fade_in.xml"
     },
     {
         "merged": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/res/merged/debug/anim/abc_slide_in_top.xml",
         "source": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/anim/abc_slide_in_top.xml"
+    },
+    {
+        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/anim/abc_slide_in_top.xml",
+        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/anim/abc_slide_in_top.xml"
     },
     {
         "merged": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/res/merged/debug/anim/abc_slide_in_top.xml",

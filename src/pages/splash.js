@@ -19,9 +19,9 @@ class SplashScreen extends React.Component {
 	render() {
 		return(
 			<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#353535' }}>
-                 <View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
-                    <Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('./login/img/logo-500px.png')} />
-			     </View>
+				<View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
+					<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('./login/img/logo-500px.png')} />
+				</View>
 			</View>
 		)
 	}
@@ -39,7 +39,8 @@ class SplashScreen extends React.Component {
 	componentDidMount() {
 		Keyboard.dismiss()
 
-		AsyncStorage.multiGet(['@User', '@Data', '@Ingredients', '@Penjualan', '@Users', '@Store'], (err, res) => {
+		AsyncStorage.multiGet(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users'], (err, res) => {
+			// console.log(res)
 			/*
 			*
 			@Data
@@ -72,21 +73,21 @@ class SplashScreen extends React.Component {
 
 			/*
 			*
-			@Users
+			@Store
 			*
 			*/
 			if(JSON.parse(res[4][1]) !== null) {
-				this.props.dispatchLocalStorageUsers({users: JSON.parse(res[4][1])})
+				this.props.dispatchLocalStorageUsers({store: JSON.parse(res[4][1])})
 			}
 			/**/
 
 			/*
 			*
-			@Store
+			@Users
 			*
 			*/
 			if(JSON.parse(res[5][1]) !== null) {
-				this.props.dispatchLocalStorageUsers({store: JSON.parse(res[5][1])})
+				this.props.dispatchLocalStorageUsers({users: JSON.parse(res[5][1])})
 			}
 			/**/
 

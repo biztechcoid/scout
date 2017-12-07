@@ -455,6 +455,7 @@ const CategoryReducers = (state = initialState, action) => {
 					}
 				}
 			}
+			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
 			return {
 				...state,
 				data: [...state.data]

@@ -10,14 +10,18 @@ import SplashScreen from './pages/splash'
 import LoginScreen from './pages/login'
 import RegisterScreen from './pages/login/register'
 import CabangScreen from './pages/login/cabang'
+import ListUsersScreen from './pages/login/listUsers'
+
 import HomeManagerScreen from './routes/homeManager'
 import HomeAdminScreen from './routes/homeAdmin'
 import HomeScreen from './routes/home'
-import ScanQRScreen from './pages/sale/scanQR'
+
 import ProductScreen from './pages/inventory/product'
 import IngredientsScreen from './pages/inventory/ingredients'
 import BahanBakuScreen from './pages/inventory/bahanBaku'
+
 import SearchScreen from './pages/sale/search'
+import ScanQRScreen from './pages/sale/scanQR'
 
 
 const StackNavigatorConfig = {
@@ -50,6 +54,16 @@ export const AppNavigator = StackNavigator({
 	},
 	Cabang: {
 		screen: CabangScreen,
+		navigationOptions: {
+			// header: null,
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	ListUsers: {
+		screen: ListUsersScreen,
 		navigationOptions: {
 			// header: null,
 			headerTintColor: 'white',

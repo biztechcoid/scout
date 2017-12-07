@@ -166,31 +166,37 @@ class InventoryScreen extends React.Component {
 					dataSource = {ds.cloneWithRows(this.props.category)}
 					enableEmptySections = {true}
 					renderRow = {(content, section, row) =>
-						<View style = { styles.category }>
-							<Touchable
-								style = {{ justifyContent: 'center' }}
-								onPress = { () => this.props.navigation.navigate('Product', { index: Number(row), content: content }) }>
-								<View style = {{ flexDirection: 'row' }}>
-									<View style = {{ flexDirection: 'column' }}>
-										<Text> {content.name} </Text>
+					<View>
+						{content.idCabang === this.props.profile.idCabang ?
+							<View style = { styles.category }>
+								<Touchable
+									style = {{ justifyContent: 'center' }}
+									onPress = { () => this.props.navigation.navigate('Product', { index: Number(row), content: content }) }>
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ flexDirection: 'column' }}>
+											<Text> {content.name} </Text>
+										</View>
 									</View>
-								</View>
-							</Touchable>
+								</Touchable>
 
-							<ButtonIcons
-								style = {{ width: 40, height: 40 }}
-								onPress = { this.__updateCategory.bind(this, content) }
-								name = 'md-create'
-								color = 'grey'
-								size = { 20 }/>
+								<ButtonIcons
+									style = {{ width: 40, height: 40 }}
+									onPress = { this.__updateCategory.bind(this, content) }
+									name = 'md-create'
+									color = 'grey'
+									size = { 20 }/>
 
-							<ButtonIcons
-								style = {{ width: 40, height: 40 }}
-								onPress = { this._deleteCategory.bind(this, content) }
-								name = 'md-close'
-								color = 'grey'
-								size = { 20 }/>
-						</View>
+								<ButtonIcons
+									style = {{ width: 40, height: 40 }}
+									onPress = { this._deleteCategory.bind(this, content) }
+									name = 'md-close'
+									color = 'grey'
+									size = { 20 }/>
+							</View>
+							:
+							null
+						}
+					</View>
 				}/>
 
 				{

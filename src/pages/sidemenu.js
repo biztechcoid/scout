@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { logout } from '../redux/actions'
 
 import {
+	Package,
 	Touchable
 } from '../components'
 
@@ -25,16 +26,17 @@ class SideMenuScreen extends React.Component {
 
 	render() {
 		return (
-		<View>
+		<View style = {{flex: 1}}>
 			<View style={{ backgroundColor:'#353535' }}>
 				<View style = {{ height: 40,marginTop:20,marginBottom:20, borderWidth: 0, borderBottomWidth: 0, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
-                    <View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center',width:'100%'}}>
-                        <View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
-                            <Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('./login/img/logo-500px.png')} />
-                        </View>
-                    </View>
+					<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center',width:'100%'}}>
+						<View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
+							<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('./login/img/logo-500px.png')} />
+						</View>
+					</View>
 				</View>
 			</View>
+
 			<View>
 				{this.props.user ?
 					<View style = {{ width:'90%',marginLeft:'5%',marginRight:'5%', marginTop:20 }}>
@@ -56,11 +58,23 @@ class SideMenuScreen extends React.Component {
 					null
 				}
 
-				<View style = {{ height: 40,marginTop:20, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+				{this.props.user.idCabang === null ?
+					<View style = {{ height: 40,marginTop:20, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+						<Touchable
+							style = {{ justifyContent: 'center' }}
+							onPress = { () => this.props.screenProps.navigate('Register', {type: 'Tambah User'}) }>
+							<Text> Tambah User </Text>
+						</Touchable>
+					</View>
+					:
+					null
+				}
+
+				<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 					<Touchable
 						style = {{ justifyContent: 'center' }}
-						onPress = { () => this.props.screenProps.navigate('Register', {type: 'Tambah User'}) }>
-						<Text> Tambah User </Text>
+						onPress = { () => this.props.screenProps.navigate('ListUsers') }>
+						<Text> List User </Text>
 					</Touchable>
 				</View>
 
@@ -71,6 +85,10 @@ class SideMenuScreen extends React.Component {
 						<Text> Keluar </Text>
 					</Touchable>
 				</View>
+			</View>
+
+			<View style = {{position: 'absolute', left: 0, bottom: 0, right: 0, alignItems: 'center'}}>
+				<Text> version {Package.version} </Text>
 			</View>
 		</View>
 		)

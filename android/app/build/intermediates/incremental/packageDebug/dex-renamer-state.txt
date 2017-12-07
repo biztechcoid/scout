@@ -1,4 +1,4 @@
-#Mon Nov 27 15:57:57 WIB 2017
-base.0=/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
+#Mon Dec 04 08:41:54 WIB 2017
+base.0=/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main
 renamed.0=classes.dex
-file.0=/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex
+file.0=/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex

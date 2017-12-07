@@ -12,16 +12,16 @@
         "source": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_activity_chooser_view_list_item.xml"
     },
     {
-        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/notification_template_part_time.xml",
-        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/notification_template_part_time.xml"
+        "merged": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/abc_action_menu_layout.xml",
+        "source": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_action_menu_layout.xml"
     },
     {
         "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/fps_view.xml",
         "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.49.3/res/layout/fps_view.xml"
     },
     {
-        "merged": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/abc_action_menu_layout.xml",
-        "source": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_action_menu_layout.xml"
+        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/notification_template_part_time.xml",
+        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/notification_template_part_time.xml"
     },
     {
         "merged": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view_list_item.xml",
@@ -32,12 +32,12 @@
         "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_select_dialog_material.xml"
     },
     {
-        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/support_simple_spinner_dropdown_item.xml",
-        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/support_simple_spinner_dropdown_item.xml"
-    },
-    {
         "merged": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/notification_template_part_chronometer.xml",
         "source": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/support_simple_spinner_dropdown_item.xml",
+        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/support_simple_spinner_dropdown_item.xml"
     },
     {
         "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/abc_screen_content_include.xml",
@@ -64,20 +64,20 @@
         "source": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_action_menu_layout.xml"
     },
     {
-        "merged": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/abc_alert_dialog_material.xml",
-        "source": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_alert_dialog_material.xml"
-    },
-    {
         "merged": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/fps_view.xml",
         "source": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.49.3/res/layout/fps_view.xml"
     },
     {
-        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view_list_item.xml",
-        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_activity_chooser_view_list_item.xml"
+        "merged": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/abc_alert_dialog_material.xml",
+        "source": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_alert_dialog_material.xml"
     },
     {
         "merged": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/redbox_item_title.xml",
         "source": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.49.3/res/layout/redbox_item_title.xml"
+    },
+    {
+        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/abc_activity_chooser_view_list_item.xml",
+        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_activity_chooser_view_list_item.xml"
     },
     {
         "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/select_dialog_item_material.xml",
@@ -108,12 +108,12 @@
         "source": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_action_bar_title_item.xml"
     },
     {
-        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/abc_search_view.xml",
-        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_search_view.xml"
-    },
-    {
         "merged": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/abc_screen_simple.xml",
         "source": "/home/stefanus/Documents/react-native-franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_screen_simple.xml"
+    },
+    {
+        "merged": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/res/merged/debug/layout/abc_search_view.xml",
+        "source": "/home/stefanus/Documents/react-native/franchise/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/layout/abc_search_view.xml"
     },
     {
         "merged": "/Users/inovasisolusi/Documents/StefanusAdhie/react-native-franchise/android/app/build/intermediates/res/merged/debug/layout/abc_screen_content_include.xml",

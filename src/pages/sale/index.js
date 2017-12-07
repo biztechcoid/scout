@@ -875,75 +875,81 @@ class SaleScreen extends React.Component {
 											list category
 											*
 											*/
-											<View style = {{ flex: 1, /*width: (width / 3) - 10,*/ marginLeft: 2, marginRight: 2 }}>
-												<View 
-													// onLayout = {(evt) => this.height1 = evt.nativeEvent.layout.width}
-													style = {[ styles.category, {/*height: this.height1*/}]}>
-													<Touchable
-														style = {{ /*height: this.height1,*/ alignItems: 'center', justifyContent: 'center' }}
-														onPress = { this._collapse.bind(this, Number(index)) }>
-														<View style = {{ flexDirection: 'row' }}>
-															<View style = {{ flexDirection: 'column' }}>
-																<Text> {content.name} </Text>
-															</View>
-														</View>
-													</Touchable>
-												</View>
-
-												{this.state.view[Number(index)] ?
-													/*
-													*
-													list product
-													*
-													*/
-													<ListView
-														contentContainerStyle = {{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}
-														dataSource = {ds.cloneWithRows(content.product)}
-														enableEmptySections = {true}
-														renderRow = {(product, section, idx) =>
-															<View style = {{ /*flex: 1,*/ width: (width / 3) - 10, marginLeft: 2, marginRight: 2 }}>
-																<View
-																	style = {[ styles.category, { marginLeft: 10, flexDirection:'row',/*width:'20%', */height: (width / 3) - 10}]}>
-																	<Touchable
-														        style = {{ height: this.height1 - 10 }}
-																		onPress = { this._addSale.bind(this, content.idCategory, product) }>
-																		<View style = {{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-																			<Text> {product.name} </Text>
-																		</View>
-																	</Touchable>
-
-																	<ButtonIcons
-																		onPress = { this._collapseSubProduct.bind(this, Number(index) + Number(idx)) }
-																		name = { this.state.viewSubProduct[Number(index) + Number(idx)] ? 'ios-arrow-up' : 'ios-arrow-down' }
-																		color = 'grey'
-																		size = { 20 }/>
+											<View>
+												{content.idCabang === this.props.profile.idCabang ?
+													<View style = {{ flex: 1, /*width: (width / 3) - 10,*/ marginLeft: 2, marginRight: 2 }}>
+														<View 
+															// onLayout = {(evt) => this.height1 = evt.nativeEvent.layout.width}
+															style = {[ styles.category, {/*height: this.height1*/}]}>
+															<Touchable
+																style = {{ /*height: this.height1,*/ alignItems: 'center', justifyContent: 'center' }}
+																onPress = { this._collapse.bind(this, Number(index)) }>
+																<View style = {{ flexDirection: 'row' }}>
+																	<View style = {{ flexDirection: 'column' }}>
+																		<Text> {content.name} </Text>
+																	</View>
 																</View>
+															</Touchable>
+														</View>
 
-																{this.state.viewSubProduct[Number(index) + Number(idx)] ?
-																	/*
-																	*
-																	list sub product
-																	*
-																	*/
-																	<ListView
-																		dataSource = {ds.cloneWithRows(product.subProduct)}
-																		enableEmptySections = {true}
-																		renderRow = {(subProduct, section, row) =>
-																		<View style = {[ styles.category, { marginLeft: 20, height: this.height1 - 20 }]}>
+														{this.state.view[Number(index)] ?
+															/*
+															*
+															list product
+															*
+															*/
+															<ListView
+																contentContainerStyle = {{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}
+																dataSource = {ds.cloneWithRows(content.product)}
+																enableEmptySections = {true}
+																renderRow = {(product, section, idx) =>
+																	<View style = {{ /*flex: 1,*/ width: (width / 3) - 10, marginLeft: 2, marginRight: 2 }}>
+																		<View
+																			style = {[ styles.category, { marginLeft: 10, flexDirection:'row',/*width:'20%', */height: (width / 3) - 10}]}>
 																			<Touchable
-																				style = {{height: this.height1 - 20 }}
-																				onPress = { this._addSaleSubProduct.bind(this, content.idCategory, product.idProduct, subProduct) }>
+																        style = {{ height: this.height1 - 10 }}
+																				onPress = { this._addSale.bind(this, content.idCategory, product) }>
 																				<View style = {{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-																					<Text> {subProduct.name} </Text>
+																					<Text> {product.name} </Text>
 																				</View>
 																			</Touchable>
+
+																			<ButtonIcons
+																				onPress = { this._collapseSubProduct.bind(this, Number(index) + Number(idx)) }
+																				name = { this.state.viewSubProduct[Number(index) + Number(idx)] ? 'ios-arrow-up' : 'ios-arrow-down' }
+																				color = 'grey'
+																				size = { 20 }/>
 																		</View>
-																	}/>
-																	:
-																	null
-																}
-															</View>
-													}/>
+
+																		{this.state.viewSubProduct[Number(index) + Number(idx)] ?
+																			/*
+																			*
+																			list sub product
+																			*
+																			*/
+																			<ListView
+																				dataSource = {ds.cloneWithRows(product.subProduct)}
+																				enableEmptySections = {true}
+																				renderRow = {(subProduct, section, row) =>
+																				<View style = {[ styles.category, { marginLeft: 20, height: this.height1 - 20 }]}>
+																					<Touchable
+																						style = {{height: this.height1 - 20 }}
+																						onPress = { this._addSaleSubProduct.bind(this, content.idCategory, product.idProduct, subProduct) }>
+																						<View style = {{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+																							<Text> {subProduct.name} </Text>
+																						</View>
+																					</Touchable>
+																				</View>
+																			}/>
+																			:
+																			null
+																		}
+																	</View>
+															}/>
+															:
+															null
+														}
+													</View>
 													:
 													null
 												}
@@ -1078,7 +1084,8 @@ const styles = StyleSheet.create({
 function mapStateToProps (state) {
 	return {
 		category: state.category.data,
-		refreshing: state.category.refreshing
+		refreshing: state.category.refreshing,
+		profile: state.user.data
 	}
 }
 

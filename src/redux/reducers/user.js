@@ -60,12 +60,25 @@ const initialState = {
 const UserReducers = (state = initialState, action) => {
 	switch(action.type) {
 		case 'LOCAL_STORAGE_USERS':
-			if(action.data.users == undefined) {
+			if(action.data.users === undefined) {
 				return {
 					...state,
 					store: action.data.store
 				}
 			} else {
+				for(var i in action.data.users) {
+					for(var j in state.store) {
+						if(action.data.users[i].idPusat === state.store[j].idPusat) {
+							for(var k in state.store[j].cabang) {
+								if(action.data.users[i].idCabang === state.store[j].cabang[k].idCabang) {
+									action.data.users[i]['cabangName'] = state.store[j].cabang[k].name
+								} else if(action.data.users[i].idCabang === null) {
+									action.data.users[i]['cabangName'] = 'Pusat'
+								}
+							}
+						}
+					}
+				}
 				return {
 					...state,
 					users: action.data.users
@@ -129,17 +142,21 @@ const UserReducers = (state = initialState, action) => {
 		*/
 		case 'ADD_USER':
 			var store, addUser
-			console.log('add cabang', action.data.data)
+			// console.log('add cabang', action.data.data)
 				store = {
 					idCabang: makeId(),
 					name: action.data.data.namaCabang,
 					ket: action.data.data.ket
 				}
-				state.store[0].cabang = [...state.store[0].cabang, store]
+				for(var i in state.store) {
+					if(state.store[i].idPusat === state.users.idPusat) {
+						state.store[i].cabang = [...state.store[i].cabang, store]
+					}
+				}
 					
 				addUser = {
 					idUser: makeId(),
-					idPusat: state.store[0].idPusat,
+					idPusat: state.user.idPusat,
 					idCabang: store.idCabang,
 					name: action.data.data.name,
 					email: action.data.data.email,
