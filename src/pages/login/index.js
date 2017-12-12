@@ -4,6 +4,7 @@ import {
 	Alert,
 	AsyncStorage,
 	Dimensions,
+	Keyboard,
 	Text,
 	TextInput,
 	View,
@@ -29,6 +30,7 @@ import {
 
 class LoginScreen extends React.Component {
 	state = {
+		keyboard: false,
 		email: null,
 		password: null
 	}
@@ -96,6 +98,7 @@ class LoginScreen extends React.Component {
 					<ActivityIndicator size = 'large' color= '#6ecbe0' />
 				</MyModal>
 
+				<ScrollView>
 				<View style = { styles.containerlogo }>
 					<View style = { styles.logo }>
 						<Image style = { styles.logoimg } source={require('./img/logo-500px.png')} />
@@ -135,18 +138,46 @@ class LoginScreen extends React.Component {
 							name = 'MASUK' />
 					</View>
 				</View>
-				<View style = { styles.stickyBottom }>
-			        <Text
-			        onPress = { () => this.props.navigation.navigate('Register', {type: 'Register'}) }
-			        style = {{ textAlign:'center' }}>
-			            Belum Punya Akun ? &nbsp;
-			            <Text style={{color: '#2278a5'}}>
-                                 DAFTAR
-                            </Text>
-			        </Text>
-				</View>
+				</ScrollView>
+
+				{this.state.keyboard == false ?
+					<View style = { styles.stickyBottom }>
+						<Text
+							onPress = { () => this.props.navigation.navigate('Register', {type: 'Register'}) }
+							style = {{ textAlign:'center' }}>
+								Belum Punya Akun ? &nbsp;
+								<Text style={{color: '#2278a5'}}>
+									DAFTAR
+								</Text>
+						</Text>
+					</View>
+					:
+					null
+				}
 			</View>
 		)
+	}
+
+	_keyboardDidShow() {
+		this.setState({
+			keyboard: true
+		})
+	}
+
+	_keyboardDidHide() {
+		this.setState({
+			keyboard: false
+		})
+	}
+
+	componentWillMount() {
+		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
+		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
+	}
+
+	componentWillUnmount() {
+		this.keyboardDidShowListener.remove()
+		this.keyboardDidHideListener.remove()
 	}
 }
 
@@ -159,7 +190,7 @@ const styles = StyleSheet.create({
 	},
 	containerlogo: {
 		height: (height / 2) - 10,
-        alignItems: 'center'
+		alignItems: 'center'
 	},
 	logo: {
 		flex: 1,
@@ -167,13 +198,13 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	logoimg: {
-        flex: 1,
-        width: null,
-        height: null,
-        resizeMode: 'contain'
+		flex: 1,
+		width: null,
+		height: null,
+		resizeMode: 'contain'
 	},
 	txt: {
-        color:'#FFF',
+		color:'#FFF',
 	},
 	content: {
 		flex: 1,

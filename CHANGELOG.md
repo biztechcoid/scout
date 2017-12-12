@@ -202,3 +202,6 @@
 	* manufacturing
 	* bahan baku
 	* category with idCabang
+
+
+## 0.0.2

@@ -58,14 +58,17 @@ class SideMenuScreen extends React.Component {
 					null
 				}
 
-				{this.props.user.idCabang === null ?
-					<View style = {{ height: 40,marginTop:20, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
-						<Touchable
-							style = {{ justifyContent: 'center' }}
-							onPress = { () => this.props.screenProps.navigate('Register', {type: 'Tambah User'}) }>
-							<Text> Tambah User </Text>
-						</Touchable>
-					</View>
+				{this.props.user ?
+					this.props.user.idCabang === null ?
+						<View style = {{ height: 40,marginTop:20, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+							<Touchable
+								style = {{ justifyContent: 'center' }}
+								onPress = { () => this.props.screenProps.navigate('Register', {type: 'Tambah User'}) }>
+								<Text> Tambah User </Text>
+							</Touchable>
+						</View>
+						:
+						null
 					:
 					null
 				}
