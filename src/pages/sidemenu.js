@@ -31,7 +31,7 @@ class SideMenuScreen extends React.Component {
 				<View style = {{ height: 40,marginTop:20,marginBottom:20, borderWidth: 0, borderBottomWidth: 0, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 					<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center',width:'100%'}}>
 						<View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
-							<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('./login/img/logo-500px.png')} />
+							<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('../assets/img/LOGO.png')} />
 						</View>
 					</View>
 				</View>

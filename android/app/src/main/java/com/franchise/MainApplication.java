@@ -1,4 +1,4 @@
-package com.franchise;
+package com.scoutbiz;
 
 import android.app.Application;
 

@@ -101,7 +101,7 @@ class LoginScreen extends React.Component {
 				<ScrollView>
 				<View style = { styles.containerlogo }>
 					<View style = { styles.logo }>
-						<Image style = { styles.logoimg } source={require('./img/logo-500px.png')} />
+						<Image style = { styles.logoimg } source={require('../../assets/img/LOGO.png')} />
 					</View>
 				</View>
 

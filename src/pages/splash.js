@@ -20,7 +20,7 @@ class SplashScreen extends React.Component {
 		return(
 			<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#353535' }}>
 				<View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
-					<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('./login/img/logo-500px.png')} />
+					<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('../assets/img/LOGO.png')} />
 				</View>
 			</View>
 		)
