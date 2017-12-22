@@ -114,7 +114,7 @@ class InventoryScreen extends React.Component {
 		return(
 			<View style = { styles.container }>
 				<MyModal
-					top = {0.5}
+					top = {this.state.keyboard ? 0 : 0.5}
 					left = {0.5}
 					visible = { this.state.modalVisible }
 					onRequestClose = { this._setModalVisible.bind(this, false) }>
@@ -143,7 +143,7 @@ class InventoryScreen extends React.Component {
 						<View style = { styles.content }>
 							<View style = { styles.stickyBottom }>
 								<Button
-						            color= '#94abb6'
+									color= '#94abb6'
 									onPress = { () => this.setState({ category: null })}
 									name = 'Hapus'/>
 								<Text>&nbsp;</Text>

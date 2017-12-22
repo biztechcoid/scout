@@ -444,6 +444,7 @@ class SaleScreen extends React.Component {
 	}
 
 	_bayar() {
+		const stateCopy = this.state
 		Alert.alert(null, 'Anda yakin transaksi valid ?',
 			[
 				{ text: 'Yakin', onPress: () => {
@@ -457,6 +458,7 @@ class SaleScreen extends React.Component {
 						discount: 0,
 						change: 0
 					})
+					this._modal()
 				}},
 				{ text: 'Tidak' }
 			])
@@ -491,7 +493,7 @@ class SaleScreen extends React.Component {
 				style = { styles.container }>
 
 				<MyModal
-					top = {0.5}
+					top = {this.state.keyboard ? 0 : 0.5}
 					left = {0.5}
 					cancelable = {false}
 					visible = { this.state.modal }

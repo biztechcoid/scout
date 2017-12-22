@@ -205,3 +205,5 @@
 
 
 ## 0.0.2
+
+1. bug fix penjualan
