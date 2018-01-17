@@ -7,6 +7,7 @@ import {
 	TextInput,
 	View
 } from 'react-native'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import { connect } from 'react-redux'
 import {
@@ -16,7 +17,8 @@ import {
 
 import {
 	Button,
-	MyModal
+	MyModal,
+	Touchable
 } from '../../components'
 
 class RegisterScreen extends React.Component {
@@ -34,10 +36,18 @@ class RegisterScreen extends React.Component {
 		cabang: null,
 		pusat: null,
 		namaCabang: null,
-		ket: null
+		ket: null,
+
+		access: {
+			persediaan: false,
+			penjualan: false,
+			laporan: false,
+			monitoring: false
+		}
 	}
 
 	_register() {
+		const stateCopy = this.state
 		if(this.state.name == '' || this.state.name == null) {
 			Alert.alert(null, 'Nama tidak valid')
 		} else if(this.state.email == '' || this.state.email == null) {
@@ -48,6 +58,13 @@ class RegisterScreen extends React.Component {
 			Alert.alert(null, 'Password tidak valid')
 		} else {
 			if(this.state.password === this.state.confirmPassword) {
+				stateCopy.access = {
+					persediaan: true,
+					penjualan: true,
+					laporan: true,
+					monitoring: true
+				}
+
 				this.props.dispatchRegisterUser({
 					data: this.state,
 					navigation: this.props.navigation
@@ -109,6 +126,9 @@ class RegisterScreen extends React.Component {
 				if(stateCopy.cabang === null) {
 					Alert.alert(null, 'cabang tidak valid')
 				} else {
+					if(!stateCopy.access.persediaan && !stateCopy.access.penjualan && !stateCopy.access.laporan && !stateCopy.access.monitoring) {
+						return Alert.alert(null, 'silahkan pilih hak akses')
+					}
 					this.props.dispatchAddUser({
 						data: stateCopy,
 						navigation: this.props.navigation
@@ -117,6 +137,31 @@ class RegisterScreen extends React.Component {
 			} else {
 				Alert.alert(null, 'ulangi password')
 			}
+		}
+	}
+
+	_access(value) {
+		const stateCopy = this.state
+		switch(value) {
+			case 'persediaan':
+				stateCopy.access.persediaan = !stateCopy.access.persediaan
+				this.setState(stateCopy)
+				break
+
+			case 'penjualan':
+				stateCopy.access.penjualan = !stateCopy.access.penjualan
+				this.setState(stateCopy)
+				break
+
+			case 'laporan':
+				stateCopy.access.laporan = !stateCopy.access.laporan
+				this.setState(stateCopy)
+				break
+
+			case 'monitoring':
+				stateCopy.access.monitoring = !stateCopy.access.monitoring
+				this.setState(stateCopy)
+				break
 		}
 	}
 
@@ -129,30 +174,30 @@ class RegisterScreen extends React.Component {
 					<View style = {{ flexDirection: 'row' }} >
 						<View style = {{ flexDirection: 'column' }}>
 							<View style = {{ height: 45, justifyContent: 'center' }}>
-								<Text> Nama </Text>
+								<Text>Nama</Text>
 							</View>
 
 							<View style = {{ height: 45, justifyContent: 'center' }}>
-								<Text> Email </Text>
+								<Text>Email</Text>
 							</View>
 
 							<View style = {{ height: 45, justifyContent: 'center' }}>
-								<Text> Telepon </Text>
+								<Text>Telepon</Text>
 							</View>
 
 							<View style = {{ height: 45, justifyContent: 'center' }}>
-								<Text> Password </Text>
+								<Text>Password</Text>
 							</View>
 
 							<View style = {{ height: 45, justifyContent: 'center' }}>
-								<Text> Ulangi Password </Text>
+								<Text>Ulangi Password</Text>
 							</View>
 
 							{this.props.navigation.state.params.type === 'Register' ?
 								null
 								:
 								<View style = {{ height: 45, justifyContent: 'center' }}>
-									<Text> Cabang </Text>
+									<Text>Cabang</Text>
 								</View>
 							}
 
@@ -163,11 +208,11 @@ class RegisterScreen extends React.Component {
 									</View>*/}
 
 									<View style = {{ height: 45, justifyContent: 'center' }}>
-										<Text> Nama </Text>
+										<Text>Nama</Text>
 									</View>
 
 									<View style = {{ height: 45, justifyContent: 'center' }}>
-										<Text> Keterangan </Text>
+										<Text>Keterangan</Text>
 									</View>
 								</View>
 								:
@@ -176,13 +221,21 @@ class RegisterScreen extends React.Component {
 									:
 									<View>
 										<View style = {{ height: 45, justifyContent: 'center' }}>
-											<Text> Nama </Text>
+											<Text>Nama</Text>
 										</View>
 
 										<View style = {{ height: 45, justifyContent: 'center' }}>
-											<Text> Keterangan </Text>
+											<Text>Keterangan</Text>
 										</View>
 									</View>
+							}
+
+							{this.props.navigation.state.params.type === 'Register' ?
+								null
+								:
+								<View style = {{ height: 45, justifyContent: 'center' }}>
+									<Text>Hak Akses</Text>
+								</View>
 							}
 						</View>
 
@@ -195,7 +248,7 @@ class RegisterScreen extends React.Component {
 								<TextInput
 									autoCapitalize = 'words'
 									returnKeyType = 'next'
-							        underlineColorAndroid = '#bebebe'
+									underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({name: text }) }
 									onSubmitEditing = { () => this._email.focus() }
 									//placeholder = 'Nama'
@@ -213,7 +266,7 @@ class RegisterScreen extends React.Component {
 									autoCapitalize = 'none'
 									keyboardType = 'email-address'
 									returnKeyType = 'next'
-							        underlineColorAndroid = '#bebebe'
+									underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({email: text }) }
 									onSubmitEditing = { () => this._phone.focus() }
 									//placeholder = 'Email'
@@ -231,7 +284,7 @@ class RegisterScreen extends React.Component {
 									autoCapitalize = 'none'
 									keyboardType = 'phone-pad'
 									returnKeyType = 'next'
-							        underlineColorAndroid = '#bebebe'
+									underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({phone: text }) }
 									onSubmitEditing = { () => this._password.focus() }
 									//placeholder = 'Telepon'
@@ -248,7 +301,7 @@ class RegisterScreen extends React.Component {
 									ref = { (c) => this._password = c }
 									autoCapitalize = 'none'
 									returnKeyType = 'next'
-							        underlineColorAndroid = '#bebebe'
+									underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({password: text }) }
 									onSubmitEditing = { () => this._confirmPassword.focus() }
 									//placeholder = 'Password'
@@ -266,7 +319,7 @@ class RegisterScreen extends React.Component {
 									ref = { (c) => this._confirmPassword = c }
 									autoCapitalize = 'none'
 									returnKeyType = 'done'
-							    underlineColorAndroid = '#bebebe'
+									underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({confirmPassword: text }) }
 									onSubmitEditing = { this.props.navigation.state.params.type === 'Register' ? this._register.bind(this) : this._addUser.bind(this) }
 									//placeholder = 'Ulangi Password'
@@ -362,8 +415,88 @@ class RegisterScreen extends React.Component {
 										</View>
 									</View>
 							}
+
+							{this.props.navigation.state.params.type === 'Register' ?
+								null
+								:
+								<View style = {{ flexDirection: 'row', height: 45 }}>
+									<View style = {{ justifyContent: 'center' }}>
+										<Text> : </Text>
+									</View>
+								</View>
+							}
 						</View>
 					</View>
+
+					{this.props.navigation.state.params.type === 'Register' ?
+						null
+						:
+						<View style = {{marginLeft: 10}}>
+							<View style = {{borderWidth: 0}}>
+								<Touchable
+									style = {{flex: 1, flexDirection: 'row'}}
+									onPress = {this._access.bind(this, 'persediaan')}>
+									<View style = {{justifyContent: 'center'}}>
+										<Ionicons
+											name = {this.state.access.persediaan ? 'ios-checkbox-outline' : 'ios-square-outline'}
+											size = { 25 }/>
+									</View>
+
+									<View style = {{justifyContent: 'center', marginLeft: 5}}>
+										<Text> Persediaan </Text>
+									</View>
+								</Touchable>
+							</View>
+
+							<View style = {{borderWidth: 0}}>
+								<Touchable
+									style = {{flexDirection: 'row'}}
+									onPress = {this._access.bind(this, 'penjualan')}>
+									<View style = {{justifyContent: 'center'}}>
+										<Ionicons
+											name = {this.state.access.penjualan ? 'ios-checkbox-outline' : 'ios-square-outline'}
+											size = { 25 }/>
+									</View>
+
+									<View style = {{justifyContent: 'center', marginLeft: 5}}>
+										<Text> Penjualan </Text>
+									</View>
+								</Touchable>
+							</View>
+
+							<View style = {{borderWidth: 0}}>
+								<Touchable
+									style = {{flexDirection: 'row'}}
+									onPress = {this._access.bind(this, 'laporan')}>
+									<View style = {{justifyContent: 'center'}}>
+										<Ionicons
+											name = {this.state.access.laporan ? 'ios-checkbox-outline' : 'ios-square-outline'}
+											size = { 25 }/>
+									</View>
+
+									<View style = {{justifyContent: 'center', marginLeft: 5}}>
+										<Text> Laporan </Text>
+									</View>
+								</Touchable>
+							</View>
+
+							<View style = {{borderWidth: 0}}>
+								<Touchable
+									style = {{flexDirection: 'row'}}
+									onPress = {this._access.bind(this, 'monitoring')}>
+									<View style = {{justifyContent: 'center'}}>
+										<Ionicons
+											name = {this.state.access.monitoring ? 'ios-checkbox-outline' : 'ios-square-outline'}
+											size = { 25 }/>
+									</View>
+
+									<View style = {{justifyContent: 'center', marginLeft: 5}}>
+										<Text> Monitoring </Text>
+									</View>
+								</Touchable>
+							</View>
+						</View>
+					}
 				</View>
 
 				<View style = {{ marginTop: 20,width:'95%',marginLeft:'2.5%',marginRight:'2.5%' }}>

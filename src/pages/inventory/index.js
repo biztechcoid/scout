@@ -46,7 +46,7 @@ class InventoryScreen extends React.Component {
 				size = { 30 }/>
 		),
 		headerRight: (
-			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connectionInfo === 'none' ? 'red' : 'green' : 'red' }}/>
+			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connection ? 'green' : 'red' : 'red' }}/>
 		)
 	})
 
@@ -55,22 +55,28 @@ class InventoryScreen extends React.Component {
 		modalVisible: false,
 
 		idCategory: null,
-		category: null
+		category: null,
+
+		connection: null
 	}
 
 	_addCategory() {
-		if(this.state.category == '' || this.state.category == null) {
-			Alert.alert(null, 'nama category tidak valid')
-		} else {
-			var data = {
-				idCabang: this.props.profile.idCabang,
-				name: this.state.category
+		if(this.state.connection) {
+			if(this.state.category == '' || this.state.category == null) {
+				Alert.alert(null, 'nama category tidak valid')
+			} else {
+				var data = {
+					idCabang: this.props.profile.idCabang,
+					name: this.state.category
+				}
+				this._setModalVisible(false)
+				this.props.dispatchAddCategory(data)
+				this.setState({
+					category: null
+				})
 			}
-			this._setModalVisible(false)
-			this.props.dispatchAddCategory(data)
-			this.setState({
-				category: null
-			})
+		} else {
+			Alert.alert(null, 'koneksi internet bermasalah')
 		}
 	}
 
@@ -83,31 +89,39 @@ class InventoryScreen extends React.Component {
 	}
 
 	_updateCategory() {
-		if(this.state.category == '' || this.state.category == null) {
-			Alert.alert(null, 'nama category tidak valid')
-		} else {
-			var data = {
-				idCategory: this.state.idCategory,
-				name: this.state.category
+		if(this.state.connection) {
+			if(this.state.category == '' || this.state.category == null) {
+				Alert.alert(null, 'nama category tidak valid')
+			} else {
+				var data = {
+					idCategory: this.state.idCategory,
+					name: this.state.category
+				}
+				this._setModalVisible(false)
+				this.props.dispatchUpdateCategory(data)
+				this.setState({
+					idCategory: null,
+					category: null
+				})
 			}
-			this._setModalVisible(false)
-			this.props.dispatchUpdateCategory(data)
-			this.setState({
-				idCategory: null,
-				category: null
-			})
+		} else {
+			Alert.alert(null, 'koneksi internet bermasalah')
 		}
 	}
 
 	_deleteCategory(content) {
-		var data = {
-			idCategory: content.idCategory
+		if(this.state.connection) {
+			var data = {
+				idCategory: content.idCategory
+			}
+			Alert.alert(null, 'Anda yakin akan menghapus kategori '+ content.name,
+				[
+					{ text: 'Yakin', onPress: () => this.props.dispatchDeleteCategory(data) },
+					{ text: 'Batal' }
+				])
+		} else {
+			Alert.alert(null, 'koneksi internet bermasalah')
 		}
-		Alert.alert(null, 'Anda yakin akan menghapus kategori '+ content.name,
-			[
-				{ text: 'Yakin', onPress: () => this.props.dispatchDeleteCategory(data) },
-				{ text: 'Batal' }
-			])
 	}
 
 	render() {
@@ -317,16 +331,16 @@ class InventoryScreen extends React.Component {
 		})
 	}
 
-	handleFirstConnectivityChange(connectionInfo) {
-		// console.log('First change, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
-		
+	handleFirstConnectivityChange(isConnected) {
+		this.setState({connection: isConnected})
+
 		this.props.navigation.setParams({
-			connectionInfo: connectionInfo.type
+			connection: isConnected
 		})
-		
-		NetInfo.removeEventListener(
+
+		NetInfo.isConnected.removeEventListener(
 			'connectionChange',
-			this.handleFirstConnectivityChange.bind(this)
+			this.handleFirstConnectivityChange
 		)
 	}
 
@@ -336,17 +350,17 @@ class InventoryScreen extends React.Component {
 	}
 
 	componentDidMount() {
-		NetInfo.getConnectionInfo().then((connectionInfo) => {
-			// console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+		NetInfo.isConnected.fetch().then(isConnected => {
+			this.setState({connection: isConnected})
 
 			this.props.navigation.setParams({
-				connectionInfo: connectionInfo.type
+				connection: isConnected
 			})
 		})
-
-		NetInfo.addEventListener(
+		
+		NetInfo.isConnected.addEventListener(
 			'connectionChange',
-			this.handleFirstConnectivityChange.bind(this)
+			this.handleFirstConnectivityChange
 		)
 	}
 

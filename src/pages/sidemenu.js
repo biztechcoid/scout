@@ -1,10 +1,12 @@
 import React from 'react'
 import {
 	AsyncStorage,
+	Platform,
 	Text,
 	View,
 	Image
 } from 'react-native'
+import DeviceInfo from 'react-native-device-info-fork'
 
 import { connect } from 'react-redux'
 import { logout } from '../redux/actions'
@@ -20,6 +22,10 @@ import {
 
 
 class SideMenuScreen extends React.Component {
+	state = {
+		imei: null
+	}
+
 	_logout() {
 		this.props.dispatchLogout(this.props.screenProps)
 	}
@@ -90,11 +96,25 @@ class SideMenuScreen extends React.Component {
 				</View>
 			</View>
 
-			<View style = {{position: 'absolute', left: 0, bottom: 0, right: 0, alignItems: 'center'}}>
-				<Text> version {Package.version} </Text>
+			
+			<View style = {{position: 'absolute', left: 0, bottom: 0, right: 0}}>
+				<View style = {{flex: 1}}>
+					<Text> IMEI {this.state.imei} </Text>
+				</View>
+
+				<View style = {{flex: 1, alignItems: 'center'}}>
+					<Text> version {Package.version} </Text>
+				</View>
 			</View>
 		</View>
 		)
+	}
+
+	componentWillMount() {
+		Platform.OS === 'ios' ?
+			this.setState({imei: DeviceInfo.getIdfa()})
+			:
+			this.setState({imei: DeviceInfo.getImei()})
 	}
 }
 

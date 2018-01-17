@@ -14,7 +14,16 @@ import ListUsersScreen from './pages/login/listUsers'
 
 import HomeManagerScreen from './routes/homeManager'
 import HomeAdminScreen from './routes/homeAdmin'
-import HomeScreen from './routes/home'
+import {
+	// HomeScreen,
+	MyAppLevel2,
+	MyAppLevel3,
+	MyAppLevel4,
+	MyAppLevel5,
+	MyAppLevel6,
+	MyAppLevel8,
+	MyAppLevel10,
+} from './routes/home'
 
 import ProductScreen from './pages/inventory/product'
 import IngredientsScreen from './pages/inventory/ingredients'
@@ -84,8 +93,50 @@ export const AppNavigator = StackNavigator({
 			header: null
 		}
 	},
-	Home: {
+	/*Home: {
 		screen: HomeScreen,
+		navigationOptions: {
+			header: null
+		}
+	},*/
+	level2: {
+		screen: MyAppLevel2,
+		navigationOptions: {
+			header: null
+		}
+	},
+	level3: {
+		screen: MyAppLevel3,
+		navigationOptions: {
+			header: null
+		}
+	},
+	level4: {
+		screen: MyAppLevel4,
+		navigationOptions: {
+			header: null
+		}
+	},
+	level5: {
+		screen: MyAppLevel5,
+		navigationOptions: {
+			header: null
+		}
+	},
+	level6: {
+		screen: MyAppLevel6,
+		navigationOptions: {
+			header: null
+		}
+	},
+	level8: {
+		screen: MyAppLevel8,
+		navigationOptions: {
+			header: null
+		}
+	},
+	level10: {
+		screen: MyAppLevel10,
 		navigationOptions: {
 			header: null
 		}

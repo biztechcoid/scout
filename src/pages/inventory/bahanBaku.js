@@ -5,6 +5,7 @@ import {
 	Dimensions,
 	Keyboard,
 	Modal,
+	NetInfo,
 	View,
 	ScrollView,
 	StyleSheet,
@@ -43,13 +44,17 @@ class BahanBakuScreen extends React.Component {
 	state = {
 		keyboard: false,
 		modalVisible: false,
+		modalQty: false,
 
 		idIngredients: null,
 		barcode: null,
 		product: null,
 		cost: null,
 		price: null,
-		quantity: null
+		quantity: null,
+
+		connection: null,
+		data: {}
 	}
 
 	_scanQR() {
@@ -65,34 +70,38 @@ class BahanBakuScreen extends React.Component {
 	*
 	*/
 	_addIngredients() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
-		} else if(this.state.price == '' || this.state.price == null) {
+		} /*else if(this.state.price == '' || this.state.price == null) {
 			Alert.alert(null, 'price product tidak valid')
-		} else if(this.state.quantity == '' || this.state.quantity == null) {
+		}*/ else if(this.state.quantity == '' || this.state.quantity == null) {
 			Alert.alert(null, 'quantity product tidak valid')
 		} else {
-			var data = {
-				barcode: this.state.barcode,
-				name: this.state.product,
-				cost: Number(this.state.cost),
-				price: Number(this.state.price),
-				quantity: Number(this.state.quantity)
+			if(this.state.connection) {
+				var data = {
+					barcode: this.state.barcode,
+					name: this.state.product,
+					cost: Number(this.state.cost),
+					price: Number(this.state.price),
+					quantity: Number(this.state.quantity)
+				}
+				this._setModalVisible(false)
+				this.props.dispatchAddIngredients(data)
+				this.props.dispatchBarcodeProduct(null)
+				this.setState({
+					barcode: null,
+					product: null,
+					cost: null,
+					price: null,
+					quantity: null
+				})
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-			this._setModalVisible(false)
-			this.props.dispatchAddIngredients(data)
-			this.props.dispatchBarcodeProduct(null)
-			this.setState({
-				barcode: null,
-				product: null,
-				cost: null,
-				price: null,
-				quantity: null
-			})
 		}
 	}
 
@@ -109,69 +118,82 @@ class BahanBakuScreen extends React.Component {
 	}
 
 	_updateIngredients() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
-		} else if(this.state.price == '' || this.state.price == null) {
+		} /*else if(this.state.price == '' || this.state.price == null) {
 			Alert.alert(null, 'price product tidak valid')
-		} else if(this.state.quantity == '' || this.state.quantity == null) {
+		}*/ else if(this.state.quantity == '' || this.state.quantity == null) {
 			Alert.alert(null, 'quantity product tidak valid')
 		} else {
-			var data = {
-				idIngredients: this.state.idIngredients,
-				barcode: this.state.barcode,
-				name: this.state.product,
-				cost: this.state.cost,
-				price: this.state.price,
-				quantity: this.state.quantity
+			if(this.state.connection) {
+				var data = {
+					idIngredients: this.state.idIngredients,
+					barcode: this.state.barcode,
+					name: this.state.product,
+					cost: this.state.cost,
+					price: this.state.price,
+					quantity: this.state.quantity
+				}
+				this._setModalVisible(false)
+				this.props.dispatchUpdateIngredients(data)
+				this.props.dispatchBarcodeProduct(null)
+				this.setState({
+					idIngredients: null,
+					barcode: null,
+					product: null,
+					cost: null,
+					price: null,
+					quantity: null
+				})
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-			this._setModalVisible(false)
-			this.props.dispatchUpdateIngredients(data)
-			this.props.dispatchBarcodeProduct(null)
-			this.setState({
-				idIngredients: null,
-				barcode: null,
-				product: null,
-				cost: null,
-				price: null,
-				quantity: null
-			})
 		}
 	}
 
 	_deleteIngredients(content) {
-		var data = {
-			idIngredients: content.idIngredients
+		if(this.state.connection) {
+			var data = {
+				idIngredients: content.idIngredients
+			}
+			Alert.alert(null, 'Anda yakin akan menghapus product ' + content.name,
+				[
+					{ text: 'Yakin', onPress: () => this.props.dispatchDeleteIngredients(data) },
+					{ text: 'Batal' }
+				])
+		} else {
+			Alert.alert(null, 'koneksi internet bermasalah')
 		}
-		Alert.alert(null, 'Anda yakin akan menghapus product '+ content.name,
-			[
-				{ text: 'Yakin', onPress: () => this.props.dispatchDeleteIngredients(data) },
-				{ text: 'Batal' }
-			])
 	}
 	/**/
 
 	_pushIngredients(ingredients) {
 		var category = this.props.category[this.props.navigation.state.params.idxCategory]
 		var product = category.product[this.props.navigation.state.params.idxProduct]
-		var data = {
-			idCategory: category.idCategory,
-			idProduct: product.idProduct,
-			ingredients: ingredients
-		}
+		var stateCopy = this.state
+		stateCopy.data['idCategory'] = category.idCategory
+		stateCopy.data['idProduct'] = product.idProduct
+		stateCopy.data['ingredients'] = {}
+		stateCopy.data.ingredients['idIngredients'] = ingredients.idIngredients
+		this.setState(stateCopy)
 
-		if(product.ingredients.length === 0) {
-			return this.props.dispatchPushIngredients(data), this.props.navigation.goBack()
-		} else {
-			for(var i in product.ingredients) {
-				if(product.ingredients[i].idIngredients === ingredients.idIngredients) {
-					return Alert.alert(null, ingredients.name + ' sudah ada di bahan baku')
+		if(this.state.connection) {
+			if(product.ingredients.length === 0) {
+				return this._setModalQty(true)
+			} else {
+				for(var i in product.ingredients) {
+					if(product.ingredients[i] === ingredients.idIngredients) {
+						return Alert.alert(null, ingredients.name + ' sudah ada di bahan baku')
+					}
 				}
+				return this._setModalQty(true)
 			}
-			return this.props.dispatchPushIngredients(data), this.props.navigation.goBack()
+		} else {
+			Alert.alert(null, 'koneksi internet bermasalah')
 		}
 		/*var data = {
 			idCategory: this.props.navigation.state.params.idCategory,
@@ -192,11 +214,49 @@ class BahanBakuScreen extends React.Component {
 		}*/
 	}
 
+	_submitIngredients() {
+		const stateCopy = this.state
+		stateCopy.data.ingredients['qty'] = this.state.qty
+		this.setState(stateCopy)
+		this.props.dispatchPushIngredients(this.state.data)
+		this._setModalQty(false)
+		this.props.navigation.goBack()
+	}
+
 	render() {
 		return(
 			<View style = { styles.container }>
 				<MyModal
 					top = {0.5}
+					left = {0.5}
+					contentStyle = {{flex: 1}}
+					visible = {this.state.modalQty}
+					onRequestClose = {this._setModalQty.bind(this, false)}>
+					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
+						<View style = {{flex: 1}}>
+							<Text>Masukkan jumlah kuantitas bahan baku yang dibutuhkan</Text>
+						</View>
+
+						<View style = {{flex: 1}}>
+							<TextInput
+								returnKeyType = 'done'
+								onChangeText = {(text) => this.setState({qty: text})}
+								onSubmitEditing = {this._submitIngredients.bind(this)}
+								underlineColorAndroid = '#ececec'
+								value = {this.state.qty}/>
+						</View>
+
+						<View style = {{flex: 1}}/>
+						<View style = {styles.stickyBottom}>
+							<Button
+								onPress = {this._submitIngredients.bind(this)}
+								name = 'Selesai'/>
+						</View>
+					</View>
+				</MyModal>
+
+				<MyModal
+					top = {this.state.keyboard ? 0 : 0.5}
 					left = {0.5}
 					contentStyle = {{ flex: 3 }}
 					visible = { this.state.modalVisible }
@@ -223,6 +283,7 @@ class BahanBakuScreen extends React.Component {
 										returnKeyType = 'next'
 										onChangeText = { (text) => this.props.barcode == null ? this.setState({ barcode: text }) : this.setState({ barcode: this.props.barcode })}
 										onSubmitEditing = { () => this._product.focus() }
+										underlineColorAndroid = '#ececec'
 										placeholder = 'Barcode'
 										value = { this.props.barcode == null ? this.state.barcode : this.props.barcode }/>
 								</View>
@@ -239,9 +300,9 @@ class BahanBakuScreen extends React.Component {
 										<View style = {{ height: 50, justifyContent: 'center' }}>
 											<Text> Biaya </Text>
 										</View>
-										<View style = {{ height: 50, justifyContent: 'center' }}>
+										{/*<View style = {{ height: 50, justifyContent: 'center' }}>
 											<Text> Harga </Text>
-										</View>
+										</View>*/}
 										<View style = {{ height: 50, justifyContent: 'center' }}>
 											<Text> Kuantitas </Text>
 										</View>
@@ -259,7 +320,7 @@ class BahanBakuScreen extends React.Component {
 												autoCapitalize = 'words'
 												returnKeyType = 'next'
 												placeholder = 'Produk'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ product: text })}
 												onSubmitEditing = { () => this._cost.focus() }
 
@@ -275,15 +336,15 @@ class BahanBakuScreen extends React.Component {
 												ref = { (c) => this._cost = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
-												onSubmitEditing = { () => this._price.focus() }
+												onSubmitEditing = { () => this._quantity.focus() }
 												placeholder = 'Biaya'
 												value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
 										</View>
 
-										<View style = {{ flexDirection: 'row' }}>
+										{/*<View style = {{ flexDirection: 'row' }}>
 											<View style = {{ height: 50, justifyContent: 'center' }}>
 												<Text> : </Text>
 											</View>
@@ -293,12 +354,12 @@ class BahanBakuScreen extends React.Component {
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
 												returnKeyType = 'next'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
 												placeholder = 'Harga'
 												value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
-										</View>
+										</View>*/}
 
 										<View style = {{ flexDirection: 'row' }}>
 											<View style = {{ height: 50, justifyContent: 'center' }}>
@@ -310,7 +371,7 @@ class BahanBakuScreen extends React.Component {
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
 												returnKeyType = 'done'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ quantity: text })}
 												onSubmitEditing = { this.state.idProduct == null ? this._addIngredients.bind(this) : this._updateIngredients.bind(this) }
 												placeholder = 'Kuantitas'
@@ -333,6 +394,7 @@ class BahanBakuScreen extends React.Component {
 										price: null,
 										quantity: null })}
 									name = 'Hapus'/>
+								<Text>&nbsp;</Text>
 
 								{this.state.idIngredients == null ?
 									<Button
@@ -366,13 +428,13 @@ class BahanBakuScreen extends React.Component {
 											<View style = {{ flexDirection: 'column' }}>
 												<Text> Stok </Text>
 												<Text> Biaya </Text>
-												<Text> Harga </Text>
+												{/*<Text> Harga </Text>*/}
 											</View>
 
 											<View style = {{ flexDirection: 'column' }}>
 												<Text> : {content.quantity} </Text>
 												<Text> : {rupiah(content.cost)} </Text>
-												<Text> : {rupiah(content.price)} </Text>
+												{/*<Text> : {rupiah(content.price)} </Text>*/}
 											</View>
 										</View>
 									</View>
@@ -430,6 +492,10 @@ class BahanBakuScreen extends React.Component {
 		}
 	}
 
+	_setModalQty(visible) {
+		this.setState({modalQty: visible})
+	}
+
 	_keyboardDidShow() {
 		this.setState({
 			keyboard: true
@@ -442,9 +508,37 @@ class BahanBakuScreen extends React.Component {
 		})
 	}
 
+	handleFirstConnectivityChange(isConnected) {
+		this.setState({connection: isConnected})
+
+		this.props.navigation.setParams({
+			connection: isConnected
+		})
+
+		NetInfo.isConnected.removeEventListener(
+			'connectionChange',
+			this.handleFirstConnectivityChange
+		)
+	}
+
 	componentWillMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
 		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
+	}
+
+	componentDidMount() {
+		NetInfo.isConnected.fetch().then(isConnected => {
+			this.setState({connection: isConnected})
+
+			this.props.navigation.setParams({
+				connection: isConnected
+			})
+		})
+		
+		NetInfo.isConnected.addEventListener(
+			'connectionChange',
+			this.handleFirstConnectivityChange
+		)
 	}
 
 	componentWillUnmount() {
@@ -481,8 +575,8 @@ const styles = StyleSheet.create({
 		marginBottom: 2.5,
 		borderRadius: 5,
 		borderWidth: 0.5,
-		borderColor: '#e4e5e5',
-		backgroundColor: '#f2f2f2'
+		borderColor: '#f2c9a0',
+		backgroundColor: '#fcecc2'
 	}
 })
 

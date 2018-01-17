@@ -66,4 +66,196 @@ const MyApp = DrawerNavigator({
 	contentComponent: ({ navigation }) => <SideMenu screenProps = { navigation } />
 })
 
-module.exports = MyApp
+/*
+*
+level 2
+*
+*/
+const HomeScreenLevel2 = TabNavigator({
+	Persediaan: { screen: TabInventoryScreen },
+	Penjualan: { screen: TabSaleScreen },
+	Laporan: { screen: TabReportScreen }
+}, TabNavigatorConfig)
+
+exports.MyAppLevel2 = DrawerNavigator({
+	Home: {
+		screen: StackNavigator({
+			HomeScreen: {
+				screen: HomeScreenLevel2,
+				navigationOptions: {
+					headerTitle: 'Scout',
+					headerTintColor: 'white',
+					/*headerStyle: {
+						backgroundColor: '#6ecbe0'
+					}*/
+				}
+			}
+		})
+	}
+}, {
+	contentComponent: ({ navigation }) => <SideMenu screenProps = { navigation } />
+})
+
+/*
+*
+level 3
+*
+*/
+const HomeScreenLevel3 = TabNavigator({
+	Persediaan: { screen: TabInventoryScreen },
+	Penjualan: { screen: TabSaleScreen },
+	// Laporan: { screen: TabReportScreen }
+}, TabNavigatorConfig)
+
+exports.MyAppLevel3 = DrawerNavigator({
+	Home: {
+		screen: StackNavigator({
+			HomeScreen: {
+				screen: HomeScreenLevel3,
+				navigationOptions: {
+					headerTitle: 'Scout',
+					headerTintColor: 'white',
+					/*headerStyle: {
+						backgroundColor: '#6ecbe0'
+					}*/
+				}
+			}
+		})
+	}
+}, {
+	contentComponent: ({ navigation }) => <SideMenu screenProps = { navigation } />
+})
+
+/*
+*
+level 4
+*
+*/
+exports.MyAppLevel4 = DrawerNavigator({
+	Home: {
+		screen: StackNavigator({
+			HomeScreen: {
+				screen: TabInventoryScreen,
+				navigationOptions: {
+					headerTitle: 'Scout',
+					headerTintColor: 'white',
+					/*headerStyle: {
+						backgroundColor: '#6ecbe0'
+					}*/
+				}
+			}
+		})
+	}
+}, {
+	contentComponent: ({ navigation }) => <SideMenu screenProps = { navigation } />
+})
+
+/*
+*
+level 5
+*
+*/
+exports.MyAppLevel5 = DrawerNavigator({
+	Home: {
+		screen: StackNavigator({
+			HomeScreen: {
+				screen: TabSaleScreen,
+				navigationOptions: {
+					headerTitle: 'Scout',
+					headerTintColor: 'white',
+					/*headerStyle: {
+						backgroundColor: '#6ecbe0'
+					}*/
+				}
+			}
+		})
+	}
+}, {
+	contentComponent: ({ navigation }) => <SideMenu screenProps = { navigation } />
+})
+
+/*
+*
+level 6
+*
+*/
+exports.MyAppLevel6 = DrawerNavigator({
+	Home: {
+		screen: StackNavigator({
+			HomeScreen: {
+				screen: TabReportScreen,
+				navigationOptions: {
+					headerTitle: 'Scout',
+					headerTintColor: 'white',
+					/*headerStyle: {
+						backgroundColor: '#6ecbe0'
+					}*/
+				}
+			}
+		})
+	}
+}, {
+	contentComponent: ({ navigation }) => <SideMenu screenProps = { navigation } />
+})
+
+/*
+*
+level 8
+*
+*/
+const HomeScreenLevel8 = TabNavigator({
+	Persediaan: { screen: TabInventoryScreen },
+	// Penjualan: { screen: TabSaleScreen },
+	Laporan: { screen: TabReportScreen }
+}, TabNavigatorConfig)
+
+exports.MyAppLevel8 = DrawerNavigator({
+	Home: {
+		screen: StackNavigator({
+			HomeScreen: {
+				screen: HomeScreenLevel8,
+				navigationOptions: {
+					headerTitle: 'Scout',
+					headerTintColor: 'white',
+					/*headerStyle: {
+						backgroundColor: '#6ecbe0'
+					}*/
+				}
+			}
+		})
+	}
+}, {
+	contentComponent: ({ navigation }) => <SideMenu screenProps = { navigation } />
+})
+
+/*
+*
+level 10
+*
+*/
+const HomeScreenLevel10 = TabNavigator({
+	// Persediaan: { screen: TabInventoryScreen },
+	Penjualan: { screen: TabSaleScreen },
+	Laporan: { screen: TabReportScreen }
+}, TabNavigatorConfig)
+
+exports.MyAppLevel10 = DrawerNavigator({
+	Home: {
+		screen: StackNavigator({
+			HomeScreen: {
+				screen: HomeScreenLevel10,
+				navigationOptions: {
+					headerTitle: 'Scout',
+					headerTintColor: 'white',
+					/*headerStyle: {
+						backgroundColor: '#6ecbe0'
+					}*/
+				}
+			}
+		})
+	}
+}, {
+	contentComponent: ({ navigation }) => <SideMenu screenProps = { navigation } />
+})
+
+// module.exports = MyApp

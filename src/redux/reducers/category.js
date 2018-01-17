@@ -58,6 +58,7 @@ const initialState = {
 const CategoryReducers = (state = initialState, action) => {
 	switch(action.type) {
 		case 'LOCAL_STORAGE_CATEGORY':
+			console.log(action.data)
 			if(action.data.data == undefined) {	
 				return {
 					...state,
@@ -450,7 +451,19 @@ const CategoryReducers = (state = initialState, action) => {
 				if(state.data[i].idCategory === action.data.idCategory) {
 					for(var j in state.data[i].product) {
 						if(state.data[i].product[j].idProduct === action.data.idProduct) {
-							state.data[i].product[j].ingredients.push(action.data.ingredients)
+							state.data[i].product[j].ingredients.push({
+								idIngredients: action.data.ingredients.idIngredients,
+								qty: action.data.ingredients.qty
+							})
+
+							state.data[i].product[j].cost = 0
+							for(var k in state.data[i].product[j].ingredients) {
+								for(var l in state.ingredients) {
+									if(state.data[i].product[j].ingredients[k] === state.ingredients[l].idIngredients) {
+										state.data[i].product[j].cost += state.ingredients[l].cost
+									}
+								}
+							}
 						}
 					}
 				}
@@ -467,14 +480,24 @@ const CategoryReducers = (state = initialState, action) => {
 					for(var j in state.data[i].product) {
 						if(state.data[i].product[j].idProduct === action.data.idProduct) {
 							for(var k in state.data[i].product[j].ingredients) {
-								if(state.data[i].product[j].ingredients[k].idIngredients === action.data.idIngredients) {
+								if(state.data[i].product[j].ingredients[k] === action.data.idIngredients) {
 									state.data[i].product[j].ingredients.splice(k, 1)
+
+									state.data[i].product[j].cost = 0
+									for(var l in state.data[i].product[j].ingredients) {
+										for(var m in state.ingredients) {
+											if(state.data[i].product[j].ingredients[l] === state.ingredients[m].idIngredients) {
+												state.data[i].product[j].cost += state.ingredients[m].cost
+											}
+										}
+									}
 								}
 							}
 						}
 					}
 				}
 			}
+			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
 			return {
 				...state,
 				data: [...state.data]
@@ -499,15 +522,26 @@ const CategoryReducers = (state = initialState, action) => {
 						for(var k in state.data[j].product) {
 							if(state.data[j].product[k].idProduct === action.data.data[i].idProduct) {
 								state.data[j].product[k].quantity = state.data[j].product[k].quantity - action.data.data[i].quantity
+
+								for(var l in state.data[j].product[k].ingredients) {
+									for(var m in state.ingredients) {
+										if(state.data[j].product[k].ingredients[l].idIngredients === state.ingredients[m].idIngredients) {
+											state.ingredients[m].quantity -=  (action.data.data[i].quantity * state.data[j].product[k].ingredients[l].qty)
+										}
+									}
+									// state.data[j].product[k].ingredients[l].quantity -= action.data.data[i].quantity
+								}
 							}
 						}
 					}
 				}
 			}
 			AsyncStorage.setItem('@Data', JSON.stringify(state.data))
+			AsyncStorage.setItem('@Ingredients', JSON.stringify(state.ingredients))
 			return {
 				...state,
-				data: [...state.data]
+				data: [...state.data],
+				ingredients: [...state.ingredients]
 			}
 
 		default:

@@ -78,9 +78,9 @@ class ProductScreen extends React.Component {
 	*
 	*/
 	_addProduct() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
@@ -123,9 +123,9 @@ class ProductScreen extends React.Component {
 	}
 
 	_updateProduct() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
@@ -176,9 +176,9 @@ class ProductScreen extends React.Component {
 	*
 	*/
 	_addSubProduct() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
@@ -223,9 +223,9 @@ class ProductScreen extends React.Component {
 	}
 
 	_updateSubProduct() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
@@ -291,11 +291,11 @@ class ProductScreen extends React.Component {
 				*/}
 				<MyModal
 					visible = { this.props.barcode == null ? this.state.modalVisible : true }
-					top = {0.5}
+					top = {this.state.keyboard ? 0 : 0.5}
 					left = {0.5}
 					contentStyle = {{ flex: 3 }}
 					onRequestClose = { this._setModalVisible.bind(this, false) }>
-					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 15, borderRadius: 5, backgroundColor: 'white' }}>
+					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
 						<View style = { styles.content }>
 							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
 								{this.state.idProduct == null ?
@@ -314,7 +314,7 @@ class ProductScreen extends React.Component {
 
 								<View style = {{ flex: 2 }}>
 									<TextInput
-									    underlineColorAndroid = '#ececec'
+										underlineColorAndroid = '#ececec'
 										returnKeyType = 'next'
 										onChangeText = { (text) => this.props.barcode == null ? this.setState({ barcode: text }) : this.setState({ barcode: this.props.barcode })}
 										onSubmitEditing = { () => this._product.focus() }
@@ -324,6 +324,7 @@ class ProductScreen extends React.Component {
 							</View>
 
 							<ScrollView
+								overScrollMode = {'always'}
 								style = {{ flex: 3 }}
 								keyboardShouldPersistTaps = 'always'>
 								<View style = {{ flexDirection: 'row' }}>
@@ -353,7 +354,7 @@ class ProductScreen extends React.Component {
 												style = {{ flex: 1, height: 50 }}
 												autoCapitalize = 'words'
 												returnKeyType = 'next'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ product: text })}
 												onSubmitEditing = { () => this._cost.focus() }
 												placeholder = 'Produk'
@@ -369,7 +370,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._cost = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
@@ -386,7 +387,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._price = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
@@ -403,7 +404,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._quantity = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												returnKeyType = 'done'
 												onChangeText = { (text) => this.setState({ quantity: text })}
 												onSubmitEditing = { this.state.idProduct == null ? this._addProduct.bind(this) : this._updateProduct.bind(this) }
@@ -474,7 +475,7 @@ class ProductScreen extends React.Component {
 								<View style = {{ flex: 2 }}>
 									<TextInput
 										returnKeyType = 'next'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 										onChangeText = { (text) => this.props.barcode == null ? this.setState({ barcode: text }) : this.setState({ barcode: this.props.barcode })}
 										onSubmitEditing = { () => this._product.focus() }
 										placeholder = 'Barcode'
@@ -511,7 +512,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._product = c }
 												style = {{ flex: 1, height: 50 }}
 												autoCapitalize = 'words'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ product: text })}
 												onSubmitEditing = { () => this._cost.focus() }
@@ -528,7 +529,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._cost = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
@@ -545,7 +546,7 @@ class ProductScreen extends React.Component {
 												ref = { (c) => this._price = c }
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
@@ -563,7 +564,7 @@ class ProductScreen extends React.Component {
 												style = {{ flex: 1, height: 50 }}
 												keyboardType = 'numeric'
 												returnKeyType = 'done'
-									            underlineColorAndroid = '#ececec'
+												underlineColorAndroid = '#ececec'
 												onChangeText = { (text) => this.setState({ quantity: text })}
 												onSubmitEditing = { this.state.idSubProduct == null ? this._addSubProduct.bind(this) : this._updateSubProduct.bind(this) }
 												placeholder = 'Kuantitas'
@@ -586,6 +587,7 @@ class ProductScreen extends React.Component {
 										price: null,
 										quantity: null })}
 									name = 'Hapus'/>
+								<Text>&nbsp;</Text>
 
 								{this.state.idSubProduct == null ?
 									<Button
@@ -614,8 +616,8 @@ class ProductScreen extends React.Component {
 							<View
 								style = { styles.product }>
 								<View style = {{ flex: 1, flexDirection: 'row' }}>
-									<Touchable
-										onPress = { this._collapse.bind(this, Number(row)) }>
+									{/*<Touchable
+										onPress = { this._collapse.bind(this, Number(row)) }>*/}
 										<View style = {{ flexDirection: 'column' }}>
 											<View style = {{ flexDirection: 'row' }}>
 												<Text> {Number(row) + 1}. </Text>
@@ -633,14 +635,13 @@ class ProductScreen extends React.Component {
 														<View style = {{ flexDirection: 'column' }}>
 															<Text> : {content.quantity} </Text>
 															<Text> : {rupiah(content.cost)} </Text>
-															<Text> : {rupiah(content.price)} </Text>
+															<Text style = {{color: content.price <= content.cost ? 'red' : null}}> : {rupiah(content.price)} </Text>
 														</View>
 													</View>
 												</View>
 											</View>
-
 										</View>
-									</Touchable>
+									{/*</Touchable>*/}
 								</View>
 
 								<ButtonIcons
@@ -654,6 +655,13 @@ class ProductScreen extends React.Component {
 									style = {{ width: 40, height: 40 }}
 									onPress = { this._deleteProduct.bind(this, content) }
 									name = 'md-close'
+									color = 'grey'
+									size = { 20 }/>
+
+								<ButtonIcons
+									style = {{ width: 40, height: 40 }}
+									onPress = { this._collapse.bind(this, Number(row)) }
+									name = { this.state.view[Number(row)] ? 'ios-arrow-up' : 'ios-arrow-down' }
 									color = 'grey'
 									size = { 20 }/>
 							</View>
@@ -949,9 +957,9 @@ const styles = StyleSheet.create({
 	},
 	row: {
 		flexDirection: 'row',
-		width:'90%',
-		marginLeft:'5%',
-		marginRight:'5%'
+		// width:'90%',
+		// marginLeft:'5%',
+		// marginRight:'5%'
 	},
 	stickyBottom: {
 		position: 'absolute',

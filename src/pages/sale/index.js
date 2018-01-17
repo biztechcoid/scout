@@ -58,7 +58,7 @@ class SaleScreen extends React.Component {
 				size = { 30 }/>
 		),
 		headerRight: (
-			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connectionInfo === 'none' ? 'red' : 'green' : 'red' }}/>
+			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connection ? 'green' : 'red' : 'red' }}/>
 		)
 	})
 
@@ -84,7 +84,9 @@ class SaleScreen extends React.Component {
 		discount: 0,
 		change: 0,
 
-		modal: false
+		modal: false,
+
+		connection: null
 	}
 
 	_scanQR() {
@@ -430,17 +432,17 @@ class SaleScreen extends React.Component {
 		}
 		/**/
 
-		Alert.alert(null, 'Anda yakin transaksi valid ?',
-			[
-				{ text: 'Yakin', onPress: () => {
+		// Alert.alert(null, 'Anda yakin transaksi valid ?',
+			// [
+				// { text: 'Yakin', onPress: () => {
 					// stateCopy.sale['date'] = new Date()
 					// this.props.dispatchUpdateStock(stateCopy.sale)
 					// this.props.dispatchPenjualan(stateCopy.sale)
 					this._modal()
 					// this.setState({sale: { data: [], total: 0.00, customer: 1 }})
-				}},
-				{ text: 'Tidak' }
-			])
+				// }},
+				// { text: 'Tidak' }
+			// ])
 	}
 
 	_bayar() {
@@ -578,7 +580,7 @@ class SaleScreen extends React.Component {
 								<Button
 									onPress = { this._modal.bind(this) }
 									name = 'Kembali' />
-	                                <Text>&nbsp;</Text>
+								<Text>&nbsp;</Text>
 								<Button
 									onPress = { this._bayar.bind(this) }
 									name = 'Selesai' />
@@ -1019,16 +1021,16 @@ class SaleScreen extends React.Component {
 		})
 	}
 
-	handleFirstConnectivityChange(connectionInfo) {
-		// console.log('First change, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
-		
+	handleFirstConnectivityChange(isConnected) {
+		this.setState({connection: isConnected})
+
 		this.props.navigation.setParams({
-			connectionInfo: connectionInfo.type
+			connection: isConnected
 		})
-		
-		NetInfo.removeEventListener(
+
+		NetInfo.isConnected.removeEventListener(
 			'connectionChange',
-			this.handleFirstConnectivityChange.bind(this)
+			this.handleFirstConnectivityChange
 		)
 	}
 
@@ -1038,17 +1040,17 @@ class SaleScreen extends React.Component {
 	}
 
 	componentDidMount() {
-		NetInfo.getConnectionInfo().then((connectionInfo) => {
-			// console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+		NetInfo.isConnected.fetch().then(isConnected => {
+			this.setState({connection: isConnected})
 
 			this.props.navigation.setParams({
-				connectionInfo: connectionInfo.type
+				connection: isConnected
 			})
 		})
-
-		NetInfo.addEventListener(
+		
+		NetInfo.isConnected.addEventListener(
 			'connectionChange',
-			this.handleFirstConnectivityChange.bind(this)
+			this.handleFirstConnectivityChange
 		)
 	}
 

@@ -5,6 +5,7 @@ import {
 	AsyncStorage,
 	Dimensions,
 	Keyboard,
+	NetInfo,
 	Text,
 	TextInput,
 	View,
@@ -32,21 +33,27 @@ class LoginScreen extends React.Component {
 	state = {
 		keyboard: false,
 		email: null,
-		password: null
+		password: null,
+		connection: null
 	}
 
 	_login() {
 		if(this.state.email == '' || this.state.password == '' || this.state.email == null || this.state.password == null) {
 			Alert.alert(null, 'Email atau password tidak valid')
 		} else {
-			this._loginProcess(true)
-			
-			const data = {
-				navigation: this.props.navigation,
-				data: {
-					email: this.state.email,
-					password: this.state.password
+			if(this.state.connection) {
+				this._loginProcess(true)
+				
+				const data = {
+					navigation: this.props.navigation,
+					data: {
+						email: this.state.email,
+						password: this.state.password
+					}
 				}
+				this.props.dispatchLogin(data)
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
 
 			/*
@@ -78,8 +85,6 @@ class LoginScreen extends React.Component {
 			// 	}
 			// })
 			/**/
-
-			this.props.dispatchLogin(data)
 		}
 	}
 
@@ -170,9 +175,28 @@ class LoginScreen extends React.Component {
 		})
 	}
 
+	handleFirstConnectivityChange(isConnected) {
+		this.setState({connection: isConnected})
+		NetInfo.isConnected.removeEventListener(
+			'connectionChange',
+			this.handleFirstConnectivityChange
+		)
+	}
+
 	componentWillMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
 		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
+	}
+
+	componentDidMount() {
+		NetInfo.isConnected.fetch().then(isConnected => {
+			this.setState({connection: isConnected})
+		})
+
+		NetInfo.isConnected.addEventListener(
+			'connectionChange',
+			this.handleFirstConnectivityChange
+		)
 	}
 
 	componentWillUnmount() {

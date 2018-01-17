@@ -11,7 +11,7 @@ import {
 	TextInput
 } from 'react-native'
 const { width, height } = Dimensions.get('window')
-import Ionicons from 'react-native-vector-icons/Ionicons'
+// import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import {
 	Button,
@@ -77,9 +77,9 @@ class IngredientsScreen extends React.Component {
 	*
 	*/
 	_addProduct() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
@@ -122,9 +122,9 @@ class IngredientsScreen extends React.Component {
 	}
 
 	_updateProduct() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
@@ -175,9 +175,9 @@ class IngredientsScreen extends React.Component {
 	*
 	*/
 	_addSubProduct() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
@@ -222,9 +222,9 @@ class IngredientsScreen extends React.Component {
 	}
 
 	_updateSubProduct() {
-		if(this.state.barcode == '' || this.state.barcode == null) {
+		/*if(this.state.barcode == '' || this.state.barcode == null) {
 			Alert.alert(null, 'barcode product tidak valid')
-		} else if(this.state.product == '' || this.state.product == null) {
+		} else*/ if(this.state.product == '' || this.state.product == null) {
 			Alert.alert(null, 'nama product tidak valid')
 		} else if(this.state.cost == '' || this.state.cost == null) {
 			Alert.alert(null, 'cost product tidak valid')
@@ -336,7 +336,7 @@ class IngredientsScreen extends React.Component {
 								<View style = {{ flex: 2 }}>
 									<TextInput
 										returnKeyType = 'next'
-									    underlineColorAndroid = '#ececec'
+										underlineColorAndroid = '#ececec'
 										onChangeText = { (text) => this.props.barcode == null ? this.setState({ barcode: text }) : this.setState({ barcode: this.props.barcode })}
 										onSubmitEditing = { () => this._product.focus() }
 										placeholder = 'Barcode'
@@ -622,9 +622,10 @@ class IngredientsScreen extends React.Component {
 						return (
 							<View key = { idxCategory }>
 								<View style = {[ styles.product, { height: 60 }]}>
-									<Touchable
+									{/*<Touchable
 										style = {{ justifyContent: 'center' }}
-										onPress = { this._collapse.bind(this, idxCategory, 'category') }>
+										onPress = { this._collapse.bind(this, idxCategory, 'category') }>*/}
+										<View style = {{flex: 1, justifyContent: 'center'}}>
 										<View style = {{ flexDirection: 'row' }}>
 											<Text> {idxCategory + 1}. </Text>
 
@@ -632,7 +633,15 @@ class IngredientsScreen extends React.Component {
 												<Text> {category.name} </Text>
 											</View>
 										</View>
-									</Touchable>
+										</View>
+									{/*</Touchable>*/}
+
+									<ButtonIcons
+										style = {{ width: 40, height: 40 }}
+										onPress = { this._collapse.bind(this, idxCategory, 'category') }
+										name = { this.state.viewCategory[idxCategory] ? 'ios-arrow-up' : 'ios-arrow-down' }
+										color = 'grey'
+										size = { 20 }/>
 								</View>
 
 								{this.state.viewCategory[idxCategory] ?
@@ -642,8 +651,8 @@ class IngredientsScreen extends React.Component {
 												<View
 													style = {[ styles.product, {marginLeft: 10 }]}>
 													<View style = {{ flex: 1, flexDirection: 'row' }}>
-														<Touchable
-															onPress = { this._collapse.bind(this, idxCategory + idxProduct, 'product') }>
+														{/*<Touchable
+															onPress = { this._collapse.bind(this, idxCategory + idxProduct, 'product') }>*/}
 															<View style = {{ flexDirection: 'column' }}>
 																<View style = {{ flexDirection: 'row' }}>
 																	<Text> {idxProduct + 1}. </Text>
@@ -661,15 +670,22 @@ class IngredientsScreen extends React.Component {
 																			<View style = {{ flexDirection: 'column' }}>
 																				<Text> : {product.quantity} </Text>
 																				<Text> : {rupiah(product.cost)} </Text>
-																				<Text> : {rupiah(product.price)} </Text>
+																				<Text style = {{color: product.price <= product.cost ? 'red' : null}}> : {rupiah(product.price)} </Text>
 																			</View>
 																		</View>
 																	</View>
 																</View>
 
 															</View>
-														</Touchable>
+														{/*</Touchable>*/}
 													</View>
+
+													<ButtonIcons
+														style = {{ width: 40, height: 40 }}
+														onPress = { this._collapse.bind(this, idxCategory + idxProduct, 'product') }
+														name = { this.state.viewProduct[idxCategory + idxProduct] ? 'ios-arrow-up' : 'ios-arrow-down' }
+														color = 'grey'
+														size = { 20 }/>
 
 													{/*<ButtonIcons
 														style = {{ width: 40, height: 40 }}
@@ -701,42 +717,52 @@ class IngredientsScreen extends React.Component {
 															return (
 																<View
 																	key = {index}
-																	style = {[ styles.product, { flexDirection: 'row', marginLeft: 20 }]}>
-																	<View style = {{ flex: 1, flexDirection: 'row' }}>
-																		<Text> {index + 1}. </Text>
+																	style = {{flex: 1}}>
+																	{this.props.ingredients.map((content, id) => {
+																		if(ingredients.idIngredients === content.idIngredients) {
+																			return (
+																				<View
+																					key = {id}
+																					style = {[ styles.product, { flexDirection: 'row', marginLeft: 20 }]}>
+																					<View style = {{ flex: 1, flexDirection: 'row' }}>
+																						<Text> {index + 1}. </Text>
 
-																		<View style = {{ flexDirection: 'column' }}>
-																			<Text> {ingredients.name} </Text>
+																						<View style = {{ flexDirection: 'column' }}>
+																							<Text> {content.name} </Text>
 
-																			<View style = {{ flexDirection: 'row' }}>
-																				<View style = {{ flexDirection: 'column' }}>
-																					<Text> Stok </Text>
-																					<Text> Biaya </Text>
-																					<Text> Harga </Text>
+																							<View style = {{ flexDirection: 'row' }}>
+																								<View style = {{ flexDirection: 'column' }}>
+																									<Text> Stok </Text>
+																									<Text> Biaya </Text>
+																									<Text> Kuantitas </Text>
+																								</View>
+
+																								<View style = {{ flexDirection: 'column' }}>
+																									<Text> : {content.quantity} </Text>
+																									<Text> : {rupiah(content.cost)} </Text>
+																									<Text> : {ingredients.qty} </Text>
+																								</View>
+																							</View>
+																						</View>
+																					</View>
+
+																					{/*<ButtonIcons
+																						style = {{ width: 40, height: 40 }}
+																						onPress = { this.__updateSubProduct.bind(this, content, product.idProduct) }
+																						name = 'md-create'
+																						color = 'grey'
+																						size = { 20 }/>*/}
+
+																					<ButtonIcons
+																						style = {{ width: 40, height: 40 }}
+																						onPress = { this._spliceIngredients.bind(this, category.idCategory, product.idProduct, content) }
+																						name = 'md-close'
+																						color = 'grey'
+																						size = { 20 }/>
 																				</View>
-
-																				<View style = {{ flexDirection: 'column' }}>
-																					<Text> : {ingredients.quantity} </Text>
-																					<Text> : {rupiah(ingredients.cost)} </Text>
-																					<Text> : {rupiah(ingredients.price)} </Text>
-																				</View>
-																			</View>
-																		</View>
-																	</View>
-
-																	{/*<ButtonIcons
-																		style = {{ width: 40, height: 40 }}
-																		onPress = { this.__updateSubProduct.bind(this, ingredients, product.idProduct) }
-																		name = 'md-create'
-																		color = 'grey'
-																		size = { 20 }/>*/}
-
-																	<ButtonIcons
-																		style = {{ width: 40, height: 40 }}
-																		onPress = { this._spliceIngredients.bind(this, category.idCategory, product.idProduct, ingredients) }
-																		name = 'md-close'
-																		color = 'grey'
-																		size = { 20 }/>
+																			)
+																		}
+																	})}
 																</View>
 															)
 														})}
@@ -855,7 +881,8 @@ const styles = StyleSheet.create({
 function mapStateToProps (state) {
 	return {
 		barcode: state.category.barcode,
-		category: state.category.data
+		category: state.category.data,
+		ingredients: state.category.ingredients
 	}
 }
 

@@ -12,6 +12,7 @@ import {
 	View
 } from 'react-native'
 const { width, height } = Dimensions.get('window')
+import RNHTMLtoPDF from 'react-native-html-to-pdf'
 
 import { connect } from 'react-redux'
 import { 
@@ -35,6 +36,7 @@ const total = 0
 const customer = 0
 const no = 0
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+const _print = []
 
 
 class ReportScreen extends React.Component {
@@ -50,14 +52,17 @@ class ReportScreen extends React.Component {
 				size = { 30 }/>
 		),
 		headerRight: (
-			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connectionInfo === 'none' ? 'red' : 'green' : 'red' }}/>
+			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connection ? 'green' : 'red' : 'red' }}/>
 		)
 	})
 
 	state = {
 		value: 'daily',
 		date: new Date(),
-		view: []
+		view: [],
+		print: [],
+
+		connection: null
 	}
 
 	_onRefresh() {
@@ -210,54 +215,122 @@ class ReportScreen extends React.Component {
 	}
 
 	_renderValue(content, index) {
-		total = 0
-		customer = 0
-		no = 0
+		var print = []
+		const stateCopy = this.state
+		// total = 0
+		// customer = 0
+		// no = 0
 		switch(this.state.value) {
 			case 'daily':
 				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() == new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate()).getTime()) {
-					total +=content.total
-					customer +=content.customer
+					total += content.total
+					customer += content.customer
 					no += 1
+					print.push(content.data[index])
+					_print = print
+					console.log('=====', total, customer, no)
 					return true
 				} else {
+					_print = print
 					return false
 				}
 				break
 
 			case 'weekly':
 				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() >= new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate()).getTime() && new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth(), new Date(content.date).getDate()).getTime() <= new Date(this.state.date.getFullYear(), this.state.date.getMonth(), this.state.date.getDate() + 6).getTime()) {
-					total +=content.total
-					customer +=content.customer
+					total += content.total
+					customer += content.customer
 					no += 1
+					print.push(content.data[index])
+					_print = print
 					return true
 				} else {
+					_print = print
 					return false
 				}
 				break
 
 			case 'monthly':
 				if(new Date(new Date(content.date).getFullYear(), new Date(content.date).getMonth()).getTime() == new Date(this.state.date.getFullYear(), this.state.date.getMonth()).getTime()) {
-					total +=content.total
-					customer +=content.customer
+					total += content.total
+					customer += content.customer
 					no += 1
+					print.push(content.data[index])
+					_print = print
 					return true
 				} else {
+					_print = print
 					return false
 				}
 				break
 
 			case 'yearly':
 				if(new Date(new Date(content.date).getFullYear()).getTime() == new Date(this.state.date.getFullYear()).getTime()) {
-					total +=content.total
-					customer +=content.customer
+					total += content.total
+					customer += content.customer
 					no += 1
+					print.push(content.data[index])
+					_print = print
 					return true
 				} else {
+					_print = print
 					return false
 				}
 				break
 		}
+	}
+
+	async createPDF() {
+		var table = ''
+		var tanggal = this.state.value == 'daily' ?
+				ddmmyyyy(this.state.date)
+				:
+				this.state.value == 'weekly' ?
+					ddmmyyyy(this.state.date) + " - " + ddmmyyyy(new Date(new Date(this.state.date).setDate(new Date(this.state.date).getDate() + 6)))
+					:
+					this.state.value == 'monthly' ?
+						mmyyyy(this.state.date)
+						:
+						yyyy(this.state.date)
+		for(var a in _print) {
+			if(a % 2 == 0) {
+				table += "<tr><td style='border: 1px solid black'>" + _print[a].name + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].price + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].cost + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].quantity + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].disc + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].subTotal + "</td></tr>"
+			} else {
+				table += "<tr style='background-color: #dddddd'><td style='border: 1px solid black'>" + _print[a].name + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].price + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].cost + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].quantity + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].disc + "</td>" +
+				"<td style='border: 1px solid black'>" + _print[a].subTotal + "</td></tr>"
+			}
+		}
+		var HTML = "<h1> Penjualan " +
+			tanggal +
+			"</h1>" +
+			"<table style='width: 100%;border-collapse: collapse'>" +
+				"<tr>" +
+					"<th style='border: 1px solid black'>Produk</th>" +
+					"<th style='border: 1px solid black'>Harga</th>" +
+					"<th style='border: 1px solid black'>Biaya</th>" +
+					"<th style='border: 1px solid black'>Kuantitas</th>" +
+					"<th style='border: 1px solid black'>Diskon</th>" +
+					"<th style='border: 1px solid black'>Sub Total</th>" +
+				"</tr>" +
+				table +
+			"</table>"
+
+		let options = {
+			html: HTML,
+			fileName: 'penjualan' + new Date().getDate() + (new Date().getMonth() + 1) + new Date().getFullYear(),
+			directory: 'docs',
+		}
+
+		let file = await RNHTMLtoPDF.convert(options)
 	}
 
 	render() {
@@ -378,7 +451,7 @@ class ReportScreen extends React.Component {
 					}
 				</ScrollView>
 
-				<View style = {{height: 35 }}/>
+				<View style = {{height: 75 }}/>
 
 				<View style = { styles.stickyBottom }>
 					<View style = { styles.row }>
@@ -412,36 +485,40 @@ class ReportScreen extends React.Component {
 							<Text> {rupiah(total)} </Text>
 						</View>	
 					</View>
+
+					<Button
+						onPress = {this.createPDF.bind(this)}
+						name = 'Save to PDF'/>
 				</View>
 			</View>
 		)
 	}
 
-	handleFirstConnectivityChange(connectionInfo) {
-		// console.log('First change, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
-		
+	handleFirstConnectivityChange(isConnected) {
+		this.setState({connection: isConnected})
+
 		this.props.navigation.setParams({
-			connectionInfo: connectionInfo.type
+			connection: isConnected
 		})
-		
-		NetInfo.removeEventListener(
+
+		NetInfo.isConnected.removeEventListener(
 			'connectionChange',
-			this.handleFirstConnectivityChange.bind(this)
+			this.handleFirstConnectivityChange
 		)
 	}
 
 	componentDidMount() {
-		NetInfo.getConnectionInfo().then((connectionInfo) => {
-			// console.log('Initial, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+		NetInfo.isConnected.fetch().then(isConnected => {
+			this.setState({connection: isConnected})
 
 			this.props.navigation.setParams({
-				connectionInfo: connectionInfo.type
+				connection: isConnected
 			})
 		})
-
-		NetInfo.addEventListener(
+		
+		NetInfo.isConnected.addEventListener(
 			'connectionChange',
-			this.handleFirstConnectivityChange.bind(this)
+			this.handleFirstConnectivityChange
 		)
 	}
 }

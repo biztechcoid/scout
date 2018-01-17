@@ -35,6 +35,7 @@ const initialState = {
 const SaleReducers = (state = initialState, action) => {
 	switch(action.type) {
 		case 'LOCAL_STORAGE_SALE':
+			console.log(action.data)
 			return {
 				...state,
 				data: action.data

@@ -101,11 +101,13 @@ android {
         applicationId "com.scoutbiz"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 3
-        versionName "0.0.2"
+        versionCode 4
+        versionName "0.0.3"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        // Enabling multidex support.
+        multiDexEnabled true
     }
     signingConfigs {
         release {
@@ -148,11 +150,16 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-html-to-pdf')
+    compile project(':react-native-device-info')
     compile project(':react-native-camera')
     compile project(':react-native-vector-icons')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
+    /* multidex */
+    compile 'com.android.support:multidex:1.0.1'
+    /**/
 }
 
 // Run this once to be able to run the application with BUCK

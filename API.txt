@@ -1,0 +1,269 @@
+database: {
+	users: {
+		idUser: string,
+		idPusat: string,
+		idCabang: string,
+		name: string,
+		email: string,
+		phone: string,
+		password: string,
+		access: 
+		{
+			persediaan: boolean,
+			penjualan: boolean,
+			laporan: boolean,
+			monitoring: boolean
+		}
+	},
+	store: {
+		idPusat: string,
+		name: string,
+		ket: string
+		cabang: [
+			{
+				idCabang: string,
+				name: string,
+				ket: string'
+			}
+		]
+	},
+	ingredients: {
+		idIngredients: string,
+		barcode: string,
+		name: string,
+		cost: integer,
+		price: integer,
+		quantity: integer
+	},
+	inventory: {
+		idCategory: string,
+		idCabang: string,
+		name: string,
+		product: [
+			{
+				idProduct: string,
+				barcode: string,
+				name: string,
+				cost: integer,
+				price: integer,
+				quantity: integer,
+				subProduct: [
+					{
+						idSubProduct: string,
+						barcode: string,
+						name: string,
+						cost: integer,
+						price: integer,
+						quantity: integer,
+					}
+				],
+				ingredients: [
+					{
+						idIngredients: string,
+						qty: integer
+					}
+				]
+			}
+		]
+	}
+}
+
+registerPOST: {
+	request: {
+		store: {
+			idPusat: string,
+			name: string,
+			ket: string
+		},
+		register: {
+			idUser: string,
+			idPusat: string,
+			idCabang: string,
+			name: string,
+			email: string,
+			phone: string,
+			password: string,
+			access: {
+				persediaan: boolean,
+				penjualan: boolean,
+				laporan: boolean,
+				monitoring: boolean
+			}
+		}
+	},
+	response: {
+		statusCode: integer,
+		message: string
+	}
+}
+
+loginPOST: {
+	request: {
+		email: string,
+		password: string
+	},
+	reponse: {
+		statusCode: integer,
+		message: string,
+		token: string,
+		data: {
+			idUser: admin,
+			idPusat: admin,
+			idCabang: admin
+			name: admin,
+			email: adminadmin',
+			phone: admin,
+			access: {
+				persediaan: boolean,
+				penjualan: boolean,
+				laporan: boolean,
+				monitoring: boolean
+			},
+			cabangName: string,
+			lastLogin: date
+		}
+	}
+}
+
+usersGET: {
+	request: {
+		token: string
+	},
+	response: {
+		statusCode: integer,
+		message: string,
+		data: [
+			{
+				idUser: string,
+				idPusat: string,
+				idCabang: string,
+				name: string,
+				email: string,
+				phone: string,
+				access: {
+					persediaan: boolean,
+					penjualan: boolean,
+					laporan: boolean,
+					monitoring: boolean
+				}
+			}
+		]
+	}
+}
+
+storeGET: {
+	request: {
+		token: string
+	},
+	response: {
+		statusCode: integer,
+		message: string,
+		data: [
+			{
+				idPusat: string,
+				name: string,
+				ket: string,
+				cabang: [
+					{
+						idCabang: string,
+						name: string,
+						ket: string'
+					}
+				]
+			}
+		]
+	}
+}
+
+ingredientsGET: {
+	request: {
+		token: string
+	},
+	response: {
+		statusCode: integer,
+		message: string,
+		data: [
+			{
+				idIngredients: string,
+				barcode: string,
+				name: string,
+				cost: integer,
+				price: integer,
+				quantity: integer
+			}
+		]
+	}
+}
+
+inventoryGET: {
+	request: {
+		token: string
+	},
+	reponse: {
+		statusCode: integer,
+		message: string,
+		data: [
+			{
+				idCategory: string,
+				idCabang: string,
+				name: string,
+				product: [
+					{
+						idProduct: string,
+						barcode: string,
+						name: string,
+						cost: integer,
+						price: integer,
+						quantity: integer,
+						subProduct: [
+							{
+								idSubProduct: string,
+								barcode: string,
+								name: string,
+								cost: integer,
+								price: integer,
+								quantity: integer,
+							}
+						],
+						ingredients: [
+							{
+								idIngredients: string,
+								qty: integer
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}
+
+CreateCategory: {
+	request: {
+		token: string,
+		data: {
+			idCategory: makeId(),
+			idCabang: action.data.idCabang,
+			name: action.data.name,
+		}
+	},
+
+	sample: {
+		token: '12345678980abcdefghjklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			idCabang: null,
+			name: 'Makanan',
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	}
+
+	sample: {
+		statusCode: 200,
+		message: 'success create category'
+	}
+}

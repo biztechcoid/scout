@@ -60,6 +60,7 @@ const initialState = {
 const UserReducers = (state = initialState, action) => {
 	switch(action.type) {
 		case 'LOCAL_STORAGE_USERS':
+			console.log(action.data)
 			if(action.data.users === undefined) {
 				return {
 					...state,
@@ -123,6 +124,12 @@ const UserReducers = (state = initialState, action) => {
 				email: action.data.data.email,
 				phone: action.data.data.phone,
 				password: action.data.data.password,
+				access: {
+					persediaan: true,
+					penjualan: true,
+					laporan: true,
+					monitoring: true
+				}
 			}
 			AsyncStorage.multiSet([
 				['@Users', JSON.stringify([...state.users, register])],
@@ -149,19 +156,20 @@ const UserReducers = (state = initialState, action) => {
 					ket: action.data.data.ket
 				}
 				for(var i in state.store) {
-					if(state.store[i].idPusat === state.users.idPusat) {
+					if(state.store[i].idPusat === state.data.idPusat) {
 						state.store[i].cabang = [...state.store[i].cabang, store]
 					}
 				}
 					
 				addUser = {
 					idUser: makeId(),
-					idPusat: state.user.idPusat,
+					idPusat: state.data.idPusat,
 					idCabang: store.idCabang,
 					name: action.data.data.name,
 					email: action.data.data.email,
 					phone: action.data.data.phone,
-					password: action.data.data.password
+					password: action.data.data.password,
+					access: action.data.data.access
 				}
 				AsyncStorage.multiSet([
 					['@Users', JSON.stringify([...state.users, addUser])],
@@ -304,7 +312,27 @@ const UserReducers = (state = initialState, action) => {
 							action.data.navigation.dispatch({
 							  type: 'Navigation/RESET',
 							  index: 0,
-							  actions: [{ type: 'Navigation/NAVIGATE', routeName: 'HomeManager' }]
+							  actions: [{ type: 'Navigation/NAVIGATE', routeName:
+							  	state.users[i].access ?
+										state.users[i].access.persediaan && state.users[i].access.penjualan && state.users[i].access.laporan ?
+											'level2'
+										: state.users[i].access.persediaan && state.users[i].access.penjualan ?
+											'level3'
+										: state.users[i].access.persediaan ?
+											'level4'
+										: state.users[i].access.penjualan ?
+											'level5'
+										: state.users[i].access.laporan ?
+											'level6'
+										: state.users[i].access.persediaan && state.users[i].access.laporan ?
+											'level8'
+										: state.users[i].access.penjualan && state.users[i].access.laporan ?
+											'level10'
+										:
+											'Login'
+									:
+										'Login'
+								}]
 							})
 							AsyncStorage.setItem('@User', JSON.stringify(state.users[i]))
 							return {

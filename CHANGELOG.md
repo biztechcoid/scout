@@ -207,3 +207,23 @@
 ## 0.0.2
 
 1. bug fix penjualan
+
+
+## 0.0.3
+
+1. login
+	* dapat login jika online
+
+2. sidemenu
+	* bug fix add user
+	* fitur hak akses
+
+3. inventory
+	* maksimalkan modal saat keyboard aktif
+	* barcode not require
+	* warna text harga merah jika lebih kecil dari cost
+	* issue bahan baku tidak ada cost
+	* issue button collapse
+
+4. laporan
+	* save to pdf
