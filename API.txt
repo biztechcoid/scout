@@ -238,13 +238,13 @@ inventoryGET: {
 	}
 }
 
-CreateCategory: {
+CreateCategoryPOST: {
 	request: {
 		token: string,
 		data: {
-			idCategory: makeId(),
-			idCabang: action.data.idCabang,
-			name: action.data.name,
+			idCategory: string,
+			idCabang: string,
+			name: string,
 		}
 	},
 
@@ -260,10 +260,442 @@ CreateCategory: {
 	response: {
 		statusCode: integer,
 		message: string
-	}
+	},
 
 	sample: {
 		statusCode: 200,
 		message: 'success create category'
+	}
+}
+
+UpdateCategoryPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+			name: string
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			name: 'Makan'
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success update category'
+	}
+}
+
+DeleteCategoryPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success delete category'
+	}
+}
+
+createProductPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+			idProduct: string,
+			barcode: string,
+			name: string,
+			cost: integer,
+			price: integer,
+			quantity: integer
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			idProduct: '8ysVkq0EgnyVLrZho47U',
+			barcode: null,
+			name: 'nasi',
+			cost: 0,
+			price: 1000,
+			quantity: 98,
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success create product'
+	}
+}
+
+updateProductPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+			idProduct: string,
+			barcode: string,
+			name: string,
+			cost: integer,
+			price: integer,
+			quantity: integer
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			idProduct: '8ysVkq0EgnyVLrZho47U',
+			barcode: null,
+			name: 'nasi',
+			cost: 0,
+			price: 1000,
+			quantity: 98,
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success update product'
+	}
+}
+
+deleteProductPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+			idProduct: string
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			idProduct: '8ysVkq0EgnyVLrZho47U'
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success delete product'
+	}
+}
+
+createSubProductPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+			idProduct: string,
+			idSubProduct: string,
+			barcode: string,
+			name: string,
+			cost: integer,
+			price: integer,
+			quantity: integer
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			idProduct: '8ysVkq0EgnyVLrZho47U',
+			idSubProduct: 'VLrZho47U8ysVkq0Egny',
+			barcode: null,
+			name: 'bawang goreng',
+			cost: 0,
+			price: 1000,
+			quantity: 98,
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success create sub product'
+	}
+}
+
+updateSubProductPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+			idProduct: string,
+			idSubProduct: string,
+			barcode: string,
+			name: string,
+			cost: integer,
+			price: integer,
+			quantity: integer
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			idProduct: '8ysVkq0EgnyVLrZho47U',
+			idSubProduct: 'VLrZho47U8ysVkq0Egny',
+			barcode: null,
+			name: 'bawang goreng',
+			cost: 0,
+			price: 1000,
+			quantity: 98,
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success update sub product'
+	}
+}
+
+deleteSubProductPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+			idProduct: string,
+			idSubProduct: string
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			idProduct: '8ysVkq0EgnyVLrZho47U',
+			idSubProduct: 'VLrZho47U8ysVkq0Egny'
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success delete sub product'
+	}
+}
+
+createIngredientsPOST: {
+	request: {
+		token: string,
+		data: {
+			idIngredient: string,
+			barcode: string,
+			name: string,
+			cost: integer,
+			price: integer,
+			quantity: integer
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idIngredient: '6WmZ91Oz5iBSRBi4J1s5',
+			barcode: null,
+			name: 'beras',
+			cost: 0,
+			price: 1000,
+			quantity: 98,
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success create ingredients'
+	}
+}
+
+updateIngredientsPOST: {
+	request: {
+		token: string,
+		data: {
+			idIngredient: string,
+			barcode: string,
+			name: string,
+			cost: integer,
+			price: integer,
+			quantity: integer
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idIngredient: '6WmZ91Oz5iBSRBi4J1s5',
+			barcode: null,
+			name: 'beras',
+			cost: 0,
+			price: 1000,
+			quantity: 98,
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success update ingredients'
+	}
+}
+
+deleteIngredientsPOST: {
+	request: {
+		token: string,
+		data: {
+			idIngredient: string,
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idIngredient: '6WmZ91Oz5iBSRBi4J1s5',
+		}
+	},
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success delete ingredients'
+	}
+}
+
+addBahanBakuPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+			idProduct: string,
+			ingredients: {
+				idIngredient: string,
+				qty: integer
+			}
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			idProduct: '8ysVkq0EgnyVLrZho47U',
+			ingredients: {
+				idIngredient: '6WmZ91Oz5iBSRBi4J1s5',
+				qty: 2
+			}
+		}
+	}
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success add ingredients'
+	}
+}
+
+removeBahanBakuPOST: {
+	request: {
+		token: string,
+		data: {
+			idCategory: string,
+			idProduct: string,
+			idIngredient: string,
+		}
+	},
+
+	sample: {
+		token: '1234567890abcdefghijklmnopqrstuvwxyz',
+		data: {
+			idCategory: 'SRBi4J1s56WmZ91Oz5iB',
+			idProduct: '8ysVkq0EgnyVLrZho47U',
+			idIngredient: '6WmZ91Oz5iBSRBi4J1s5',
+		}
+	}
+
+	response: {
+		statusCode: integer,
+		message: string
+	},
+
+	sample: {
+		statusCode: 200,
+		message: 'success remove ingredients'
 	}
 }
