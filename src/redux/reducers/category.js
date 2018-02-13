@@ -459,8 +459,9 @@ const CategoryReducers = (state = initialState, action) => {
 							state.data[i].product[j].cost = 0
 							for(var k in state.data[i].product[j].ingredients) {
 								for(var l in state.ingredients) {
-									if(state.data[i].product[j].ingredients[k] === state.ingredients[l].idIngredients) {
-										state.data[i].product[j].cost += state.ingredients[l].cost
+									if(state.data[i].product[j].ingredients[k].idIngredients === state.ingredients[l].idIngredients) {
+										// state.data[i].product[j].cost += state.ingredients[l].cost
+										state.data[i].product[j].cost = state.data[i].product[j].cost + (state.ingredients[l].cost * state.data[i].product[j].ingredients[k].qty)
 									}
 								}
 							}
@@ -480,14 +481,15 @@ const CategoryReducers = (state = initialState, action) => {
 					for(var j in state.data[i].product) {
 						if(state.data[i].product[j].idProduct === action.data.idProduct) {
 							for(var k in state.data[i].product[j].ingredients) {
-								if(state.data[i].product[j].ingredients[k] === action.data.idIngredients) {
+								if(state.data[i].product[j].ingredients[k].idIngredients === action.data.idIngredients) {
 									state.data[i].product[j].ingredients.splice(k, 1)
 
 									state.data[i].product[j].cost = 0
 									for(var l in state.data[i].product[j].ingredients) {
 										for(var m in state.ingredients) {
-											if(state.data[i].product[j].ingredients[l] === state.ingredients[m].idIngredients) {
-												state.data[i].product[j].cost += state.ingredients[m].cost
+											if(state.data[i].product[j].ingredients[l].idIngredients === state.ingredients[m].idIngredients) {
+												// state.data[i].product[j].cost += state.ingredients[m].cost
+												state.data[i].product[j].cost = state.data[i].product[j].cost + (state.ingredients[m].cost * state.data[i].product[j].ingredients[l].qty)
 											}
 										}
 									}
