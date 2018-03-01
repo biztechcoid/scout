@@ -21,22 +21,26 @@ import {
 	Touchable
 } from '../../components'
 
+import {
+	online
+} from '../../modules'
+
 class RegisterScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
 		title: navigation.state.params.type
 	})
 
 	state = {
-		name: null,
-		email: null,
-		phone: null,
-		password: null,
-		confirmPassword: null,
+		name: 'admin@admin',
+		email: 'admin@admin',
+		phone: '0812',
+		password: 'admin@admin',
+		confirmPassword: 'admin@admin',
 
 		cabang: null,
-		pusat: null,
-		namaCabang: null,
-		ket: null,
+		pusat: 'admin@admin',
+		namaCabang: 'admin@admin',
+		ket: 'admin@admin',
 
 		access: {
 			persediaan: false,
@@ -47,32 +51,43 @@ class RegisterScreen extends React.Component {
 	}
 
 	_register() {
-		const stateCopy = this.state
-		if(this.state.name == '' || this.state.name == null) {
-			Alert.alert(null, 'Nama tidak valid')
-		} else if(this.state.email == '' || this.state.email == null) {
-			Alert.alert(null, 'Email tidak valid')
-		} else if(this.state.phone == '' || this.state.phone == null) {
-			Alert.alert(null, 'Telepon tidak valid')
-		} else if(this.state.password == '' || this.state.password == null) {
-			Alert.alert(null, 'Password tidak valid')
-		} else {
-			if(this.state.password === this.state.confirmPassword) {
-				stateCopy.access = {
-					persediaan: true,
-					penjualan: true,
-					laporan: true,
-					monitoring: true
-				}
+		/*
+		*
+		check koneksi internet
+		*
+		*/
+		online(value => {
+			if(value) {
+				const stateCopy = this.state
+				if(this.state.name == '' || this.state.name == null) {
+					Alert.alert(null, 'Nama tidak valid')
+				} else if(this.state.email == '' || this.state.email == null) {
+					Alert.alert(null, 'Email tidak valid')
+				} else if(this.state.phone == '' || this.state.phone == null) {
+					Alert.alert(null, 'Telepon tidak valid')
+				} else if(this.state.password == '' || this.state.password == null) {
+					Alert.alert(null, 'Password tidak valid')
+				} else {
+					if(this.state.password === this.state.confirmPassword) {
+						stateCopy.access = {
+							persediaan: true,
+							penjualan: true,
+							laporan: true,
+							monitoring: true
+						}
 
-				this.props.dispatchRegisterUser({
-					data: this.state,
-					navigation: this.props.navigation
-				})
+						this.props.dispatchRegisterUser({
+							data: this.state,
+							navigation: this.props.navigation
+						})
+					} else {
+						Alert.alert(null, 'Ulangi password')
+					}
+				}
 			} else {
-				Alert.alert(null, 'Ulangi password')
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-		}
+		})
 	}
 
 	_chooseCabang(value) {

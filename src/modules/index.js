@@ -7,4 +7,8 @@ exports.yyyy = require('./date').yyyy
 
 exports.makeId = require('./makeId')
 
+exports.online = require('./online')
+
 exports.rupiah = require('./rupiah')
+
+exports.server = 'http://serverscoutposcom-at.cloud.revoluz.io/scout'

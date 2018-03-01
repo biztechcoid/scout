@@ -6,7 +6,8 @@ import {
 } from 'react-native'
 
 import {
-	makeId
+	makeId,
+	server
 } from '../../modules'
 
 /*
@@ -103,18 +104,23 @@ const UserReducers = (state = initialState, action) => {
 		}
 		*/
 		case 'REGISTER_USER':
-			for(var i in state.users) {
+			/*
+			*
+			check list users
+			*
+			*/
+			/*for(var i in state.users) {
 				if(state.users[i].email.toUpperCase() == action.data.data.email.toUpperCase()) {
 					// user sudah terdaftar
 					Alert.alert(null, 'user ' + action.data.data.email + ' sudah terdaftar')
 					return state
 				}
-			}
+			}*/
 			const store = {
 				idPusat: makeId(),
 				name: 'Pusat',
 				ket: null,
-				cabang: []
+				// cabang: []
 			}
 			const register = {
 				idUser: makeId(),
@@ -131,15 +137,59 @@ const UserReducers = (state = initialState, action) => {
 					monitoring: true
 				}
 			}
-			AsyncStorage.multiSet([
-				['@Users', JSON.stringify([...state.users, register])],
-				['@Store', JSON.stringify([...state.store, store])]
-			], (err) => console.log(err))
-			Alert.alert(null, 'Pendaftaran berhasil, silahkan masuk', [{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
+
+			/*
+			*
+			post to api
+			*
+			*/
+			fetch(server + '/users/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					token: false
+				},
+				body: JSON.stringify({
+					store: store,
+					register: register
+				})
+			})
+			.then(response => response.json())
+			.then(res => {
+				// create array cabang for localstorage
+				store['cabang'] = []
+
+				if(res.headers.statusCode === 200) {
+					/*
+					*
+					success
+					*
+					*/
+					AsyncStorage.multiSet([
+						['@Users', JSON.stringify([...state.users, register])],
+						['@Store', JSON.stringify([...state.store, store])]
+					], (err) => console.log(err))
+
+					Alert.alert(null, 'Pendaftaran berhasil, silahkan masuk',
+						[{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
+
+					return {
+						...state,
+						store: [...state.store, store],
+						users: [...state.users, register]
+					}
+				} else {
+					/*
+					*
+					failed
+					*
+					*/
+					Alert.alert(null, res.headers.message)
+				}
+			})
+			.catch(err => console.log(err))
 			return {
-				...state,
-				store: [...state.store, store],
-				users: [...state.users, register]
+				...state
 			}
 
 		/*
@@ -304,6 +354,24 @@ const UserReducers = (state = initialState, action) => {
 			if(state.users == null || state.users.length == 0) {
 				Alert.alert(null, 'User atau password salah')
 			} else {
+				fetch(server + '/users/login', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						token: false
+					},
+					body: JSON.stringify(action.data.data)
+				})
+				.then(response => response.json())
+				.then(res => {
+					store['cabang'] = []
+					if(res.headers.statusCode === 200) {
+						
+					} else {
+						Alert.alert(null, res.headers.message)
+					}
+				})
+				.catch(err => console.log(err))
 				for(var i in state.users) {
 					if(state.users[i].email.toUpperCase() == action.data.data.email.toUpperCase()) {
 						if(state.users[i].password === action.data.data.password) {
