@@ -45,7 +45,7 @@ class SideMenuScreen extends React.Component {
 
 			<View>
 				{this.props.user ?
-					<View style = {{ width:'90%',marginLeft:'5%',marginRight:'5%', marginTop:20 }}>
+					<View style = {{ width:'90%',marginLeft:'5%',marginRight:'5%', marginTop:20, marginBottom:20 }}>
 						<View style = {{ flexDirection: 'row' }}>
 							<View>
 								<Text> Email </Text>
@@ -65,8 +65,8 @@ class SideMenuScreen extends React.Component {
 				}
 
 				{this.props.user ?
-					this.props.user.idCabang === null ?
-						<View style = {{ height: 40,marginTop:20, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+					this.props.user.idCabang === 'null' ?
+						<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 							<Touchable
 								style = {{ justifyContent: 'center' }}
 								onPress = { () => this.props.screenProps.navigate('Register', {type: 'Tambah User'}) }>

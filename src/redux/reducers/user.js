@@ -166,7 +166,7 @@ const UserReducers = (state = initialState, action) => {
 					*
 					*/
 					AsyncStorage.multiSet([
-						['@Users', JSON.stringify([...state.users, register])],
+						// ['@Users', JSON.stringify([...state.users, register])],
 						['@Store', JSON.stringify([...state.store, store])]
 					], (err) => console.log(err))
 
@@ -176,7 +176,7 @@ const UserReducers = (state = initialState, action) => {
 					return {
 						...state,
 						store: [...state.store, store],
-						users: [...state.users, register]
+						// users: [...state.users, register]
 					}
 				} else {
 					/*
@@ -351,28 +351,20 @@ const UserReducers = (state = initialState, action) => {
 		}
 		*/
 		case 'LOGIN':
-			if(state.users == null || state.users.length == 0) {
+			/*
+			*
+			field masih kosong
+			*
+			*/
+			/*if(state.users == null || state.users.length == 0) {
 				Alert.alert(null, 'User atau password salah')
-			} else {
-				fetch(server + '/users/login', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						token: false
-					},
-					body: JSON.stringify(action.data.data)
-				})
-				.then(response => response.json())
-				.then(res => {
-					store['cabang'] = []
-					if(res.headers.statusCode === 200) {
-						
-					} else {
-						Alert.alert(null, res.headers.message)
-					}
-				})
-				.catch(err => console.log(err))
-				for(var i in state.users) {
+			} else {*/
+				/*
+				*
+				loop list users
+				*
+				*/
+				/*for(var i in state.users) {
 					if(state.users[i].email.toUpperCase() == action.data.data.email.toUpperCase()) {
 						if(state.users[i].password === action.data.data.password) {
 							// user dan password benar
@@ -415,8 +407,63 @@ const UserReducers = (state = initialState, action) => {
 					}
 				}
 				// user tidak ada
-				Alert.alert(null, 'User atau password salah')
-			}
+				Alert.alert(null, 'User atau password salah')*/
+
+				/*
+				*
+				post to api
+				*
+				*/
+				fetch(server + '/users/login', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						token: false
+					},
+					body: JSON.stringify(action.data.data)
+				})
+				.then(response => response.json())
+				.then(res => {
+					if(res.headers.statusCode === 200) {
+						state.data = res.data
+						state.data['token'] = res.headers.token
+						action.data.navigation.dispatch({
+						  type: 'Navigation/RESET',
+						  index: 0,
+						  actions: [{ type: 'Navigation/NAVIGATE', routeName:
+						  	state.data.access ?
+									state.data.access.persediaan && state.data.access.penjualan && state.data.access.laporan ?
+										'level2'
+									: state.data.access.persediaan && state.data.access.penjualan ?
+										'level3'
+									: state.data.access.persediaan ?
+										'level4'
+									: state.data.access.penjualan ?
+										'level5'
+									: state.data.access.laporan ?
+										'level6'
+									: state.data.access.persediaan && state.data.access.laporan ?
+										'level8'
+									: state.data.access.penjualan && state.data.access.laporan ?
+										'level10'
+									:
+										'Login'
+								:
+									'Login'
+							}]
+						})
+						AsyncStorage.setItem('@User', JSON.stringify(state.data))
+						return {
+							...state,
+							process: false,
+							data: state.data
+						}
+					} else {
+						Alert.alert(null, res.headers.message)
+					}
+				})
+				.catch(err => console.log(err))
+			// }
 
 			/*const user = null
 			if(action.data.data.email == 'manager' && action.data.data.password == 'manager') {
@@ -476,7 +523,8 @@ const UserReducers = (state = initialState, action) => {
 			}
 
 		case 'LOGOUT':
-			AsyncStorage.removeItem('@User')
+			AsyncStorage.multiRemove(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users'],
+				(err) => console.log(err))
 			action.data.dispatch({
 				key: null,
 				type: 'Navigation/RESET',

@@ -43,6 +43,11 @@ class LoginScreen extends React.Component {
 		if(this.state.email == '' || this.state.password == '' || this.state.email == null || this.state.password == null) {
 			Alert.alert(null, 'Email atau password tidak valid')
 		} else {
+			/*
+			*
+			check internet connection
+			*
+			*/
 			if(online) {
 				this._loginProcess(true)
 				
