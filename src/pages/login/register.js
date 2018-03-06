@@ -22,7 +22,9 @@ import {
 } from '../../components'
 
 import {
-	online
+	makeId,
+	online,
+	server
 } from '../../modules'
 
 class RegisterScreen extends React.Component {
@@ -31,16 +33,16 @@ class RegisterScreen extends React.Component {
 	})
 
 	state = {
-		name: 'admin@admin',
-		email: 'admin@admin',
-		phone: '0812',
-		password: 'admin@admin',
-		confirmPassword: 'admin@admin',
+		name: null,
+		email: null,
+		phone: null,
+		password: null,
+		confirmPassword: null,
 
 		cabang: null,
-		pusat: 'admin@admin',
-		namaCabang: 'admin@admin',
-		ket: 'admin@admin',
+		pusat: null,
+		namaCabang: null,
+		ket: null,
 
 		access: {
 			persediaan: false,
@@ -69,17 +71,76 @@ class RegisterScreen extends React.Component {
 					Alert.alert(null, 'Password tidak valid')
 				} else {
 					if(this.state.password === this.state.confirmPassword) {
-						stateCopy.access = {
+						/*stateCopy.access = {
 							persediaan: true,
 							penjualan: true,
 							laporan: true,
 							monitoring: true
+						}*/
+
+						const store = {
+							idPusat: makeId(),
+							name: 'Pusat',
+							ket: null
 						}
 
-						this.props.dispatchRegisterUser({
+						const register = {
+							idUser: makeId(),
+							idPusat: store.idPusat,
+							idCabang: null,
+							name: action.data.data.name,
+							email: action.data.data.email,
+							phone: action.data.data.phone,
+							password: action.data.data.password,
+							access: {
+								persediaan: true,
+								penjualan: true,
+								laporan: true,
+								monitoring: true
+							}
+						}
+
+						/*
+						*
+						post to api
+						*
+						*/
+						fetch(server + '/users/register', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								token: false
+							},
+							body: JSON.stringify({
+								store: store,
+								register: register
+							})
+						})
+						.then(response => response.json())
+						.then(res => {
+							if(res.headers.statusCode === 200) {
+								/*
+								*
+								success
+								*
+								*/
+								Alert.alert(null, 'Pendaftaran berhasil, silahkan masuk',
+									[{ text: 'OK', onPress: () => this.props.navigation.goBack() }])
+							} else {
+								/*
+								*
+								failed
+								*
+								*/
+								Alert.alert(null, res.headers.message)
+							}
+						})
+						.catch(err => console.log(err))
+
+						/*this.props.dispatchRegisterUser({
 							data: this.state,
 							navigation: this.props.navigation
-						})
+						})*/
 					} else {
 						Alert.alert(null, 'Ulangi password')
 					}
@@ -99,10 +160,10 @@ class RegisterScreen extends React.Component {
 			stateCopy.ket = null
 		} else {
 			for(var i in this.props.store) {
-				if(this.props.store[i].idPusat === value) {
+				if(this.props.store.idPusat === value) {
 					stateCopy.cabang = value
-					stateCopy.namaCabang = this.props.store[i].name
-					stateCopy.ket = this.props.store[i].ket
+					stateCopy.namaCabang = this.props.store.name
+					stateCopy.ket = this.props.store.ket
 				}
 			}
 		}
@@ -126,33 +187,135 @@ class RegisterScreen extends React.Component {
 	}
 
 	_addUser() {
-		const stateCopy = this.state
+		/*
+		*
+		check koneksi internet
+		*
+		*/
+		online(value => {
+			if(value) {
+				const stateCopy = this.state
 
-		if(stateCopy.name == '' || stateCopy.name == null) {
-			Alert.alert(null, 'nama tidak valid')
-		} else if(stateCopy.email == '' || stateCopy.email == null) {
-			Alert.alert(null, 'email tidak valid')
-		} else if(stateCopy.phone == '' || stateCopy.phone == null) {
-			Alert.alert(null, 'telepon tidak valid')
-		} else if(stateCopy.password == '' || stateCopy.password == null) {
-			Alert.alert(null, 'password tidak valid')
-		} else {
-			if(stateCopy.password === stateCopy.confirmPassword) {
-				if(stateCopy.cabang === null) {
-					Alert.alert(null, 'cabang tidak valid')
+				if(stateCopy.name == '' || stateCopy.name == null) {
+					Alert.alert(null, 'nama tidak valid')
+				} else if(stateCopy.email == '' || stateCopy.email == null) {
+					Alert.alert(null, 'email tidak valid')
+				} else if(stateCopy.phone == '' || stateCopy.phone == null) {
+					Alert.alert(null, 'telepon tidak valid')
+				} else if(stateCopy.password == '' || stateCopy.password == null) {
+					Alert.alert(null, 'password tidak valid')
 				} else {
-					if(!stateCopy.access.persediaan && !stateCopy.access.penjualan && !stateCopy.access.laporan && !stateCopy.access.monitoring) {
-						return Alert.alert(null, 'silahkan pilih hak akses')
+					if(stateCopy.password === stateCopy.confirmPassword) {
+						if(stateCopy.cabang === null) {
+							Alert.alert(null, 'cabang tidak valid')
+						} else {
+							if(!stateCopy.access.persediaan && !stateCopy.access.penjualan && !stateCopy.access.laporan && !stateCopy.access.monitoring) {
+								return Alert.alert(null, 'silahkan pilih hak akses')
+							}
+
+							console.log('===== stateCopy =====', stateCopy)
+							var cabang, register
+							if(stateCopy.cabang === this.props.store.idPusat) {
+								cabang = {
+									idCabang: 'Follow Pusat',
+									name: 'Follow Pusat',
+									ket: null
+								}
+								register = {
+									idUser: makeId(),
+									idPusat: this.props.store.idPusat,
+									idCabang: null,
+									name: stateCopy.name,
+									email: stateCopy.email,
+									phone: stateCopy.phone,
+									password: stateCopy.password,
+									access: stateCopy.access
+								}
+							} else if(stateCopy.cabang === 'addCabang') {
+								cabang = {
+									idCabang: makeId(),
+									name: stateCopy.namaCabang,
+									ket: stateCopy.ket
+								}
+								register = {
+									idUser: makeId(),
+									idPusat: this.props.store.idPusat,
+									idCabang: cabang.idCabang,
+									name: stateCopy.name,
+									email: stateCopy.email,
+									phone: stateCopy.phone,
+									password: stateCopy.password,
+									access: stateCopy.access
+								}
+							} else {
+								cabang = {
+									idCabang: null,
+									name: null,
+									ket: null
+								}
+								register = {
+									idUser: makeId(),
+									idPusat: this.props.store.idPusat,
+									idCabang: stateCopy.cabang,
+									name: stateCopy.name,
+									email: stateCopy.email,
+									phone: stateCopy.phone,
+									password: stateCopy.password,
+									access: stateCopy.access
+								}
+							}
+
+							/*
+							*
+							post to api
+							*
+							*/
+							fetch(server + '/users/addUser', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									token: this.props.user.token
+								},
+								body: JSON.stringify({
+									cabang: cabang,
+									register: register
+								})
+							})
+							.then(response => response.json())
+							.then(res => {
+								if(res.headers.statusCode === 200) {
+									/*
+									*
+									success
+									*
+									*/
+									Alert.alert(null, 'Tambah User berhasil',
+										[{ text: 'OK', onPress: () => this.props.navigation.goBack() }])
+								} else {
+									/*
+									*
+									failed
+									*
+									*/
+									Alert.alert(null, res.headers.message)
+								}
+							})
+							.catch(err => console.log(err))
+
+
+							/*this.props.dispatchAddUser({
+								data: stateCopy,
+								navigation: this.props.navigation
+							})*/
+						}
+					} else {
+						Alert.alert(null, 'ulangi password')
 					}
-					this.props.dispatchAddUser({
-						data: stateCopy,
-						navigation: this.props.navigation
-					})
 				}
 			} else {
-				Alert.alert(null, 'ulangi password')
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-		}
+		})
 	}
 
 	_access(value) {
@@ -356,9 +519,9 @@ class RegisterScreen extends React.Component {
 										selectedValue={this.state.cabang}
 										onValueChange={(itemValue, itemIndex) => this._chooseCabang(itemValue, itemIndex) }>
 										<Picker.Item label = '-- Pilih Cabang --' value = {null} />
-										<Picker.Item label = {this.props.store[0].name} value = {this.props.store[0].idPusat} />
-										{this.props.store[0].cabang.map((store, index) =>
-											<Picker.Item key = {index} label = {store.name} value = {store.idCabang} />
+										<Picker.Item label = {this.props.store.name} value = {this.props.store.idPusat} />
+										{this.props.store.cabang.map((cabang, index) =>
+											<Picker.Item key = {index} label = {cabang.name} value = {cabang.idCabang} />
 											)}
 										<Picker.Item label = 'Tambah Cabang' value = 'addCabang' />
 									</Picker>
@@ -532,7 +695,8 @@ class RegisterScreen extends React.Component {
 
 function mapStateToProps (state) {
 	return {
-		store: state.user.store
+		store: state.user.store,
+		user: state.user.data
 	}
 }
 

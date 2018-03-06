@@ -11,4 +11,5 @@ exports.online = require('./online')
 
 exports.rupiah = require('./rupiah')
 
-exports.server = 'http://serverscoutposcom-at.cloud.revoluz.io/scout'
+// exports.server = 'http://serverscoutposcom-at.cloud.revoluz.io/scout'
+exports.server = 'http://192.168.1.201:3000'

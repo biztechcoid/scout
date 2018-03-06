@@ -63,6 +63,7 @@ const UserReducers = (state = initialState, action) => {
 		case 'LOCAL_STORAGE_USERS':
 			console.log(action.data)
 			if(action.data.users === undefined) {
+				AsyncStorage.setItem('@Store', JSON.stringify(action.data.store))
 				return {
 					...state,
 					store: action.data.store
@@ -81,6 +82,7 @@ const UserReducers = (state = initialState, action) => {
 						}
 					}
 				}
+				AsyncStorage.setItem('@Users', JSON.stringify(action.data.users))
 				return {
 					...state,
 					users: action.data.users
@@ -165,17 +167,17 @@ const UserReducers = (state = initialState, action) => {
 					success
 					*
 					*/
-					AsyncStorage.multiSet([
-						// ['@Users', JSON.stringify([...state.users, register])],
+					/*AsyncStorage.multiSet([
+						['@Users', JSON.stringify([...state.users, register])],
 						['@Store', JSON.stringify([...state.store, store])]
-					], (err) => console.log(err))
+					], (err) => console.log(err))*/
 
 					Alert.alert(null, 'Pendaftaran berhasil, silahkan masuk',
 						[{ text: 'OK', onPress: () => action.data.navigation.goBack() }])
 
 					return {
 						...state,
-						store: [...state.store, store],
+						// store: [...state.store, store],
 						// users: [...state.users, register]
 					}
 				} else {
@@ -414,7 +416,7 @@ const UserReducers = (state = initialState, action) => {
 				post to api
 				*
 				*/
-				fetch(server + '/users/login', {
+				/*fetch(server + '/users/login', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -425,26 +427,25 @@ const UserReducers = (state = initialState, action) => {
 				.then(response => response.json())
 				.then(res => {
 					if(res.headers.statusCode === 200) {
-						state.data = res.data
-						state.data['token'] = res.headers.token
+						res.data['token'] = res.headers.token
 						action.data.navigation.dispatch({
 						  type: 'Navigation/RESET',
 						  index: 0,
 						  actions: [{ type: 'Navigation/NAVIGATE', routeName:
-						  	state.data.access ?
-									state.data.access.persediaan && state.data.access.penjualan && state.data.access.laporan ?
+						  	res.data.access ?
+									res.data.access.persediaan && res.data.access.penjualan && res.data.access.laporan ?
 										'level2'
-									: state.data.access.persediaan && state.data.access.penjualan ?
+									: res.data.access.persediaan && res.data.access.penjualan ?
 										'level3'
-									: state.data.access.persediaan ?
+									: res.data.access.persediaan ?
 										'level4'
-									: state.data.access.penjualan ?
+									: res.data.access.penjualan ?
 										'level5'
-									: state.data.access.laporan ?
+									: res.data.access.laporan ?
 										'level6'
-									: state.data.access.persediaan && state.data.access.laporan ?
+									: res.data.access.persediaan && res.data.access.laporan ?
 										'level8'
-									: state.data.access.penjualan && state.data.access.laporan ?
+									: res.data.access.penjualan && res.data.access.laporan ?
 										'level10'
 									:
 										'Login'
@@ -452,17 +453,18 @@ const UserReducers = (state = initialState, action) => {
 									'Login'
 							}]
 						})
-						AsyncStorage.setItem('@User', JSON.stringify(state.data))
+						AsyncStorage.setItem('@User', JSON.stringify(res.data))
+						console.log('===== res.data =====', res.data)
 						return {
 							...state,
 							process: false,
-							data: state.data
+							data: res.data
 						}
 					} else {
 						Alert.alert(null, res.headers.message)
 					}
 				})
-				.catch(err => console.log(err))
+				.catch(err => console.log(err))*/
 			// }
 
 			/*const user = null
@@ -515,11 +517,11 @@ const UserReducers = (state = initialState, action) => {
 					lastLogin: new Date()
 				}
 			}*/
-			// AsyncStorage.setItem('@User', JSON.stringify(user))
+			AsyncStorage.setItem('@User', JSON.stringify(action.data))
 			return {
 				...state,
 				process: false,
-				// data: user
+				data: action.data
 			}
 
 		case 'LOGOUT':

@@ -350,7 +350,7 @@ class InventoryScreen extends React.Component {
 	}
 
 	componentDidMount() {
-		NetInfo.isConnected.fetch().then(isConnected => {
+		/*NetInfo.isConnected.fetch().then(isConnected => {
 			this.setState({connection: isConnected})
 
 			this.props.navigation.setParams({
@@ -361,7 +361,7 @@ class InventoryScreen extends React.Component {
 		NetInfo.isConnected.addEventListener(
 			'connectionChange',
 			this.handleFirstConnectivityChange
-		)
+		)*/
 	}
 
 	componentWillUnmount() {

@@ -19,7 +19,8 @@ import {
 	loginProcess,
 	login,
 	localStorageData,
-	localStorageSale
+	localStorageSale,
+	localStorageUsers
 } from '../../redux/actions'
 
 import {
@@ -28,7 +29,8 @@ import {
 } from '../../components'
 
 import {
-	online
+	online,
+	server
 } from '../../modules'
 
 
@@ -52,13 +54,62 @@ class LoginScreen extends React.Component {
 				this._loginProcess(true)
 				
 				const data = {
-					navigation: this.props.navigation,
+					// navigation: this.props.navigation,
 					data: {
 						email: this.state.email,
 						password: this.state.password
 					}
 				}
-				this.props.dispatchLogin(data)
+
+				/*
+				*
+				post to api
+				*
+				*/
+				fetch(server + '/users/login', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						token: false
+					},
+					body: JSON.stringify(data.data)
+				})
+				.then(response => response.json())
+				.then(res => {
+					if(res.headers.statusCode === 200) {
+						res.data['token'] = res.headers.token
+						this.props.navigation.dispatch({
+						  type: 'Navigation/RESET',
+						  index: 0,
+						  actions: [{ type: 'Navigation/NAVIGATE', routeName:
+						  	res.data.access ?
+									res.data.access.persediaan && res.data.access.penjualan && res.data.access.laporan ?
+										'level2'
+									: res.data.access.persediaan && res.data.access.penjualan ?
+										'level3'
+									: res.data.access.persediaan ?
+										'level4'
+									: res.data.access.penjualan ?
+										'level5'
+									: res.data.access.laporan ?
+										'level6'
+									: res.data.access.persediaan && res.data.access.laporan ?
+										'level8'
+									: res.data.access.penjualan && res.data.access.laporan ?
+										'level10'
+									:
+										'Login'
+								:
+									'Login'
+							}]
+						})
+
+						this._getUsers(res.data.token, res.data)
+					} else {
+						Alert.alert(null, res.headers.message)
+					}
+				})
+				.catch(err => console.log(err))
 			} else {
 				Alert.alert(null, 'koneksi internet bermasalah')
 			}
@@ -94,6 +145,77 @@ class LoginScreen extends React.Component {
 			/**/
 		}
 	}
+
+	_getUsers(token, data) {
+		fetch(server + '/users', {
+			method: 'GET',
+			headers: {
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageUsers({users: res.data})
+				this._getStore(token, data)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getStore(token, data) {
+		fetch(server + '/users/store', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageUsers({store: res.data})
+				this._getInventory(token, data)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getInventory(token, data) {
+		fetch(server + '/inventory', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageData({data: res.data})
+				// this._getIngredients(token)
+				this.props.dispatchLogin(data)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	/*_getIngredients(token) {
+		fetch(server + '/inventory/getBahanBaku', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageData({ingredients: res.data})
+			}
+		})
+		.catch(err => console.log(err))
+	}*/
 
 	_loginProcess(value) {
 		this.props.dispatchLoginProcess(value)
@@ -246,7 +368,8 @@ function mapDispatchToProps (dispatch) {
 		dispatchLoginProcess: (data) => dispatch(loginProcess(data)),
 		dispatchLogin: (data) => dispatch(login(data)),
 		dispatchLocalStorageData: (data) => dispatch(localStorageData(data)),
-		dispatchLocalStorageSale: (data) => dispatch(localStorageSale(data))
+		dispatchLocalStorageSale: (data) => dispatch(localStorageSale(data)),
+		dispatchLocalStorageUsers: (data) => dispatch(localStorageUsers(data))
 	}
 }
 
