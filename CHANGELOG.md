@@ -227,3 +227,12 @@
 
 4. laporan
 	* save to pdf
+
+
+## 0.0.5
+1. offline mode
+
+
+## 0.0.6
+1. bug fix icon online
+2. update dashboard

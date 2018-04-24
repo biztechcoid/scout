@@ -14,9 +14,30 @@ export function penjualan(data) {
 	}
 }
 
-/*export function layout(data) {
+export function options(data) {
 	return {
-		type: 'LAYOUT',
+		type: 'OPTIONS',
 		data
 	}
-}*/
+}
+
+export function back(data) {
+	return {
+		type: 'BACK',
+		data
+	}
+}
+
+export function next(data) {
+	return {
+		type: 'NEXT',
+		data
+	}
+}
+
+export function updateFilter(data) {
+	return {
+		type: 'UPDATE_FILTER',
+		data
+	}
+}

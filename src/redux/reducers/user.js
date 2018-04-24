@@ -2,8 +2,10 @@
 
 import {
 	Alert,
-	AsyncStorage
+	AsyncStorage,
+	Platform
 } from 'react-native'
+import DeviceInfo from 'react-native-device-info-fork'
 
 import {
 	makeId,
@@ -51,6 +53,9 @@ user
 */
 
 const initialState = {
+	device: {
+		imei: Platform.OS == 'ios' ? DeviceInfo.getIdfa() : DeviceInfo.getImei()
+	},
 	users: [],
 	store: [],
 	data: null,

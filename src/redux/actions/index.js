@@ -56,6 +56,16 @@ exports.refreshing = require('./category').refreshing
 exports.barcodeProduct = require('./category').barcodeProduct
 exports.updateStock = require('./category').updateStock
 
+/*
+*
+sale
+*
+*/
 exports.localStorageSale = require('./sale').localStorageSale
 exports.penjualan = require('./sale').penjualan
 exports.layout = require('./sale').layout
+
+exports.options = require('./sale').options
+exports.back = require('./sale').back
+exports.next = require('./sale').next
+exports.updateFilter = require('./sale').updateFilter

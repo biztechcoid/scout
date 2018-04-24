@@ -15,7 +15,7 @@ import ListUsersScreen from './pages/login/listUsers'
 import HomeManagerScreen from './routes/homeManager'
 import HomeAdminScreen from './routes/homeAdmin'
 import {
-	// HomeScreen,
+	DashboardScreen,
 	MyAppLevel2,
 	MyAppLevel3,
 	MyAppLevel4,
@@ -31,6 +31,10 @@ import BahanBakuScreen from './pages/inventory/bahanBaku'
 
 import SearchScreen from './pages/sale/search'
 import ScanQRScreen from './pages/sale/scanQR'
+import InventoryScreen from './pages/inventory'
+import SaleScreen from './pages/sale'
+import ReportScreen from './routes/report'
+import PengeluaranScreen from './pages/pengeluaran'
 
 
 const StackNavigatorConfig = {
@@ -93,12 +97,12 @@ export const AppNavigator = StackNavigator({
 			header: null
 		}
 	},
-	/*Home: {
-		screen: HomeScreen,
+	Dashboard: {
+		screen: DashboardScreen,
 		navigationOptions: {
 			header: null
 		}
-	},*/
+	},
 	level2: {
 		screen: MyAppLevel2,
 		navigationOptions: {
@@ -114,19 +118,19 @@ export const AppNavigator = StackNavigator({
 	level4: {
 		screen: MyAppLevel4,
 		navigationOptions: {
-			header: null
+			// header: null
 		}
 	},
 	level5: {
 		screen: MyAppLevel5,
 		navigationOptions: {
-			header: null
+			// header: null
 		}
 	},
 	level6: {
 		screen: MyAppLevel6,
 		navigationOptions: {
-			header: null
+			// header: null
 		}
 	},
 	level8: {
@@ -181,6 +185,50 @@ export const AppNavigator = StackNavigator({
 		screen: SearchScreen,
 		navigationOptions: {
 			header: null,
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	Inventory: {
+		screen: InventoryScreen,
+		navigationOptions: {
+			// header: null,
+			headerTitle: 'Persediaan',
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	Sale: {
+		screen: SaleScreen,
+		navigationOptions: {
+			// header: null,
+			headerTitle: 'Penjualan',
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	Report: {
+		screen: ReportScreen,
+		navigationOptions: {
+			// header: null,
+			headerTitle: 'Laporan',
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	Pengeluaran: {
+		screen: PengeluaranScreen,
+		navigationOptions: {
+			// header: null,
+			headerTitle: 'Pengeluaran',
 			headerTintColor: 'white',
 			headerStyle: {
 				backgroundColor: '#6ecbe0'

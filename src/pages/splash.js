@@ -98,7 +98,15 @@ class SplashScreen extends React.Component {
 			*/
 			if(res[0][1] == null) {
 				// tidak ada token
-				this.next('Login')
+				/*
+				*
+				offline
+
+				user langsung masuk ke level 2
+				*
+				*/
+				// this.next('Login')
+				this.next('Dashboard')
 			} else {
 				// ada token
 				const newRes = JSON.parse(res[0][1])

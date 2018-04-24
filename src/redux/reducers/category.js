@@ -59,12 +59,14 @@ const CategoryReducers = (state = initialState, action) => {
 	switch(action.type) {
 		case 'LOCAL_STORAGE_CATEGORY':
 			console.log(action.data)
-			if(action.data.data == undefined) {	
+			if(action.data.data == undefined) {
+				AsyncStorage.setItem('@Ingredients', JSON.stringify(action.data.ingredients))
 				return {
 					...state,
 					ingredients: action.data.ingredients
 				}
 			} else {
+				AsyncStorage.setItem('@Data', JSON.stringify(action.data.data))
 				return {
 					...state,
 					data: action.data.data

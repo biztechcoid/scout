@@ -1,5 +1,7 @@
 'use strict'
 
+exports.checkFolder = require('./checkFolder')
+
 exports.date = require('./date').date
 exports.ddmmyyyy = require('./date').ddmmyyyy
 exports.mmyyyy = require('./date').mmyyyy

@@ -8,6 +8,7 @@ import {
 import TabInventoryScreen from '../pages/inventory'
 import TabSaleScreen from '../pages/sale'
 import TabReportScreen from '../pages/report'
+import DashboardScreen from '../pages/dashboard'
 import SideMenu from '../pages/sidemenu'
 
 
@@ -41,17 +42,17 @@ const TabNavigatorConfig = {
 }
 
 
-const HomeScreen = TabNavigator({
+/*const HomeScreen = TabNavigator({
 	Persediaan: { screen: TabInventoryScreen },
 	Penjualan: { screen: TabSaleScreen },
 	Laporan: { screen: TabReportScreen }
-}, TabNavigatorConfig)
+}, TabNavigatorConfig)*/
 
-const MyApp = DrawerNavigator({
+exports.DashboardScreen = DrawerNavigator({
 	Home: {
 		screen: StackNavigator({
 			HomeScreen: {
-				screen: TabReportScreen,
+				screen: DashboardScreen,
 				navigationOptions: {
 					headerTitle: 'Scout',
 					headerTintColor: 'white',

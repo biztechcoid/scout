@@ -95,14 +95,19 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    /*
+    *
+    update version from 23.0.1 to 23.0.2
+    *
+    */
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.scoutbiz"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 5
-        versionName "0.0.4"
+        versionCode 6
+        versionName "0.0.5"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -150,6 +155,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-document-picker')
+    compile project(':react-native-file-opener')
+    compile project(':react-native-fs')
     compile project(':react-native-html-to-pdf')
     compile project(':react-native-device-info')
     compile project(':react-native-camera')
