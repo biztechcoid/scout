@@ -13,6 +13,7 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
 import com.rnfs.RNFSPackage;
 import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
+import com.github.wuxudong.rncharts.MPAndroidChartPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNDeviceInfo(),
             new RNHTMLtoPDFPackage(),
             new RNFSPackage(),
-            new ReactNativeDocumentPicker()
+            new ReactNativeDocumentPicker(),
+            new MPAndroidChartPackage()
       );
     }
 

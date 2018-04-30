@@ -155,6 +155,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-charts-wrapper')
     compile project(':react-native-document-picker')
     compile project(':react-native-file-opener')
     compile project(':react-native-fs')
