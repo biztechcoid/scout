@@ -42,15 +42,14 @@ class LineChartScreen extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.setState(
       {
         data: {
-          $set: {
             dataSets: [{
               values: [{y: 0.88}, {y: 0.77}, {y: 105}, {y: 115}],
               label: 'Company X',
-              config: {
+              /*config: {
                 lineWidth: 2,
                 drawCircles: false,
                 highlightColor: processColor('red'),
@@ -64,11 +63,11 @@ class LineChartScreen extends React.Component {
                   lineLength: 20,
                   spaceLength: 20
                 }
-              }
+              }*/
             }, {
               values: [{y: 90}, {y: 130}, {y: 100}, {y: 105}],
               label: 'Company Y',
-              config: {
+              /*config: {
                 lineWidth: 1,
                 drawCubicIntensity: 0.4,
                 circleRadius: 5,
@@ -78,26 +77,25 @@ class LineChartScreen extends React.Component {
                 fillColor: processColor('blue'),
                 fillAlpha: 45,
                 circleColor: processColor('blue')
-              }
+              }*/
             }, {
               values: [{y: 110}, {y: 105}, {y: 115}, {y: 110}],
               label: 'Company Dashed',
-              config: {
+              /*config: {
                 color: processColor('green'),
                 drawFilled: true,
                 fillColor: processColor('green'),
                 fillAlpha: 50
-              }
+              }*/
             }],
-          }
         },
         xAxis: {
-          $set: {
+          // $set: {
             fontFamily:"HelveticaNeue-Medium",
             fontWeight:"bold",
             fontStyle:"italic",
             valueFormatter: ['Q1', 'Q2', 'Q3', 'Q4']
-          }
+          // }
         }
       }
     );
@@ -128,10 +126,10 @@ class LineChartScreen extends React.Component {
             style={styles.chart}
             data={this.state.data}
             chartDescription={{text: ''}}
-            legend={this.state.legend}
+            // legend={this.state.legend}
             marker={this.state.marker}
             xAxis={this.state.xAxis}
-            drawGridBackground={false}
+            drawGridBackground={true}
             borderColor={processColor('teal')}
             borderWidth={1}
             drawBorders={true}
@@ -161,7 +159,9 @@ class LineChartScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF'
+    backgroundColor: '#F5FCFF',
+    borderWidth: 1,
+    borderColor: 'blue'
   },
   chart: {
     flex: 1
