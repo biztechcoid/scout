@@ -32,7 +32,9 @@ import {
 } from '../../components'
 
 import {
-	online
+	makeId,
+	online,
+	server
 } from '../../modules'
 
 
@@ -76,15 +78,38 @@ class InventoryScreen extends React.Component {
 						idCabang diganti dengan imei device
 						*
 						*/
-						// idCabang: this.props.profile.idCabang,
-						idCabang: this.props.device.imei,
+						idCategory: makeId(),
+						idPusat: this.props.profile.idPusat,
+						idCabang: this.props.profile.idCabang,
+						// idCabang: this.props.device.imei,
 						name: this.state.category
 					}
-					this._setModalVisible(false)
-					this.props.dispatchAddCategory(data)
-					this.setState({
-						category: null
+					/*
+					*
+					post to api
+					*
+					*/
+					fetch(server + '/inventory/addCategory', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.profile.token
+						},
+						body: JSON.stringify(data)
 					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchAddCategory(data)
+						} else {
+							Alert.alert(null, res.headers.message)
+						}
+						this.setState({
+							category: null
+						})
+						this._setModalVisible(false)
+					})
+					.catch(err => console.log(err))
 				}
 			} else {
 				Alert.alert(null, 'koneksi internet bermasalah')
@@ -110,17 +135,63 @@ class InventoryScreen extends React.Component {
 						idCategory: this.state.idCategory,
 						name: this.state.category
 					}
-					this._setModalVisible(false)
-					this.props.dispatchUpdateCategory(data)
-					this.setState({
-						idCategory: null,
-						category: null
+					/*
+					*
+					post to api
+					*
+					*/
+					fetch(server + '/inventory/updateCategory', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.profile.token
+						},
+						body: JSON.stringify(data)
 					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchUpdateCategory(data)
+						} else {
+							Alert.alert(null, res.headers.message)
+						}
+						this.setState({
+							idCategory: null,
+							category: null
+						})
+						this._setModalVisible(false)
+					})
+					.catch(err => console.log(err))
 				}
 			} else {
 				Alert.alert(null, 'koneksi internet bermasalah')
 			}
 		})
+	}
+
+	__deleteCategory(data) {
+		/*
+		*
+		post to api
+		*
+		*/
+		fetch(server + '/inventory/deleteCategory', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchDeleteCategory(data)
+			} else {
+				Alert.alert(null, res.headers.message)
+			}
+		})
+		.catch(err => console.log(err))
 	}
 
 	_deleteCategory(content) {
@@ -131,7 +202,7 @@ class InventoryScreen extends React.Component {
 				}
 				Alert.alert(null, 'Anda yakin akan menghapus kategori '+ content.name,
 					[
-						{ text: 'Yakin', onPress: () => this.props.dispatchDeleteCategory(data) },
+						{ text: 'Yakin', onPress: () => this.__deleteCategory(data) },
 						{ text: 'Batal' }
 					])
 			} else {

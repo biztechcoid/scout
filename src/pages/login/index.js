@@ -55,10 +55,10 @@ class LoginScreen extends React.Component {
 				
 				const data = {
 					// navigation: this.props.navigation,
-					data: {
+					// data: {
 						email: this.state.email,
 						password: this.state.password
-					}
+					// }
 				}
 
 				/*
@@ -72,7 +72,7 @@ class LoginScreen extends React.Component {
 						'Content-Type': 'application/json',
 						token: false
 					},
-					body: JSON.stringify(data.data)
+					body: JSON.stringify(data)
 				})
 				.then(response => response.json())
 				.then(res => {
@@ -84,7 +84,8 @@ class LoginScreen extends React.Component {
 						  actions: [{ type: 'Navigation/NAVIGATE', routeName:
 						  	res.data.access ?
 									res.data.access.persediaan && res.data.access.penjualan && res.data.access.laporan ?
-										'level2'
+										// 'level2'
+										'Dashboard'
 									: res.data.access.persediaan && res.data.access.penjualan ?
 										'level3'
 									: res.data.access.persediaan ?
@@ -106,6 +107,7 @@ class LoginScreen extends React.Component {
 
 						this._getUsers(res.data.token, res.data)
 					} else {
+						this._loginProcess(false)
 						Alert.alert(null, res.headers.message)
 					}
 				})
@@ -235,7 +237,7 @@ class LoginScreen extends React.Component {
 				<ScrollView>
 				<View style = { styles.containerlogo }>
 					<View style = { styles.logo }>
-						<Image style = { styles.logoimg } source={require('../../assets/img/LOGO.png')} />
+						<Image style = { styles.logoimg } source={require('../../assets/img/Scoutbiz-New_Logo.png')} />
 					</View>
 				</View>
 

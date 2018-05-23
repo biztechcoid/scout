@@ -44,7 +44,12 @@ const HomeScreen = TabNavigator({
 	Transaksi: { screen: TabTransaksiScreen },
 	Pemasukan: { screen: TabPemasukanScreen },
 	Pengeluaran: { screen: TabPengeluaranScreen },
-	LabaRugi: { screen: TabLabaRugiScreen }
+	LabaRugi: {
+		screen: TabLabaRugiScreen,
+		navigationOptions: {
+			tabBarLabel: 'LABA RUGI'
+		}
+	}
 }, TabNavigatorConfig)
 
 module.exports = HomeScreen

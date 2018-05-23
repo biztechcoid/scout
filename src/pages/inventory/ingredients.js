@@ -353,10 +353,10 @@ class IngredientsScreen extends React.Component {
 											<Text> Produk </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Biaya </Text>
+											<Text> Harga Pokok </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Harga </Text>
+											<Text> Harga Jual </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
 											<Text> Kuantitas </Text>
@@ -392,7 +392,7 @@ class IngredientsScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
-												placeholder = 'Biaya'
+												placeholder = 'Harga Pokok'
 												value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
 										</View>
 
@@ -408,7 +408,7 @@ class IngredientsScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
-												placeholder = 'Harga'
+												placeholder = 'Harga Jual'
 												value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
 										</View>
 
@@ -506,10 +506,10 @@ class IngredientsScreen extends React.Component {
 											<Text> Sub-Produk </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Biaya </Text>
+											<Text> Harga Pokok </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Harga </Text>
+											<Text> Harga Jual </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
 											<Text> Kuantitas </Text>
@@ -545,7 +545,7 @@ class IngredientsScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
-												placeholder = 'Biaya'
+												placeholder = 'Harga Pokok'
 												value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
 										</View>
 
@@ -561,7 +561,7 @@ class IngredientsScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
-												placeholder = 'Harga'
+												placeholder = 'Harga Jual'
 												value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
 										</View>
 
@@ -663,8 +663,8 @@ class IngredientsScreen extends React.Component {
 																		<View style = {{ flexDirection: 'row' }}>
 																			<View style = {{ flexDirection: 'column' }}>
 																				<Text> Stok </Text>
-																				<Text> Biaya </Text>
-																				<Text> Harga </Text>
+																				<Text> Harga Pokok </Text>
+																				<Text> Harga Jual </Text>
 																			</View>
 
 																			<View style = {{ flexDirection: 'column' }}>
@@ -733,7 +733,7 @@ class IngredientsScreen extends React.Component {
 																							<View style = {{ flexDirection: 'row' }}>
 																								<View style = {{ flexDirection: 'column' }}>
 																									<Text> Stok </Text>
-																									<Text> Biaya </Text>
+																									<Text> Harga Pokok </Text>
 																									<Text> Kuantitas </Text>
 																								</View>
 

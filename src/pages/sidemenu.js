@@ -132,15 +132,15 @@ class SideMenuScreen extends React.Component {
 				<View style={{ backgroundColor:'#353535' }}>
 					<View style = {{ height: 40,marginTop:20,marginBottom:20, borderWidth: 0, borderBottomWidth: 0, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 						<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center',width:'100%'}}>
-							<View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
-								<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('../assets/img/LOGO.png')} />
+							<View style={{justifyContent: 'center', flex: 1,}}>
+								<Text style={{color: 'white'}}>{this.props.store[0] ? this.props.store[0].name : null}</Text>
 							</View>
 						</View>
 					</View>
 				</View>
 
 				<View>
-					{this.props.user ?
+					{/*this.props.user ?
 						<View style = {{ width:'90%',marginLeft:'5%',marginRight:'5%', marginTop:20, marginBottom:20 }}>
 							<View style = {{ flexDirection: 'row' }}>
 								<View>
@@ -157,20 +157,45 @@ class SideMenuScreen extends React.Component {
 							</View>
 						</View>
 						:
-						null
+						null*/
 					}
 
+
 					{this.props.user ?
-						this.props.user.idCabang === 'null' ?
+						this.props.user.idCabang === null ?
 							<View>
 								<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+									<Touchable
+										style={{justifyContent: 'center'}}
+										onPress={()=>{}}>
+										<Text>{this.props.user.name}</Text>
+									</Touchable>
+								</View>
+
+								<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+									<Touchable
+										style={{justifyContent: 'center'}}
+										onPress={()=>{}}>
+										<Text>{this.props.user.email}</Text>
+									</Touchable>
+								</View>
+
+								<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+									<Touchable
+										style={{justifyContent: 'center'}}
+										onPress={()=>{}}>
+										<Text>{date(this.props.user.lastLogin)}</Text>
+									</Touchable>
+								</View>
+
+								{/*<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 									<Touchable
 										style = {{ justifyContent: 'center' }}
 										onPress = { () => {
 											this.props.screenProps.navigate('DrawerClose')
 											this.props.screenProps.navigate('Register', {type: 'Tambah User'})
 										}}>
-										<Text> Tambah User </Text>
+										<Text>Tambah User</Text>
 									</Touchable>
 								</View>
 
@@ -181,17 +206,10 @@ class SideMenuScreen extends React.Component {
 											this.props.screenProps.navigate('DrawerClose')
 											this.props.screenProps.navigate('ListUsers')
 										}}>
-										<Text> List User </Text>
+										<Text>List User</Text>
 									</Touchable>
-								</View>
+								</View>*/}
 
-								<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
-									<Touchable
-										style = {{ justifyContent: 'center' }}
-										onPress = { this._logout.bind(this) }>
-										<Text> Keluar </Text>
-									</Touchable>
-								</View>
 							</View>
 							:
 							null
@@ -214,16 +232,28 @@ class SideMenuScreen extends React.Component {
 							<Text> Import File </Text>
 						</Touchable>
 					</View>
+					
+					<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+						<Touchable
+							style = {{ justifyContent: 'center' }}
+							onPress = { this._logout.bind(this) }>
+							<Text>Keluar</Text>
+						</Touchable>
+					</View>
 				</View>
 
 				
-				<View style = {{position: 'absolute', left: 0, bottom: 0, right: 0}}>
-					<View style = {{flex: 1}}>
-						<Text> IMEI {this.state.imei} </Text>
-					</View>
+				<View style={{position: 'absolute', left: 0, bottom: 0, right: 0}}>
+					<View style={{backgroundColor:'#353535'}}>
+						<View style={{height: 60, marginTop: 5, marginBottom:5, borderWidth: 0, borderBottomWidth: 0, borderColor: '#f7f7f7'}}>
+							<View style={{flex: 1}}>
+								<View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+									<Text style={{color: 'white'}}>Powered By</Text>
+								</View>
 
-					<View style = {{flex: 1, alignItems: 'center'}}>
-						<Text> version {Package.version} </Text>
+								<Image style={{flex: 2, width: null, height: null, resizeMode: 'center'}} source={require('../assets/img/Scoutbiz-New_Logo.png')} />
+							</View>
+						</View>
 					</View>
 				</View>
 			</View>
@@ -242,6 +272,7 @@ class SideMenuScreen extends React.Component {
 function mapStateToProps (state) {
 	return {
 		user: state.user.data,
+		store: state.user.store,
 		data: state.category.data,
 		ingredients: state.category.ingredients,
 		sale: state.sale.data

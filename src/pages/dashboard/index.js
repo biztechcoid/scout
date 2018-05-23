@@ -39,9 +39,9 @@ var menu = [
 	{name: 'Persediaan', icon: 'md-cube', pages: 'Inventory'},
 	{name: 'Penjualan', icon: 'md-cash', pages: 'Sale'},
 	{name: 'Pengeluaran', icon: 'md-cart', pages: 'Pengeluaran'},
-	{name: 'Perpajakan', icon: 'md-paper', pages: 'level4'},
+	{name: 'Perpajakan', icon: 'md-paper', pages: 'Perpajakan'},
 	{name: 'Laporan', icon: 'ios-list-box-outline', pages: 'Report'},
-	{name: 'Pengaturan', icon: 'md-settings', pages: 'level4'}
+	{name: 'Pengaturan', icon: 'md-settings', pages: 'Pengaturan'}
 ]
 
 
@@ -158,7 +158,7 @@ class InventoryScreen extends React.Component {
 									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 5, backgroundColor: '#6ecbe0'}}>
 										<Touchable
 											style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 30}}
-											onPress={() => this.props.navigation.navigate(menu[index].pages)}>
+											onPress={() => this.props.profile.access[menu[index].name.toLowerCase()] ? this.props.navigation.navigate(menu[index].pages) : null}>
 											<Ionicons
 												name={menu[index].icon}
 												size={50}
@@ -170,7 +170,7 @@ class InventoryScreen extends React.Component {
 									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 5, backgroundColor: '#6ecbe0'}}>
 										<Touchable
 											style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 30}}
-											onPress={() => this.props.navigation.navigate(menu[index + 1].pages)}>
+											onPress={() => this.props.profile.access[menu[index + 1].name.toLowerCase()] ? this.props.navigation.navigate(menu[index + 1].pages) : null}>
 											<Ionicons
 												name={menu[index + 1].icon}
 												size={50}

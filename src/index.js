@@ -35,6 +35,8 @@ import InventoryScreen from './pages/inventory'
 import SaleScreen from './pages/sale'
 import ReportScreen from './routes/report'
 import PengeluaranScreen from './pages/pengeluaran'
+import PerpajakanScreen from './pages/perpajakan'
+import PengaturanScreen from './pages/pengaturan'
 
 
 const StackNavigatorConfig = {
@@ -229,6 +231,28 @@ export const AppNavigator = StackNavigator({
 		navigationOptions: {
 			// header: null,
 			headerTitle: 'Pengeluaran',
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	Perpajakan: {
+		screen: PerpajakanScreen,
+		navigationOptions: {
+			// header: null,
+			headerTitle: 'Perpajakan',
+			headerTintColor: 'white',
+			headerStyle: {
+				backgroundColor: '#6ecbe0'
+			}
+		}
+	},
+	Pengaturan: {
+		screen: PengaturanScreen,
+		navigationOptions: {
+			// header: null,
+			headerTitle: 'Pengaturan',
 			headerTintColor: 'white',
 			headerStyle: {
 				backgroundColor: '#6ecbe0'

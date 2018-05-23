@@ -1,11 +1,13 @@
 'use strict'
 
 import {
+	Alert,
 	AsyncStorage
 } from 'react-native'
 
 import {
-	makeId
+	makeId,
+	server
 } from '../../modules'
 
 /*
@@ -52,7 +54,8 @@ const initialState = {
 	data: [],
 	ingredients: [],
 	refreshing: false,
-	barcode: null
+	barcode: null,
+	user: null
 }
 
 const CategoryReducers = (state = initialState, action) => {
@@ -87,7 +90,8 @@ const CategoryReducers = (state = initialState, action) => {
 		*/
 		case 'ADD_CATEGORY':
 			const createData = {
-				idCategory: makeId(),
+				idCategory: action.data.idCategory,
+				// idCategory: makeId(),
 				idCabang: action.data.idCabang,
 				name: action.data.name,
 				product: []
@@ -163,7 +167,8 @@ const CategoryReducers = (state = initialState, action) => {
 			for(var i in state.data) {
 				if(state.data[i].idCategory === action.data.idCategory) {
 					state.data[i].product = [...state.data[i].product, {
-						idProduct: makeId(),
+						idProduct: action.data.idProduct,
+						// idProduct: makeId(),
 						barcode: action.data.barcode,
 						name: action.data.name,
 						cost: action.data.cost,
@@ -265,7 +270,8 @@ const CategoryReducers = (state = initialState, action) => {
 					for(var j in state.data[i].product) {
 						if(state.data[i].product[j].idProduct === action.data.idProduct) {
 							state.data[i].product[j].subProduct = [...state.data[i].product[j].subProduct, {
-								idSubProduct: makeId(),
+								idSubProduct: action.data.idSubProduct,
+								// idSubProduct: makeId(),
 								barcode: action.data.barcode,
 								name: action.data.name,
 								cost: action.data.cost,
@@ -371,7 +377,8 @@ const CategoryReducers = (state = initialState, action) => {
 		*/
 		case 'ADD_INGREDIENTS':
 			const createIngredients = {
-				idIngredients: makeId(),
+				idIngredients: action.data.idIngredients,
+				// idIngredients: makeId(),
 				barcode: action.data.barcode,
 				name: action.data.name,
 				cost: action.data.cost,
@@ -546,6 +553,34 @@ const CategoryReducers = (state = initialState, action) => {
 				...state,
 				data: [...state.data],
 				ingredients: [...state.ingredients]
+			}
+
+		case 'LOGIN':
+			// AsyncStorage.setItem('@User', JSON.stringify(action.data))
+			return {
+				...state,
+				// process: false,
+				user: action.data
+			}
+
+		case 'LOGOUT':
+			// AsyncStorage.multiRemove(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users'],
+			// 	(err) => console.log(err))
+			// action.data.dispatch({
+			// 	key: null,
+			// 	type: 'Navigation/RESET',
+			// 	index: 0,
+			// 	actions: [{ type: 'Navigation/NAVIGATE', routeName: 'Login' }]
+			// })
+			return {
+				...state,
+				user: null
+			}
+
+		case 'SET_USER':
+			return {
+				...state,
+				user: action.data
 			}
 
 		default:

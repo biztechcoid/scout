@@ -27,10 +27,10 @@ class LineChartScreen extends React.Component {
         formToTextSpace: 5,
         wordWrapEnabled: true,
         maxSizePercent: 0.5,
-        custom: {
+        /*custom: {
           colors: [processColor('red'), processColor('blue'), processColor('green')],
           labels: ['Company X', 'Company Y', 'Company Dashed']
-        }
+        }*/
       },
       marker: {
         enabled: true,
@@ -49,44 +49,55 @@ class LineChartScreen extends React.Component {
             dataSets: [{
               values: [{y: 0.88}, {y: 0.77}, {y: 105}, {y: 115}],
               label: 'Company X',
-              /*config: {
-                lineWidth: 2,
-                drawCircles: false,
-                highlightColor: processColor('red'),
+              config: {
+              //   lineWidth: 2,
+              //   drawCircles: false,
+              //   highlightColor: processColor('red'),
+              //   color: processColor('red'),
+              //   // drawFilled: true,
+              //   fillColor: processColor('red'),
+              //   fillAlpha: 60,
+		            // valueTextSize: 15,
+              //   valueFormatter: "##.000",
+              //   dashedLine: {
+              //     lineLength: 20,
+              //     spaceLength: 20
+              //   }
                 color: processColor('red'),
-                drawFilled: true,
+                // drawFilled: true,
                 fillColor: processColor('red'),
-                fillAlpha: 60,
-		            valueTextSize: 15,
-                valueFormatter: "##.000",
-                dashedLine: {
-                  lineLength: 20,
-                  spaceLength: 20
-                }
-              }*/
+                fillAlpha: 50,
+                circleColor: processColor('red')
+              }
             }, {
               values: [{y: 90}, {y: 130}, {y: 100}, {y: 105}],
               label: 'Company Y',
-              /*config: {
-                lineWidth: 1,
-                drawCubicIntensity: 0.4,
-                circleRadius: 5,
-                drawHighlightIndicators: false,
+              config: {
+                // lineWidth: 1,
+                // drawCubicIntensity: 0.4,
+                // circleRadius: 5,
+                // drawHighlightIndicators: false,
+                // color: processColor('blue'),
+                // // drawFilled: true,
+                // fillColor: processColor('blue'),
+                // fillAlpha: 45,
+                // circleColor: processColor('blue')
                 color: processColor('blue'),
-                drawFilled: true,
+                // drawFilled: true,
                 fillColor: processColor('blue'),
-                fillAlpha: 45,
+                fillAlpha: 50,
                 circleColor: processColor('blue')
-              }*/
+              }
             }, {
               values: [{y: 110}, {y: 105}, {y: 115}, {y: 110}],
               label: 'Company Dashed',
-              /*config: {
+              config: {
                 color: processColor('green'),
-                drawFilled: true,
+                // drawFilled: true,
                 fillColor: processColor('green'),
-                fillAlpha: 50
-              }*/
+                fillAlpha: 50,
+                circleColor: processColor('green')
+              }
             }],
         },
         xAxis: {
@@ -94,8 +105,18 @@ class LineChartScreen extends React.Component {
             fontFamily:"HelveticaNeue-Medium",
             fontWeight:"bold",
             fontStyle:"italic",
-            valueFormatter: ['Q1', 'Q2', 'Q3', 'Q4']
+            fontColor: 'white',
+            valueFormatter: ['Q1', 'Q2', 'Q3', 'Q4'],
+            position: 'BOTTOM'
           // }
+        },
+        yAxis: {
+          left: {
+            enabled: false
+          },
+          right: {
+            enabled: false
+          }
         }
       }
     );
@@ -129,6 +150,7 @@ class LineChartScreen extends React.Component {
             // legend={this.state.legend}
             marker={this.state.marker}
             xAxis={this.state.xAxis}
+            yAxis={this.state.yAxis}
             drawGridBackground={true}
             borderColor={processColor('teal')}
             borderWidth={1}

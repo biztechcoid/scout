@@ -20,7 +20,7 @@ class SplashScreen extends React.Component {
 		return(
 			<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#353535' }}>
 				<View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
-					<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('../assets/img/LOGO.png')} />
+					<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('../assets/img/Scoutbiz-New_Logo.png')} />
 				</View>
 			</View>
 		)
@@ -105,8 +105,8 @@ class SplashScreen extends React.Component {
 				user langsung masuk ke level 2
 				*
 				*/
-				// this.next('Login')
-				this.next('Dashboard')
+				this.next('Login')
+				// this.next('Dashboard')
 			} else {
 				// ada token
 				const newRes = JSON.parse(res[0][1])
@@ -193,7 +193,8 @@ class SplashScreen extends React.Component {
 				*/
 				if(newRes.access) {
 					if(newRes.access.persediaan && newRes.access.penjualan && newRes.access.laporan) {
-						return this.next('level2')
+						// return this.next('level2')
+						return this.next('Dashboard')
 					} else if(newRes.access.persediaan && newRes.access.penjualan) {
 						return this.next('level3')
 					} else if(newRes.access.persediaan) {

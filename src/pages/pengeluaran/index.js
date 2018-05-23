@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+	Picker,
 	ScrollView,
 	StyleSheet,
 	View,
@@ -11,6 +12,14 @@ import {
 	Button,
 	Online
 } from '../../components'
+
+var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+
+var tahun = []
+
+for(var i = 2000; i <= new Date().getFullYear() + 1; i++) {
+	tahun.push(i.toString())
+}
 
 
 class Pengeluaran extends React.Component {
@@ -39,9 +48,47 @@ class Pengeluaran extends React.Component {
 		bebanLain: ''
 	}
 
+	_bulan() {
+
+	}
+
+	_tahun() {
+
+	}
+
 	render() {
 		return (
 			<View style={{flex: 1, backgroundColor: 'white'}}>
+				<View style={{flexDirection: 'row'}}>
+					<View style={{flex: 1}}>
+						<Picker
+							mode = 'dropdown'
+							selectedValue = { this.state.bulan }
+							onValueChange = { this._bulan.bind(this) }>
+							<Picker.Item label = 'Bulan' value = {null} />
+							{bulan.map((content, index) => {
+								return (
+									<Picker.Item label = {content} value = {index} />
+								)
+							})}
+						</Picker>
+					</View>
+
+					<View style={{flex: 1}}>
+						<Picker
+							mode = 'dropdown'
+							selectedValue = { this.state.tahun }
+							onValueChange = { this._tahun.bind(this) }>
+							<Picker.Item label = 'Tahun' value = {null} />
+							{tahun.map((content, index) => {
+								return (
+									<Picker.Item label = {content} value = {content} />
+								)
+							})}
+						</Picker>
+					</View>
+				</View>
+
 				<ScrollView
 					overScrollMode = {'always'}
 					style = {{ flex: 3 }}
