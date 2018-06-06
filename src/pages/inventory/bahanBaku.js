@@ -56,7 +56,7 @@ class BahanBakuScreen extends React.Component {
 		price: null,
 		quantity: null,
 
-		connection: null,
+		// connection: null,
 		data: {}
 	}
 
@@ -86,58 +86,60 @@ class BahanBakuScreen extends React.Component {
 				}*/ else if(this.state.quantity == '' || this.state.quantity == null) {
 					Alert.alert(null, 'quantity product tidak valid')
 				} else {
-					if(this.state.connection) {
-						var data = {
-							idIngredients: makeId(),
-							barcode: this.state.barcode,
-							name: this.state.product,
-							cost: Number(this.state.cost),
-							price: Number(this.state.price),
-							quantity: Number(this.state.quantity)
-						}
-						var postData = {
-							idIngredients: data.idIngredients,
-							idPusat: this.props.profile.idPusat,
-							barcode: data.barcode,
-							name: data.name,
-							cost: data.cost,
-							price: data.price,
-							quantity: data.quantity
-						}
-						/*
-						*
-						post to api
-						*
-						*/
-						fetch(server + '/inventory/addIngredients', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-								token: this.props.profile.token
-							},
-							body: JSON.stringify(postData)
-						})
-						.then(response => response.json())
-						.then(res => {
-							if(res.headers.statusCode === 200) {
-								this.props.dispatchAddIngredients(data)
-								this.props.dispatchBarcodeProduct(null)
-								this.setState({
-									barcode: null,
-									product: null,
-									cost: null,
-									price: null,
-									quantity: null
-								})
-							} else {
-								Alert.alert(null, res.headers.message)
+					online(value => {
+						if(value) {
+							var data = {
+								idIngredients: makeId(),
+								barcode: this.state.barcode,
+								name: this.state.product,
+								cost: Number(this.state.cost),
+								price: Number(this.state.price),
+								quantity: Number(this.state.quantity)
 							}
-						})
-						.catch(err => console.log(err))
-						this._setModalVisible(false)
-					} else {
-						Alert.alert(null, 'koneksi internet bermasalah')
-					}
+							var postData = {
+								idIngredients: data.idIngredients,
+								idPusat: this.props.profile.idPusat,
+								barcode: data.barcode,
+								name: data.name,
+								cost: data.cost,
+								price: data.price,
+								quantity: data.quantity
+							}
+							/*
+							*
+							post to api
+							*
+							*/
+							fetch(server + '/inventory/addIngredients', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									token: this.props.profile.token
+								},
+								body: JSON.stringify(postData)
+							})
+							.then(response => response.json())
+							.then(res => {
+								if(res.headers.statusCode === 200) {
+									this.props.dispatchAddIngredients(data)
+									this.props.dispatchBarcodeProduct(null)
+									this.setState({
+										barcode: null,
+										product: null,
+										cost: null,
+										price: null,
+										quantity: null
+									})
+								} else {
+									Alert.alert(null, res.headers.message)
+								}
+							})
+							.catch(err => console.log(err))
+							this._setModalVisible(false)
+						} else {
+							Alert.alert(null, 'koneksi internet bermasalah')
+						}
+					})
 				}
 			} else {
 				Alert.alert(null, 'koneksi internet bermasalah')
@@ -171,50 +173,52 @@ class BahanBakuScreen extends React.Component {
 				}*/ else if(this.state.quantity == '' || this.state.quantity == null) {
 					Alert.alert(null, 'quantity product tidak valid')
 				} else {
-					if(this.state.connection) {
-						var data = {
-							idIngredients: this.state.idIngredients,
-							barcode: this.state.barcode,
-							name: this.state.product,
-							cost: this.state.cost,
-							price: this.state.price,
-							quantity: this.state.quantity
-						}
-						/*
-						*
-						post to api
-						*
-						*/
-						fetch(server + '/inventory/updateIngredients', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-								token: this.props.profile.token
-							},
-							body: JSON.stringify(data)
-						})
-						.then(response => response.json())
-						.then(res => {
-							if(res.headers.statusCode === 200) {
-								this.props.dispatchUpdateIngredients(data)
-								this.props.dispatchBarcodeProduct(null)
-								this.setState({
-									idIngredients: null,
-									barcode: null,
-									product: null,
-									cost: null,
-									price: null,
-									quantity: null
-								})
-							} else {
-								Alert.alert(null, res.headers.message)
+					online(value => {
+						if(value) {
+							var data = {
+								idIngredients: this.state.idIngredients,
+								barcode: this.state.barcode,
+								name: this.state.product,
+								cost: this.state.cost,
+								price: this.state.price,
+								quantity: this.state.quantity
 							}
-						})
-						.catch(err => console.log(err))
-						this._setModalVisible(false)
-					} else {
-						Alert.alert(null, 'koneksi internet bermasalah')
-					}
+							/*
+							*
+							post to api
+							*
+							*/
+							fetch(server + '/inventory/updateIngredients', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+									token: this.props.profile.token
+								},
+								body: JSON.stringify(data)
+							})
+							.then(response => response.json())
+							.then(res => {
+								if(res.headers.statusCode === 200) {
+									this.props.dispatchUpdateIngredients(data)
+									this.props.dispatchBarcodeProduct(null)
+									this.setState({
+										idIngredients: null,
+										barcode: null,
+										product: null,
+										cost: null,
+										price: null,
+										quantity: null
+									})
+								} else {
+									Alert.alert(null, res.headers.message)
+								}
+							})
+							.catch(err => console.log(err))
+							this._setModalVisible(false)
+						} else {
+							Alert.alert(null, 'koneksi internet bermasalah')
+						}
+					})
 				}
 			} else {
 				Alert.alert(null, 'koneksi internet bermasalah')
@@ -250,18 +254,14 @@ class BahanBakuScreen extends React.Component {
 	_deleteIngredients(content) {
 		online(value => {
 			if(value) {
-				if(this.state.connection) {
-					var data = {
-						idIngredients: content.idIngredients
-					}
-					Alert.alert(null, 'Anda yakin akan menghapus product ' + content.name,
-						[
-							{ text: 'Yakin', onPress: () => this.__deleteIngredients(data) },
-							{ text: 'Batal' }
-						])
-				} else {
-					Alert.alert(null, 'koneksi internet bermasalah')
+				var data = {
+					idIngredients: content.idIngredients
 				}
+				Alert.alert(null, 'Anda yakin akan menghapus bahan baku ' + content.name,
+					[
+						{ text: 'Yakin', onPress: () => this.__deleteIngredients(data) },
+						{ text: 'Batal' }
+					])
 			} else {
 				Alert.alert(null, 'koneksi internet bermasalah')
 			}
@@ -279,20 +279,22 @@ class BahanBakuScreen extends React.Component {
 		stateCopy.data.ingredients['idIngredients'] = ingredients.idIngredients
 		this.setState(stateCopy)
 
-		if(this.state.connection) {
-			if(product.ingredients.length === 0) {
-				return this._setModalQty(true)
-			} else {
-				for(var i in product.ingredients) {
-					if(product.ingredients[i] === ingredients.idIngredients) {
-						return Alert.alert(null, ingredients.name + ' sudah ada di bahan baku')
+		online(value => {
+			if(value) {
+				if(product.ingredients.length === 0) {
+					return this._setModalQty(true)
+				} else {
+					for(var i in product.ingredients) {
+						if(product.ingredients[i] === ingredients.idIngredients) {
+							return Alert.alert(null, ingredients.name + ' sudah ada di bahan baku')
+						}
 					}
+					return this._setModalQty(true)
 				}
-				return this._setModalQty(true)
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-		} else {
-			Alert.alert(null, 'koneksi internet bermasalah')
-		}
+		})
 		/*var data = {
 			idCategory: this.props.navigation.state.params.idCategory,
 			idProduct: this.props.navigation.state.params.product.idProduct,
@@ -316,7 +318,34 @@ class BahanBakuScreen extends React.Component {
 		const stateCopy = this.state
 		stateCopy.data.ingredients['qty'] = this.state.qty
 		this.setState(stateCopy)
-		this.props.dispatchPushIngredients(this.state.data)
+		var postData = {
+			idIngredients: stateCopy.data.ingredients.idIngredients,
+			idProduct: stateCopy.data.idProduct,
+			idSubProduct: null,
+			qty: stateCopy.data.ingredients.qty
+		}
+		/*
+		*
+		post to api
+		*
+		*/
+		fetch(server + '/inventory/addBahanBaku', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			},
+			body: JSON.stringify(postData)
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchPushIngredients(this.state.data)
+			} else {
+				Alert.alert(null, res.headers.message)
+			}
+		})
+		.catch(err => console.log(err))
 		this._setModalQty(false)
 		this.props.navigation.goBack()
 	}
@@ -606,38 +635,38 @@ class BahanBakuScreen extends React.Component {
 		})
 	}
 
-	handleFirstConnectivityChange(isConnected) {
-		this.setState({connection: isConnected})
+	// handleFirstConnectivityChange(isConnected) {
+	// 	this.setState({connection: isConnected})
 
-		this.props.navigation.setParams({
-			connection: isConnected
-		})
+	// 	this.props.navigation.setParams({
+	// 		connection: isConnected
+	// 	})
 
-		NetInfo.isConnected.removeEventListener(
-			'connectionChange',
-			this.handleFirstConnectivityChange
-		)
-	}
+	// 	NetInfo.isConnected.removeEventListener(
+	// 		'connectionChange',
+	// 		this.handleFirstConnectivityChange
+	// 	)
+	// }
 
 	componentWillMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
 		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
 	}
 
-	componentDidMount() {
-		NetInfo.isConnected.fetch().then(isConnected => {
-			this.setState({connection: isConnected})
+	// componentDidMount() {
+	// 	NetInfo.isConnected.fetch().then(isConnected => {
+	// 		this.setState({connection: isConnected})
 
-			this.props.navigation.setParams({
-				connection: isConnected
-			})
-		})
+	// 		this.props.navigation.setParams({
+	// 			connection: isConnected
+	// 		})
+	// 	})
 		
-		NetInfo.isConnected.addEventListener(
-			'connectionChange',
-			this.handleFirstConnectivityChange
-		)
-	}
+	// 	NetInfo.isConnected.addEventListener(
+	// 		'connectionChange',
+	// 		this.handleFirstConnectivityChange
+	// 	)
+	// }
 
 	componentWillUnmount() {
 		this.keyboardDidShowListener.remove()

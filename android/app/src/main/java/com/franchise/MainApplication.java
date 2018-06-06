@@ -14,6 +14,7 @@ import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
 import com.rnfs.RNFSPackage;
 import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
 import com.github.wuxudong.rncharts.MPAndroidChartPackage;
+import com.fileopener.FileOpenerPackage;
 
 /* react native chart */
 import java.lang.reflect.Method;
@@ -41,7 +42,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNHTMLtoPDFPackage(),
             new RNFSPackage(),
             new ReactNativeDocumentPicker(),
-            new MPAndroidChartPackage()
+            new MPAndroidChartPackage(),
+            new FileOpenerPackage()
       );
     }
 

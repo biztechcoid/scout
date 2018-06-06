@@ -72,7 +72,7 @@ class ReportScreen extends React.Component {
 		view: [],
 		print: [],
 
-		connection: null
+		// connection: null
 	}
 
 	_onRefresh() {

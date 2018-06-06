@@ -27,7 +27,8 @@ import {
 
 import {
 	checkFolder,
-	date
+	date,
+	server
 } from '../modules'
 
 
@@ -37,7 +38,32 @@ class SideMenuScreen extends React.Component {
 	}
 
 	_logout() {
-		this.props.dispatchLogout(this.props.screenProps)
+		if(this.props.sale.length > 0) {
+			for(var a in this.props.sale) {
+				if(this.props.sale[a].status === undefined) {
+					fetch(server + '/sale/addPenjualan', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.user.token
+						},
+						body: JSON.stringify(this.props.sale[a])
+					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							// this.props.dispatchUpdatePenjualan(res.data)
+							this.props.dispatchLogout(this.props.screenProps)
+						}
+					})
+					.catch(err => console.log(err))
+				} else {
+					this.props.dispatchLogout(this.props.screenProps)
+				}
+			}
+		} else {
+			this.props.dispatchLogout(this.props.screenProps)
+		}
 	}
 
 	_openFile() {
@@ -267,7 +293,6 @@ class SideMenuScreen extends React.Component {
 			this.setState({imei: DeviceInfo.getImei()})
 	}
 }
-
 
 function mapStateToProps (state) {
 	return {

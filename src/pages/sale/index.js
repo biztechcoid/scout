@@ -92,7 +92,7 @@ class SaleScreen extends React.Component {
 
 		modal: false,
 
-		connection: null
+		// connection: null
 	}
 
 	_scanQR() {
@@ -583,17 +583,16 @@ class SaleScreen extends React.Component {
 					stateCopy.sale['date'] = new Date()
 					stateCopy.sale['discount'] = this.state.discount
 					stateCopy.sale['pembayaran'] = this.state.change
-					this.props.dispatchUpdateStock(stateCopy.sale)
-					this.props.dispatchPenjualan(stateCopy.sale)
+					var data = Object.assign({}, stateCopy.sale, {
+						idPusat: this.props.profile.idPusat,
+						idCabang: this.props.profile.idCabang
+					})
+					
+					this.props.dispatchUpdateStock(data)
+					this.props.dispatchPenjualan(data)
 					this.props.dispatchUpdateFilter()
 					
 					this._print(stateCopy)
-
-					/*this.setState({
-						sale: { data: [], total: 0.00, customer: 1 },
-						discount: 0,
-						change: 0
-					})*/
 					this._modal()
 				}},
 				{ text: 'Tidak' }

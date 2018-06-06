@@ -39,7 +39,7 @@ class SplashScreen extends React.Component {
 	componentDidMount() {
 		Keyboard.dismiss()
 
-		AsyncStorage.multiGet(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users'], (err, res) => {
+		AsyncStorage.multiGet(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users', '@Pengeluaran'], (err, res) => {
 			// console.log(res)
 			/*
 			*
@@ -67,7 +67,7 @@ class SplashScreen extends React.Component {
 			*
 			*/
 			if(JSON.parse(res[3][1]) !== null) {
-				this.props.dispatchLocalStorageSale(JSON.parse(res[3][1]))
+				this.props.dispatchLocalStorageSale({penjualan: JSON.parse(res[3][1])})
 			}
 			/**/
 
@@ -88,6 +88,16 @@ class SplashScreen extends React.Component {
 			*/
 			if(JSON.parse(res[5][1]) !== null) {
 				this.props.dispatchLocalStorageUsers({users: JSON.parse(res[5][1])})
+			}
+			/**/
+
+			/*
+			*
+			@Pengeluaran
+			*
+			*/
+			if(JSON.parse(res[6][1]) !== null) {
+				this.props.dispatchLocalStorageSale({pengeluaran: JSON.parse(res[6][1])})
 			}
 			/**/
 

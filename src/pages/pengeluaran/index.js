@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+	Alert,
 	Picker,
 	ScrollView,
 	StyleSheet,
@@ -7,17 +8,29 @@ import {
 	Text,
 	TextInput
 } from 'react-native'
+import { connect } from 'react-redux'
+
+import {
+	addPengeluaran,
+	updatePengeluaran
+} from '../../redux/actions'
 
 import {
 	Button,
 	Online
 } from '../../components'
 
+import {
+	makeId,
+	online,
+	server
+} from '../../modules'
+
 var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 
 var tahun = []
 
-for(var i = 2000; i <= new Date().getFullYear() + 1; i++) {
+for(var i = 2018; i <= new Date().getFullYear() + 1; i++) {
 	tahun.push(i.toString())
 }
 
@@ -40,20 +53,140 @@ class Pengeluaran extends React.Component {
 	})
 
 	state = {
-		beban: '',
-		bebanUpah: '',
-		bebanSewa: '',
-		bebanListrik: '',
-		bebanPromosi: '',
-		bebanLain: ''
+		upah: 0,
+		sewa: 0,
+		listrik: 0,
+		promosi: 0,
+		lain: 0
 	}
 
-	_bulan() {
-
+	_bulan(bulan) {
+		this.setState({bulan: bulan})
+		this.find(bulan, this.state.tahun)
 	}
 
-	_tahun() {
+	_tahun(tahun) {
+		this.setState({tahun: tahun})
+		this.find(this.state.bulan, tahun)
+	}
 
+	find(bulan, tahun) {
+		if(bulan != undefined && tahun != undefined) {
+			if(this.props.pengeluaran[bulan + '_' + tahun] === undefined) {
+				this.setState({
+					upah: 0,
+					sewa: 0,
+					listrik: 0,
+					promosi: 0,
+					lain: 0
+				})
+			} else {
+				this.setState({
+					idPengeluaran: this.props.pengeluaran[bulan + '_' + tahun].idPengeluaran.toString(),
+					upah: this.props.pengeluaran[bulan + '_' + tahun].upah.toString(),
+					sewa: this.props.pengeluaran[bulan + '_' + tahun].sewa.toString(),
+					listrik: this.props.pengeluaran[bulan + '_' + tahun].listrik.toString(),
+					promosi: this.props.pengeluaran[bulan + '_' + tahun].promosi.toString(),
+					lain: this.props.pengeluaran[bulan + '_' + tahun].lain.toString()
+				})
+			}
+		}
+	}
+
+	_simpan() {
+		var data = {
+			idPengeluaran: makeId(),
+			idPusat: this.props.profile.idPusat,
+			idCabang: this.props.profile.idCabang,
+			upah: this.state.upah,
+			sewa: this.state.sewa,
+			listrik: this.state.listrik,
+			promosi: this.state.promosi,
+			lain: this.state.lain,
+			bulan: this.state.bulan,
+			tahun: this.state.tahun
+		}
+
+		online(value => {
+			if(value) {
+				if(data.bulan != undefined && data.tahun != undefined) {
+					if(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined) {
+						/*
+						*
+						post to api
+						*
+						*/
+						fetch(server + '/sale/addPengeluaran', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								token: this.props.profile.token
+							},
+							body: JSON.stringify(data)
+						})
+						.then(response => response.json())
+						.then(res => {
+							Alert.alert(null, res.headers.message)
+							
+							if(res.headers.statusCode === 200) {
+								this.props.dispatchAddPengeluaran(data)
+							}
+						})
+						.catch(err => console.log(err))
+					} else {
+						Alert.alert(null, 'Data sudah ada')
+					}
+				} else {
+					Alert.alert(null, 'Pilih bulan dan tahun')
+				}
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
+			}
+		})
+	}
+
+	_update() {
+		var data = {
+			idPengeluaran: this.state.idPengeluaran,
+			idPusat: this.props.profile.idPusat,
+			idCabang: this.props.profile.idCabang,
+			upah: this.state.upah,
+			sewa: this.state.sewa,
+			listrik: this.state.listrik,
+			promosi: this.state.promosi,
+			lain: this.state.lain,
+			bulan: this.state.bulan,
+			tahun: this.state.tahun
+		}
+
+		online(value => {
+			if(value) {
+				/*
+				*
+				post to api
+				*
+				*/
+				fetch(server + '/sale/updatePengeluaran', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						token: this.props.profile.token
+					},
+					body: JSON.stringify(data)
+				})
+				.then(response => response.json())
+				.then(res => {
+					Alert.alert(null, res.headers.message)
+					
+					if(res.headers.statusCode === 200) {
+						this.props.dispatchUpdatePengeluaran(data)
+					}
+				})
+				.catch(err => console.log(err))
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
+			}
+		})
 	}
 
 	render() {
@@ -68,7 +201,7 @@ class Pengeluaran extends React.Component {
 							<Picker.Item label = 'Bulan' value = {null} />
 							{bulan.map((content, index) => {
 								return (
-									<Picker.Item label = {content} value = {index} />
+									<Picker.Item key={index} label = {content} value = {index} />
 								)
 							})}
 						</Picker>
@@ -82,7 +215,7 @@ class Pengeluaran extends React.Component {
 							<Picker.Item label = 'Tahun' value = {null} />
 							{tahun.map((content, index) => {
 								return (
-									<Picker.Item label = {content} value = {content} />
+									<Picker.Item key={index} label = {content} value = {content} />
 								)
 							})}
 						</Picker>
@@ -119,14 +252,14 @@ class Pengeluaran extends React.Component {
 								</View>
 								
 								<TextInput
-									ref = { (c) => this._bebanUpah = c }
+									ref = { (c) => this._upah = c }
 									style = {{ flex: 1, height: 50 }}
 									keyboardType = 'numeric'
 									underlineColorAndroid = '#ececec'
 									returnKeyType = 'next'
-									onChangeText = { (text) => this.setState({ bebanUpah: text })}
-									onSubmitEditing = { () => this._bebanSewa.focus() }
-									value = { this.state.bebanUpah }/>
+									onChangeText = { (text) => this.setState({ upah: text })}
+									onSubmitEditing = { () => this._sewa.focus() }
+									value = { this.state.upah }/>
 							</View>
 
 							<View style = {{ flexDirection: 'row' }}>
@@ -135,14 +268,14 @@ class Pengeluaran extends React.Component {
 								</View>
 								
 								<TextInput
-									ref = { (c) => this._bebanSewa = c }
+									ref = { (c) => this._sewa = c }
 									style = {{ flex: 1, height: 50 }}
 									keyboardType = 'numeric'
 									underlineColorAndroid = '#ececec'
 									returnKeyType = 'next'
-									onChangeText = { (text) => this.setState({ bebanSewa: text })}
-									onSubmitEditing = { () => this._bebanListrik.focus() }
-									value = { this.state.bebanSewa }/>
+									onChangeText = { (text) => this.setState({ sewa: text })}
+									onSubmitEditing = { () => this._listrik.focus() }
+									value = { this.state.sewa }/>
 							</View>
 
 							<View style = {{ flexDirection: 'row' }}>
@@ -151,14 +284,14 @@ class Pengeluaran extends React.Component {
 								</View>
 								
 								<TextInput
-									ref = { (c) => this._bebanListrik = c }
+									ref = { (c) => this._listrik = c }
 									style = {{ flex: 1, height: 50 }}
 									keyboardType = 'numeric'
 									underlineColorAndroid = '#ececec'
 									returnKeyType = 'next'
-									onChangeText = { (text) => this.setState({ bebanListrik: text })}
-									onSubmitEditing = { () => this._bebanPromosi.focus() }
-									value = { this.state.bebanListrik }/>
+									onChangeText = { (text) => this.setState({ listrik: text })}
+									onSubmitEditing = { () => this._promosi.focus() }
+									value = { this.state.listrik }/>
 							</View>
 
 							<View style = {{ flexDirection: 'row' }}>
@@ -167,14 +300,14 @@ class Pengeluaran extends React.Component {
 								</View>
 								
 								<TextInput
-									ref = { (c) => this._bebanPromosi = c }
+									ref = { (c) => this._promosi = c }
 									style = {{ flex: 1, height: 50 }}
 									keyboardType = 'numeric'
 									underlineColorAndroid = '#ececec'
 									returnKeyType = 'next'
-									onChangeText = { (text) => this.setState({ bebanPromosi: text })}
-									onSubmitEditing = { () => this._bebanLain.focus() }
-									value = { this.state.bebanPromosi }/>
+									onChangeText = { (text) => this.setState({ promosi: text })}
+									onSubmitEditing = { () => this._lain.focus() }
+									value = { this.state.promosi }/>
 							</View>
 
 							<View style = {{ flexDirection: 'row' }}>
@@ -183,14 +316,14 @@ class Pengeluaran extends React.Component {
 								</View>
 								
 								<TextInput
-									ref = { (c) => this._bebanLain = c }
+									ref = { (c) => this._lain = c }
 									style = {{ flex: 1, height: 50 }}
 									keyboardType = 'numeric'
 									underlineColorAndroid = '#ececec'
 									returnKeyType = 'done'
-									onChangeText = { (text) => this.setState({ bebanLain: text })}
+									onChangeText = { (text) => this.setState({ lain: text })}
 									onSubmitEditing = {() => {}}
-									value = { this.state.bebanLain }/>
+									value = { this.state.lain }/>
 							</View>
 						</View>
 					</View>
@@ -204,22 +337,22 @@ class Pengeluaran extends React.Component {
 
 						<View style={{flex: 1, margin: 5, alignItems: 'flex-end'}}>
 							<Text style={{fontWeight: 'bold'}}>{
-								Number(this.state.bebanUpah) + Number(this.state.bebanSewa) +
-								Number(this.state.bebanListrik) + Number(this.state.bebanPromosi) +
-								Number(this.state.bebanLain)
+								Number(this.state.upah) + Number(this.state.sewa) +
+								Number(this.state.listrik) + Number(this.state.promosi) +
+								Number(this.state.lain)
 							}</Text>
 						</View>
 					</View>
 
 					<View style={{flexDirection: 'row'}}>
 						<Button
-							onPress={() => {}}
+							onPress={this._simpan.bind(this)}
 							name='SIMPAN'/>
 
 						<Text>&nbsp;</Text>
 
 						<Button
-							onPress = {() => {}}
+							onPress = {this._update.bind(this)}
 							name = 'UBAH'/>
 					</View>
 				</View>
@@ -238,4 +371,21 @@ const styles = StyleSheet.create({
 	}
 })
 
-module.exports = Pengeluaran
+function mapStateToProps (state) {
+	return {
+		profile: state.user.data,
+		pengeluaran: state.sale.pengeluaran
+	}
+}
+
+function mapDispatchToProps (dispatch) {
+	return {
+		dispatchAddPengeluaran: (data) => dispatch(addPengeluaran(data)),
+		dispatchUpdatePengeluaran: (data) => dispatch(updatePengeluaran(data))
+	}
+}
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Pengeluaran)

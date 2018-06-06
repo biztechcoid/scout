@@ -69,3 +69,9 @@ exports.options = require('./sale').options
 exports.back = require('./sale').back
 exports.next = require('./sale').next
 exports.updateFilter = require('./sale').updateFilter
+
+exports.addPengeluaran = require('./sale').addPengeluaran
+exports.updatePengeluaran = require('./sale').updatePengeluaran
+
+exports.updatePenjualan = require('./sale').updatePenjualan
+exports.labaRugi = require('./sale').labaRugi

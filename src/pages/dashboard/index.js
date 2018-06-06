@@ -8,6 +8,7 @@ import {
 	Modal,
 	NetInfo,
 	View,
+	RefreshControl,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -20,7 +21,11 @@ import { connect } from 'react-redux'
 import {
 	addCategory,
 	updateCategory,
-	deleteCategory
+	deleteCategory,
+	localStorageData,
+	localStorageSale,
+	localStorageUsers,
+	updatePenjualan
 } from '../../redux/actions'
 
 import {
@@ -32,16 +37,17 @@ import {
 } from '../../components'
 
 import {
-	online
+	online,
+	server
 } from '../../modules'
 
 var menu = [
-	{name: 'Persediaan', icon: 'md-cube', pages: 'Inventory'},
-	{name: 'Penjualan', icon: 'md-cash', pages: 'Sale'},
-	{name: 'Pengeluaran', icon: 'md-cart', pages: 'Pengeluaran'},
-	{name: 'Perpajakan', icon: 'md-paper', pages: 'Perpajakan'},
-	{name: 'Laporan', icon: 'ios-list-box-outline', pages: 'Report'},
-	{name: 'Pengaturan', icon: 'md-settings', pages: 'Pengaturan'}
+	{name: 'Persediaan', icon: 'md-cube', pages: 'Inventory', access: 'Persediaan'},
+	{name: 'Penjualan', icon: 'md-cash', pages: 'Sale', access: 'Penjualan'},
+	{name: 'Pengeluaran', icon: 'md-cart', pages: 'Pengeluaran', access: 'Pengeluaran'},
+	{name: 'Perpajakan', icon: 'md-paper', pages: 'Perpajakan', access: 'Perpajakan'},
+	{name: 'Laporan', icon: 'ios-list-box-outline', pages: 'Report', access: 'Laporan'},
+	{name: 'Pengaturan', icon: 'md-settings', pages: 'ListUsers', access: 'Pengeluaran'},
 ]
 
 
@@ -67,7 +73,8 @@ class InventoryScreen extends React.Component {
 		modalVisible: false,
 
 		idCategory: null,
-		category: null
+		category: null,
+		refreshing: false
 	}
 
 	_addCategory() {
@@ -147,18 +154,150 @@ class InventoryScreen extends React.Component {
 		})
 	}
 
+	_onRefresh() {
+		this.setState({refreshing: true})
+		this._getUsers(this.props.profile.token, this.props.profile)
+	}
+
+	_getUsers(token, data) {
+		fetch(server + '/users', {
+			method: 'GET',
+			headers: {
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageUsers({users: res.data})
+				this._getStore(token, data)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getStore(token, data) {
+		fetch(server + '/users/store', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageUsers({store: res.data})
+				this._getInventory(token, data)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getInventory(token, data) {
+		fetch(server + '/inventory', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageData({data: res.data})
+				this._getIngredients(token)
+				// this.props.dispatchLogin(data)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getIngredients(token) {
+		fetch(server + '/inventory/getIngredients', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageData({ingredients: res.data})
+				this._getPengeluaran(token)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getPengeluaran(token) {
+		fetch(server + '/sale/getPengeluaran', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageSale({pengeluaran: res.data})
+				this._uploadPenjualan(token)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_uploadPenjualan(token) {
+		if(this.props.sale.length > 0) {
+			for(var a in this.props.sale) {
+				if(this.props.sale[a].status === undefined) {
+					fetch(server + '/sale/addPenjualan', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: token
+						},
+						body: JSON.stringify(this.props.sale[a])
+					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchUpdatePenjualan(res.data)
+							this.setState({refreshing: false})
+						}
+					})
+					.catch(err => console.log(err))
+				} else {
+					this.setState({refreshing: false})
+				}
+			}
+		} else {
+			this.setState({refreshing: false})
+		}
+	}
+
 	render() {
 		return(
 			<View style={styles.container}>
-				<ScrollView style={{flex: 1, padding: 5}}>
+				<ScrollView
+					style={{flex: 1}}
+					refreshControl={
+						<RefreshControl
+							colors={['red', 'green', 'blue']}
+							refreshing={this.state.refreshing}
+							onRefresh={this._onRefresh.bind(this)}
+						/>
+					}>
 					{menu.map((content, index) => {
 						if(index%2 === 0) {
 							return (
-								<View style={{flex: 1, flexDirection: 'row'}}>
+								<View key={index} style={{flex: 1, flexDirection: 'row'}}>
 									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 5, backgroundColor: '#6ecbe0'}}>
 										<Touchable
 											style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 30}}
-											onPress={() => this.props.profile.access[menu[index].name.toLowerCase()] ? this.props.navigation.navigate(menu[index].pages) : null}>
+											onPress={() => this.props.profile.access[menu[index].access.toLowerCase()] ? this.props.navigation.navigate(menu[index].pages) : null}>
 											<Ionicons
 												name={menu[index].icon}
 												size={50}
@@ -170,7 +309,7 @@ class InventoryScreen extends React.Component {
 									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 5, backgroundColor: '#6ecbe0'}}>
 										<Touchable
 											style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 30}}
-											onPress={() => this.props.profile.access[menu[index + 1].name.toLowerCase()] ? this.props.navigation.navigate(menu[index + 1].pages) : null}>
+											onPress={() => this.props.profile.access[menu[index + 1].access.toLowerCase()] ? this.props.navigation.navigate(menu[index + 1].pages) : null}>
 											<Ionicons
 												name={menu[index + 1].icon}
 												size={50}
@@ -263,6 +402,10 @@ class InventoryScreen extends React.Component {
 	}
 
 	componentDidMount() {
+		this.props.profile === null ?
+			null
+			:
+			this._getUsers.bind(this, this.props.profile.token, this.props.profile)
 	}
 
 	componentWillUnmount() {
@@ -308,7 +451,8 @@ function mapStateToProps (state) {
 	return {
 		device: state.user.device,
 		category: state.category.data,
-		profile: state.user.data
+		profile: state.user.data,
+		sale: state.sale.data,
 	}
 }
 
@@ -316,7 +460,11 @@ function mapDispatchToProps (dispatch) {
 	return {
 		dispatchAddCategory: (data) => dispatch(addCategory(data)),
 		dispatchUpdateCategory: (data) => dispatch(updateCategory(data)),
-		dispatchDeleteCategory: (data) => dispatch(deleteCategory(data))
+		dispatchDeleteCategory: (data) => dispatch(deleteCategory(data)),
+		dispatchLocalStorageData: (data) => dispatch(localStorageData(data)),
+		dispatchLocalStorageSale: (data) => dispatch(localStorageSale(data)),
+		dispatchLocalStorageUsers: (data) => dispatch(localStorageUsers(data)),
+		dispatchUpdatePenjualan: (data) => dispatch(updatePenjualan(data))
 	}
 }
 

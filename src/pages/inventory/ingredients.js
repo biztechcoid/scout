@@ -21,7 +21,8 @@ import {
 } from '../../components'
 
 import{
-	rupiah
+	rupiah,
+	server
 } from '../../modules'
 
 import { connect } from 'react-redux'
@@ -272,6 +273,36 @@ class IngredientsScreen extends React.Component {
 	}
 	/**/
 
+	__spliceIngredients(data) {
+		var postData = {
+			idIngredients: data.idIngredients,
+			idProduct: data.idProduct,
+			idSubProduct: null
+		}
+		/*
+		*
+		post to api
+		*
+		*/
+		fetch(server + '/inventory/deleteBahanBaku', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			},
+			body: JSON.stringify(postData)
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchSpliceIngredients(data)
+			} else {
+				Alert.alert(null, res.headers.message)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
 	_spliceIngredients(idCategory, idProduct, ingredients) {
 		var data = {
 			idCategory: idCategory,
@@ -280,7 +311,7 @@ class IngredientsScreen extends React.Component {
 		}
 		Alert.alert(null, 'Anda yakin akan menghapus bahan baku ' + ingredients.name,
 			[
-				{ text: 'Yakin', onPress: () => this.props.dispatchSpliceIngredients(data) },
+				{ text: 'Yakin', onPress: () => this.__spliceIngredients(data) },
 				{ text: 'Batal' }
 			])
 	}
@@ -882,7 +913,8 @@ function mapStateToProps (state) {
 	return {
 		barcode: state.category.barcode,
 		category: state.category.data,
-		ingredients: state.category.ingredients
+		ingredients: state.category.ingredients,
+		profile: state.user.data
 	}
 }
 

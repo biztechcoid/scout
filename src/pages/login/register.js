@@ -47,8 +47,8 @@ class RegisterScreen extends React.Component {
 		access: {
 			persediaan: false,
 			penjualan: false,
-			laporan: false,
-			monitoring: false
+			pengeluaran: false,
+			laporan: false
 		}
 	}
 
@@ -95,8 +95,8 @@ class RegisterScreen extends React.Component {
 							access: {
 								persediaan: true,
 								penjualan: true,
-								laporan: true,
-								monitoring: true
+								pengeluaran: true,
+								laporan: true
 							}
 						}
 
@@ -209,11 +209,10 @@ class RegisterScreen extends React.Component {
 						if(stateCopy.cabang === null) {
 							Alert.alert(null, 'cabang tidak valid')
 						} else {
-							if(!stateCopy.access.persediaan && !stateCopy.access.penjualan && !stateCopy.access.laporan && !stateCopy.access.monitoring) {
+							if(!stateCopy.access.persediaan && !stateCopy.access.penjualan && !stateCopy.access.pengeluaran && !stateCopy.access.laporan) {
 								return Alert.alert(null, 'silahkan pilih hak akses')
 							}
 
-							console.log('===== stateCopy =====', stateCopy)
 							var cabang, register
 							if(stateCopy.cabang === this.props.store.idPusat) {
 								cabang = {
@@ -331,13 +330,13 @@ class RegisterScreen extends React.Component {
 				this.setState(stateCopy)
 				break
 
-			case 'laporan':
-				stateCopy.access.laporan = !stateCopy.access.laporan
+			case 'pengeluaran':
+				stateCopy.access.pengeluaran = !stateCopy.access.pengeluaran
 				this.setState(stateCopy)
 				break
 
-			case 'monitoring':
-				stateCopy.access.monitoring = !stateCopy.access.monitoring
+			case 'laporan':
+				stateCopy.access.laporan = !stateCopy.access.laporan
 				this.setState(stateCopy)
 				break
 		}
@@ -645,6 +644,22 @@ class RegisterScreen extends React.Component {
 							<View style = {{borderWidth: 0}}>
 								<Touchable
 									style = {{flexDirection: 'row'}}
+									onPress = {this._access.bind(this, 'pengeluaran')}>
+									<View style = {{justifyContent: 'center'}}>
+										<Ionicons
+											name = {this.state.access.pengeluaran ? 'ios-checkbox-outline' : 'ios-square-outline'}
+											size = { 25 }/>
+									</View>
+
+									<View style = {{justifyContent: 'center', marginLeft: 5}}>
+										<Text> Pengeluaran </Text>
+									</View>
+								</Touchable>
+							</View>
+
+							<View style = {{borderWidth: 0}}>
+								<Touchable
+									style = {{flexDirection: 'row'}}
 									onPress = {this._access.bind(this, 'laporan')}>
 									<View style = {{justifyContent: 'center'}}>
 										<Ionicons
@@ -654,22 +669,6 @@ class RegisterScreen extends React.Component {
 
 									<View style = {{justifyContent: 'center', marginLeft: 5}}>
 										<Text> Laporan </Text>
-									</View>
-								</Touchable>
-							</View>
-
-							<View style = {{borderWidth: 0}}>
-								<Touchable
-									style = {{flexDirection: 'row'}}
-									onPress = {this._access.bind(this, 'monitoring')}>
-									<View style = {{justifyContent: 'center'}}>
-										<Ionicons
-											name = {this.state.access.monitoring ? 'ios-checkbox-outline' : 'ios-square-outline'}
-											size = { 25 }/>
-									</View>
-
-									<View style = {{justifyContent: 'center', marginLeft: 5}}>
-										<Text> Monitoring </Text>
 									</View>
 								</Touchable>
 							</View>
@@ -695,7 +694,7 @@ class RegisterScreen extends React.Component {
 
 function mapStateToProps (state) {
 	return {
-		store: state.user.store,
+		store: state.user.store[0],
 		user: state.user.data
 	}
 }

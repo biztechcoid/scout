@@ -5,8 +5,11 @@ import {
 	Text,
 	View
 } from 'react-native'
-
 import { connect } from 'react-redux'
+
+import {
+	Button
+} from '../../components'
 
 
 class ListUsersScreen extends React.Component {
@@ -39,6 +42,14 @@ class ListUsersScreen extends React.Component {
 						</View>
 					}
 				/>
+
+				<View style={styles.stickyBottom}>
+					<View>
+						<Button
+							onPress = {() => this.props.navigation.navigate('Register', {type: 'Tambah User'})}
+							name = 'TAMBAH USER'/>
+					</View>
+				</View>
 			</View>
 		)
 	}
@@ -56,6 +67,12 @@ const styles = StyleSheet.create({
 		borderWidth: 0.5,
 		borderColor: '#f2c9a0',
 		backgroundColor: '#fcecc2'
+	},
+	stickyBottom: {
+		position: 'absolute',
+		left: 5,
+		right: 5,
+		bottom: 5
 	}
 })
 

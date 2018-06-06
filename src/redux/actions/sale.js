@@ -41,3 +41,31 @@ export function updateFilter(data) {
 		data
 	}
 }
+
+export function addPengeluaran(data) {
+	return {
+		type: 'ADD_PENGELUARAN',
+		data
+	}
+}
+
+export function updatePengeluaran(data) {
+	return {
+		type: 'UPDATE_PENGELUARAN',
+		data
+	}
+}
+
+export function updatePenjualan(data) {
+	return {
+		type: 'UPDATE_PENJUALAN',
+		data
+	}
+}
+
+export function labaRugi(data) {
+	return {
+		type: 'LABARUGI',
+		data
+	}
+}
