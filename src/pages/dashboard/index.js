@@ -156,108 +156,36 @@ class InventoryScreen extends React.Component {
 
 	_onRefresh() {
 		this.setState({refreshing: true})
-		this._getUsers(this.props.profile.token, this.props.profile)
+		this._updateStock()
 	}
 
-	_getUsers(token, data) {
-		fetch(server + '/users', {
-			method: 'GET',
-			headers: {
-				token: token
-			}
-		})
-		.then(response => response.json())
-		.then(res => {
-			if(res.headers.statusCode === 200) {
-				this.props.dispatchLocalStorageUsers({users: res.data})
-				this._getStore(token, data)
-			}
-		})
-		.catch(err => console.log(err))
-	}
-
-	_getStore(token, data) {
-		fetch(server + '/users/store', {
-			method: 'GET',
+	_updateStock() {
+		fetch(server + '/sale/updateStockIngredients', {
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				token: token
-			}
+				token: this.props.profile.token
+			},
+			body: JSON.stringify(this.props.ingredients)
 		})
 		.then(response => response.json())
 		.then(res => {
 			if(res.headers.statusCode === 200) {
-				this.props.dispatchLocalStorageUsers({store: res.data})
-				this._getInventory(token, data)
+				this._uploadPenjualan()
 			}
 		})
 		.catch(err => console.log(err))
 	}
 
-	_getInventory(token, data) {
-		fetch(server + '/inventory', {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				token: token
-			}
-		})
-		.then(response => response.json())
-		.then(res => {
-			if(res.headers.statusCode === 200) {
-				this.props.dispatchLocalStorageData({data: res.data})
-				this._getIngredients(token)
-				// this.props.dispatchLogin(data)
-			}
-		})
-		.catch(err => console.log(err))
-	}
-
-	_getIngredients(token) {
-		fetch(server + '/inventory/getIngredients', {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				token: token
-			}
-		})
-		.then(response => response.json())
-		.then(res => {
-			if(res.headers.statusCode === 200) {
-				this.props.dispatchLocalStorageData({ingredients: res.data})
-				this._getPengeluaran(token)
-			}
-		})
-		.catch(err => console.log(err))
-	}
-
-	_getPengeluaran(token) {
-		fetch(server + '/sale/getPengeluaran', {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				token: token
-			}
-		})
-		.then(response => response.json())
-		.then(res => {
-			if(res.headers.statusCode === 200) {
-				this.props.dispatchLocalStorageSale({pengeluaran: res.data})
-				this._uploadPenjualan(token)
-			}
-		})
-		.catch(err => console.log(err))
-	}
-
-	_uploadPenjualan(token) {
+	_uploadPenjualan() {
 		if(this.props.sale.length > 0) {
 			for(var a in this.props.sale) {
-				if(this.props.sale[a].status === undefined) {
+				if(this.props.sale[a].status !== true) {
 					fetch(server + '/sale/addPenjualan', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
-							token: token
+							token: this.props.profile.token
 						},
 						body: JSON.stringify(this.props.sale[a])
 					})
@@ -265,17 +193,105 @@ class InventoryScreen extends React.Component {
 					.then(res => {
 						if(res.headers.statusCode === 200) {
 							this.props.dispatchUpdatePenjualan(res.data)
-							this.setState({refreshing: false})
+							return this._getUsers()
 						}
 					})
 					.catch(err => console.log(err))
-				} else {
-					this.setState({refreshing: false})
 				}
 			}
+			return this._getUsers()
 		} else {
-			this.setState({refreshing: false})
+			return this._getUsers()
 		}
+	}
+
+	_getUsers() {
+		fetch(server + '/users', {
+			method: 'GET',
+			headers: {
+				token: this.props.profile.token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageUsers({users: res.data})
+				this._getStore()
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getStore() {
+		fetch(server + '/users/store', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageUsers({store: res.data})
+				this._getInventory()
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getInventory() {
+		fetch(server + '/inventory', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageData({data: res.data})
+				this._getIngredients()
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getIngredients() {
+		fetch(server + '/inventory/getIngredients', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageData({ingredients: res.data})
+				this._getPengeluaran()
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getPengeluaran() {
+		fetch(server + '/sale/getPengeluaran', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageSale({pengeluaran: res.data})
+				this.setState({refreshing: false})
+			}
+		})
+		.catch(err => console.log(err))
 	}
 
 	render() {
@@ -451,6 +467,7 @@ function mapStateToProps (state) {
 	return {
 		device: state.user.device,
 		category: state.category.data,
+		ingredients: state.category.ingredients,
 		profile: state.user.data,
 		sale: state.sale.data,
 	}

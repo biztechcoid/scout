@@ -38,6 +38,24 @@ class SideMenuScreen extends React.Component {
 	}
 
 	_logout() {
+		fetch(server + '/sale/updateStockIngredients', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.user.token
+			},
+			body: JSON.stringify(this.props.ingredients)
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this._uploadPenjualan()
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_uploadPenjualan() {
 		if(this.props.sale.length > 0) {
 			for(var a in this.props.sale) {
 				if(this.props.sale[a].status === undefined) {

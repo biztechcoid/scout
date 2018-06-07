@@ -532,15 +532,23 @@ const CategoryReducers = (state = initialState, action) => {
 					if(state.data[j].idCategory === action.data.data[i].idCategory) {
 						for(var k in state.data[j].product) {
 							if(state.data[j].product[k].idProduct === action.data.data[i].idProduct) {
-								state.data[j].product[k].quantity = state.data[j].product[k].quantity - action.data.data[i].quantity
+								if(action.data.data[i].idSubProduct === undefined) {
+									state.data[j].product[k].quantity = state.data[j].product[k].quantity - action.data.data[i].quantity
 
-								for(var l in state.data[j].product[k].ingredients) {
-									for(var m in state.ingredients) {
-										if(state.data[j].product[k].ingredients[l].idIngredients === state.ingredients[m].idIngredients) {
-											state.ingredients[m].quantity -=  (action.data.data[i].quantity * state.data[j].product[k].ingredients[l].qty)
+									for(var l in state.data[j].product[k].ingredients) {
+										for(var m in state.ingredients) {
+											if(state.data[j].product[k].ingredients[l].idIngredients === state.ingredients[m].idIngredients) {
+												state.ingredients[m].quantity -=  (action.data.data[i].quantity * state.data[j].product[k].ingredients[l].qty)
+											}
+										}
+										// state.data[j].product[k].ingredients[l].quantity -= action.data.data[i].quantity
+									}
+								} else {
+									for(var l in state.data[j].product[k].subProduct) {
+										if(state.data[j].product[k].subProduct[l].idSubProduct === action.data.data[i].idSubProduct) {
+											state.data[j].product[k].subProduct[l].quantity = state.data[j].product[k].subProduct[l].quantity - action.data.data[i].quantity
 										}
 									}
-									// state.data[j].product[k].ingredients[l].quantity -= action.data.data[i].quantity
 								}
 							}
 						}
