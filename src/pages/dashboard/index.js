@@ -47,7 +47,7 @@ var menu = [
 	{name: 'Pengeluaran', icon: 'md-cart', pages: 'Pengeluaran', access: 'Pengeluaran'},
 	{name: 'Perpajakan', icon: 'md-paper', pages: 'Perpajakan', access: 'Perpajakan'},
 	{name: 'Laporan', icon: 'ios-list-box-outline', pages: 'Report', access: 'Laporan'},
-	{name: 'Pengaturan', icon: 'md-settings', pages: 'ListUsers', access: 'Pengeluaran'},
+	{name: 'Pengaturan', icon: 'md-settings', pages: 'ListUsers', access: 'Pengaturan'},
 ]
 
 
@@ -313,7 +313,11 @@ class InventoryScreen extends React.Component {
 									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 5, backgroundColor: '#6ecbe0'}}>
 										<Touchable
 											style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 30}}
-											onPress={() => this.props.profile.access[menu[index].access.toLowerCase()] ? this.props.navigation.navigate(menu[index].pages) : null}>
+											onPress={() => this.props.profile.access[menu[index].access.toLowerCase()] === 'true' ?
+												this.props.navigation.navigate(menu[index].pages)
+												:
+												Alert.alert(null, 'Anda tidak memiliki akses')
+											}>
 											<Ionicons
 												name={menu[index].icon}
 												size={50}
@@ -325,7 +329,11 @@ class InventoryScreen extends React.Component {
 									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 5, backgroundColor: '#6ecbe0'}}>
 										<Touchable
 											style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 30}}
-											onPress={() => this.props.profile.access[menu[index + 1].access.toLowerCase()] ? this.props.navigation.navigate(menu[index + 1].pages) : null}>
+											onPress={() => this.props.profile.access[menu[index + 1].access.toLowerCase()] === 'true' ?
+												this.props.navigation.navigate(menu[index + 1].pages)
+												:
+												Alert.alert(null, 'Anda tidak memiliki akses')
+											}>
 											<Ionicons
 												name={menu[index + 1].icon}
 												size={50}
