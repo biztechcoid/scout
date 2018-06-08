@@ -177,7 +177,7 @@ class SideMenuScreen extends React.Component {
 					<View style = {{ height: 40,marginTop:20,marginBottom:20, borderWidth: 0, borderBottomWidth: 0, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 						<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center',width:'100%'}}>
 							<View style={{justifyContent: 'center', flex: 1,}}>
-								<Text style={{color: 'white'}}>{this.props.store[0] ? this.props.store[0].name : null}</Text>
+								<Text style={{color: 'white'}}>{this.props.user === null ? null : this.props.user.cabangName}</Text>
 							</View>
 						</View>
 					</View>
@@ -206,7 +206,7 @@ class SideMenuScreen extends React.Component {
 
 
 					{this.props.user ?
-						this.props.user.idCabang === null ?
+						// this.props.user.idCabang === null ?
 							<View>
 								<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 									<Touchable
@@ -255,8 +255,8 @@ class SideMenuScreen extends React.Component {
 								</View>*/}
 
 							</View>
-							:
-							null
+							// :
+							// null
 						:
 						null
 					}
@@ -265,7 +265,7 @@ class SideMenuScreen extends React.Component {
 						<Touchable
 							style = {{ justifyContent: 'center' }}
 							onPress = { this._export.bind(this) }>
-							<Text> Export File </Text>
+							<Text>Export File</Text>
 						</Touchable>
 					</View>
 
@@ -273,7 +273,7 @@ class SideMenuScreen extends React.Component {
 						<Touchable
 							style = {{ justifyContent: 'center' }}
 							onPress = { this._chooseFile.bind(this) }>
-							<Text> Import File </Text>
+							<Text>Import File</Text>
 						</Touchable>
 					</View>
 					

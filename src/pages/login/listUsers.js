@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+	Alert,
 	FlatList,
 	StyleSheet,
 	Text,
@@ -8,7 +9,8 @@ import {
 import { connect } from 'react-redux'
 
 import {
-	Button
+	Button,
+	ButtonIcons
 } from '../../components'
 
 
@@ -16,6 +18,15 @@ class ListUsersScreen extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
 		title: 'Daftar User'
 	})
+
+	_updateUser(content) {
+		console.log('===', content)
+		this.props.navigation.navigate('Register', {type: 'Edit User', content: content})
+	}
+
+	_deleteUser(content) {
+		Alert.alert(null, 'Anda yakin user ' + content.name + ' akan dihapus?')
+	}
 
 	render() {
 		return (
@@ -26,19 +37,35 @@ class ListUsersScreen extends React.Component {
 					keyExtractor = {(item, index) => index}
 					renderItem = {({item, index}) =>
 						<View style = {styles.category}>
-							<View>
-								<Text> Name </Text>
-								<Text> Cabang </Text>
-								<Text> Email </Text>
-								<Text> Phone </Text>
+							<View style = {{ flex: 1, flexDirection: 'row' }}>
+								<View>
+									<Text> Name </Text>
+									<Text> Cabang </Text>
+									<Text> Email </Text>
+									<Text> Phone </Text>
+								</View>
+
+								<View>
+									<Text> : {item.name} </Text>
+									<Text> : {item.cabangName} </Text>
+									<Text> : {item.email} </Text>
+									<Text> : {item.phone} </Text>
+								</View>
 							</View>
 
-							<View>
-								<Text> : {item.name} </Text>
-								<Text> : {item.cabangName} </Text>
-								<Text> : {item.email} </Text>
-								<Text> : {item.phone} </Text>
-							</View>
+							<ButtonIcons
+								style = {{ width: 40, height: 40 }}
+								onPress = { this._updateUser.bind(this, item) }
+								name = 'md-create'
+								color = 'grey'
+								size = { 20 }/>
+
+							<ButtonIcons
+								style = {{ width: 40, height: 40 }}
+								onPress = { this._deleteUser.bind(this, item) }
+								name = 'md-close'
+								color = 'grey'
+								size = { 20 }/>
 						</View>
 					}
 				/>
@@ -79,7 +106,7 @@ const styles = StyleSheet.create({
 function mapStateToProps (state) {
 	return {
 		users: state.user.users,
-		store: state.user.sotre
+		// store: state.user.sotre
 	}
 }
 

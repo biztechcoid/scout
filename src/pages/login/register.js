@@ -12,7 +12,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 import {
 	registerUser,
-	addUser
+	addUser,
+	localStorageUsers
 } from '../../redux/actions'
 
 import {
@@ -48,7 +49,9 @@ class RegisterScreen extends React.Component {
 			persediaan: false,
 			penjualan: false,
 			pengeluaran: false,
-			laporan: false
+			perpajakan: false,
+			laporan: false,
+			pengaturan: false
 		}
 	}
 
@@ -96,7 +99,9 @@ class RegisterScreen extends React.Component {
 								persediaan: true,
 								penjualan: true,
 								pengeluaran: true,
-								laporan: true
+								perpajakan: true,
+								laporan: true,
+								pengaturan: true
 							}
 						}
 
@@ -159,11 +164,17 @@ class RegisterScreen extends React.Component {
 			stateCopy.namaCabang = null
 			stateCopy.ket = null
 		} else {
-			for(var i in this.props.store) {
-				if(this.props.store.idPusat === value) {
-					stateCopy.cabang = value
-					stateCopy.namaCabang = this.props.store.name
-					stateCopy.ket = this.props.store.ket
+			if(this.props.store.idPusat === value) {
+				stateCopy.cabang = value
+				stateCopy.namaCabang = this.props.store.name
+				stateCopy.ket = this.props.store.ket
+			} else {
+				for(var i in this.props.store.cabang) {
+					if(this.props.store.cabang[i].idCabang === value) {
+						stateCopy.cabang = value
+						stateCopy.namaCabang = this.props.store.cabang[i].name
+						stateCopy.ket = this.props.store.cabang[i].ket
+					}
 				}
 			}
 		}
@@ -209,7 +220,8 @@ class RegisterScreen extends React.Component {
 						if(stateCopy.cabang === null) {
 							Alert.alert(null, 'cabang tidak valid')
 						} else {
-							if(!stateCopy.access.persediaan && !stateCopy.access.penjualan && !stateCopy.access.pengeluaran && !stateCopy.access.laporan) {
+							if(!stateCopy.access.persediaan && !stateCopy.access.penjualan && !stateCopy.access.pengeluaran &&
+								!stateCopy.access.perpajakan && !stateCopy.access.laporan && !stateCopy.access.pengaturan) {
 								return Alert.alert(null, 'silahkan pilih hak akses')
 							}
 
@@ -248,8 +260,8 @@ class RegisterScreen extends React.Component {
 								}
 							} else {
 								cabang = {
-									idCabang: null,
-									name: null,
+									idCabang: 'Follow Pusat',
+									name: 'Follow Pusat',
 									ket: null
 								}
 								register = {
@@ -289,7 +301,7 @@ class RegisterScreen extends React.Component {
 									*
 									*/
 									Alert.alert(null, 'Tambah User berhasil',
-										[{ text: 'OK', onPress: () => this.props.navigation.goBack() }])
+										[{ text: 'OK', onPress: () => this._listUser() }])
 								} else {
 									/*
 									*
@@ -317,9 +329,151 @@ class RegisterScreen extends React.Component {
 		})
 	}
 
+	_editUser() {
+		/*
+		*
+		check koneksi internet
+		*
+		*/
+		online(value => {
+			if(value) {
+				const stateCopy = this.state
+
+				if(stateCopy.name == '' || stateCopy.name == null) {
+					Alert.alert(null, 'nama tidak valid')
+				} else if(stateCopy.email == '' || stateCopy.email == null) {
+					Alert.alert(null, 'email tidak valid')
+				} else if(stateCopy.phone == '' || stateCopy.phone == null) {
+					Alert.alert(null, 'telepon tidak valid')
+				} else {
+					if(stateCopy.cabang === null) {
+						Alert.alert(null, 'cabang tidak valid')
+					} else {
+						if(!stateCopy.access.persediaan && !stateCopy.access.penjualan && !stateCopy.access.pengeluaran &&
+							!stateCopy.access.perpajakan && !stateCopy.access.laporan && !stateCopy.access.pengaturan) {
+							return Alert.alert(null, 'silahkan pilih hak akses')
+						}
+
+						var cabang, register
+						if(stateCopy.cabang === this.props.store.idPusat) {
+							cabang = {
+								idCabang: 'Follow Pusat',
+								name: 'Follow Pusat',
+								ket: null
+							}
+							register = {
+								idUser: stateCopy.idUser,
+								idPusat: this.props.store.idPusat,
+								idCabang: null,
+								name: stateCopy.name,
+								email: stateCopy.email,
+								phone: stateCopy.phone,
+								access: stateCopy.access
+							}
+						} else if(stateCopy.cabang === 'addCabang') {
+							cabang = {
+								idCabang: makeId(),
+								name: stateCopy.namaCabang,
+								ket: stateCopy.ket
+							}
+							register = {
+								idUser: stateCopy.idUser,
+								idPusat: this.props.store.idPusat,
+								idCabang: cabang.idCabang,
+								name: stateCopy.name,
+								email: stateCopy.email,
+								phone: stateCopy.phone,
+								access: stateCopy.access
+							}
+						} else {
+							cabang = {
+								idCabang: stateCopy.cabang,
+								name: stateCopy.namaCabang,
+								ket: stateCopy.ket
+							}
+							register = {
+								idUser: stateCopy.idUser,
+								idPusat: this.props.store.idPusat,
+								idCabang: stateCopy.cabang,
+								name: stateCopy.name,
+								email: stateCopy.email,
+								phone: stateCopy.phone,
+								access: stateCopy.access
+							}
+						}
+
+						/*
+						*
+						post to api
+						*
+						*/
+						fetch(server + '/users/editUser', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								token: this.props.user.token
+							},
+							body: JSON.stringify({
+								cabang: cabang,
+								register: register
+							})
+						})
+						.then(response => response.json())
+						.then(res => {
+							if(res.headers.statusCode === 200) {
+								/*
+								*
+								success
+								*
+								*/
+								Alert.alert(null, 'Edit User berhasil',
+									[{ text: 'OK', onPress: () => this._listUser() }])
+							} else {
+								/*
+								*
+								failed
+								*
+								*/
+								Alert.alert(null, res.headers.message)
+							}
+						})
+						.catch(err => console.log(err))
+
+
+						/*this.props.dispatchAddUser({
+							data: stateCopy,
+							navigation: this.props.navigation
+						})*/
+					}
+				}
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
+			}
+		})
+	}
+
+	_listUser() {
+		fetch(server + '/users', {
+			method: 'GET',
+			headers: {
+				token: this.props.user.token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageUsers({users: res.data})
+				this.props.navigation.goBack()
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
 	_access(value) {
 		const stateCopy = this.state
-		switch(value) {
+		stateCopy.access[value] = !stateCopy.access[value]
+		this.setState(stateCopy)
+		/*switch(value) {
 			case 'persediaan':
 				stateCopy.access.persediaan = !stateCopy.access.persediaan
 				this.setState(stateCopy)
@@ -339,7 +493,7 @@ class RegisterScreen extends React.Component {
 				stateCopy.access.laporan = !stateCopy.access.laporan
 				this.setState(stateCopy)
 				break
-		}
+		}*/
 	}
 
 	render() {
@@ -362,13 +516,19 @@ class RegisterScreen extends React.Component {
 								<Text>Telepon</Text>
 							</View>
 
-							<View style = {{ height: 45, justifyContent: 'center' }}>
-								<Text>Password</Text>
-							</View>
+							{this.props.navigation.state.params.type === 'Edit User' ?
+								null
+								:
+								<View>
+									<View style = {{ height: 45, justifyContent: 'center' }}>
+										<Text>Password</Text>
+									</View>
 
-							<View style = {{ height: 45, justifyContent: 'center' }}>
-								<Text>Ulangi Password</Text>
-							</View>
+									<View style = {{ height: 45, justifyContent: 'center' }}>
+										<Text>Ulangi Password</Text>
+									</View>
+								</View>
+							}
 
 							{this.props.navigation.state.params.type === 'Register' ?
 								null
@@ -469,41 +629,47 @@ class RegisterScreen extends React.Component {
 									value = {this.state.phone}/>
 							</View>
 
-							<View style = {{ flexDirection: 'row' }}>
-								<View style = {{ justifyContent: 'center' }}>
-									<Text> : </Text>
+							{this.props.navigation.state.params.type === 'Edit User' ?
+								null
+								:
+								<View>
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ justifyContent: 'center' }}>
+											<Text> : </Text>
+										</View>
+
+										<TextInput
+											ref = { (c) => this._password = c }
+											autoCapitalize = 'none'
+											returnKeyType = 'next'
+											underlineColorAndroid = '#bebebe'
+											onChangeText = { (text) => this.setState({password: text }) }
+											onSubmitEditing = { () => this._confirmPassword.focus() }
+											//placeholder = 'Password'
+											secureTextEntry = {true}
+											style = {{ flex: 1, height: 45 }}
+											value = {this.state.password}/>
+									</View>
+
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ justifyContent: 'center' }}>
+											<Text> : </Text>
+										</View>
+
+										<TextInput
+											ref = { (c) => this._confirmPassword = c }
+											autoCapitalize = 'none'
+											returnKeyType = 'done'
+											underlineColorAndroid = '#bebebe'
+											onChangeText = { (text) => this.setState({confirmPassword: text }) }
+											onSubmitEditing = { this.props.navigation.state.params.type === 'Register' ? this._register.bind(this) : this._addUser.bind(this) }
+											//placeholder = 'Ulangi Password'
+											secureTextEntry = {true}
+											style = {{ flex: 1, height: 45 }}
+											value = {this.state.confirmPassword}/>
+									</View>
 								</View>
-
-								<TextInput
-									ref = { (c) => this._password = c }
-									autoCapitalize = 'none'
-									returnKeyType = 'next'
-									underlineColorAndroid = '#bebebe'
-									onChangeText = { (text) => this.setState({password: text }) }
-									onSubmitEditing = { () => this._confirmPassword.focus() }
-									//placeholder = 'Password'
-									secureTextEntry = {true}
-									style = {{ flex: 1, height: 45 }}
-									value = {this.state.password}/>
-							</View>
-
-							<View style = {{ flexDirection: 'row' }}>
-								<View style = {{ justifyContent: 'center' }}>
-									<Text> : </Text>
-								</View>
-
-								<TextInput
-									ref = { (c) => this._confirmPassword = c }
-									autoCapitalize = 'none'
-									returnKeyType = 'done'
-									underlineColorAndroid = '#bebebe'
-									onChangeText = { (text) => this.setState({confirmPassword: text }) }
-									onSubmitEditing = { this.props.navigation.state.params.type === 'Register' ? this._register.bind(this) : this._addUser.bind(this) }
-									//placeholder = 'Ulangi Password'
-									secureTextEntry = {true}
-									style = {{ flex: 1, height: 45 }}
-									value = {this.state.confirmPassword}/>
-							</View>
+							}
 
 							{this.props.navigation.state.params.type === 'Register' ?
 								null
@@ -660,6 +826,22 @@ class RegisterScreen extends React.Component {
 							<View style = {{borderWidth: 0}}>
 								<Touchable
 									style = {{flexDirection: 'row'}}
+									onPress = {this._access.bind(this, 'perpajakan')}>
+									<View style = {{justifyContent: 'center'}}>
+										<Ionicons
+											name = {this.state.access.perpajakan ? 'ios-checkbox-outline' : 'ios-square-outline'}
+											size = { 25 }/>
+									</View>
+
+									<View style = {{justifyContent: 'center', marginLeft: 5}}>
+										<Text> Perpajakan </Text>
+									</View>
+								</Touchable>
+							</View>
+
+							<View style = {{borderWidth: 0}}>
+								<Touchable
+									style = {{flexDirection: 'row'}}
 									onPress = {this._access.bind(this, 'laporan')}>
 									<View style = {{justifyContent: 'center'}}>
 										<Ionicons
@@ -669,6 +851,22 @@ class RegisterScreen extends React.Component {
 
 									<View style = {{justifyContent: 'center', marginLeft: 5}}>
 										<Text> Laporan </Text>
+									</View>
+								</Touchable>
+							</View>
+
+							<View style = {{borderWidth: 0}}>
+								<Touchable
+									style = {{flexDirection: 'row'}}
+									onPress = {this._access.bind(this, 'pengaturan')}>
+									<View style = {{justifyContent: 'center'}}>
+										<Ionicons
+											name = {this.state.access.pengaturan ? 'ios-checkbox-outline' : 'ios-square-outline'}
+											size = { 25 }/>
+									</View>
+
+									<View style = {{justifyContent: 'center', marginLeft: 5}}>
+										<Text> Pengaturan </Text>
 									</View>
 								</Touchable>
 							</View>
@@ -682,6 +880,11 @@ class RegisterScreen extends React.Component {
 							onPress = { this._register.bind(this) }
 							name = 'DAFTAR' />
 						:
+						this.props.navigation.state.params.type === 'Edit User' ?
+						<Button
+							onPress = { this._editUser.bind(this) }
+							name = 'Edit User' />
+						:
 						<Button
 							onPress = { this._addUser.bind(this) }
 							name = 'Tambah User' />
@@ -689,6 +892,46 @@ class RegisterScreen extends React.Component {
 				</View>
 			</ScrollView>
 		)
+	}
+
+	componentWillMount() {
+		if(this.props.navigation.state.params.type === 'Edit User') {
+			var ket = null
+			if(this.props.navigation.state.params.content.idCabang === null) {
+				if(this.props.store.idPusat === this.props.navigation.state.params.content.idPusat) {
+					ket = this.props.store.ket
+				} else {
+					for(var i in this.props.store.cabang) {
+						if(this.props.store.cabang[i].idCabang === this.props.navigation.state.params.content.idCabang) {
+							ket = this.props.store.cabang[i].ket
+						}
+					}
+				}
+			}
+
+			this.setState({
+				idUser: this.props.navigation.state.params.content.idUser,
+				idPusat: this.props.navigation.state.params.content.idPusat,
+				idCabang: this.props.navigation.state.params.content.idCabang,
+
+				name: this.props.navigation.state.params.content.name,
+				email: this.props.navigation.state.params.content.email,
+				phone: this.props.navigation.state.params.content.phone,
+
+				cabang: this.props.navigation.state.params.content.idCabang === null ? this.props.navigation.state.params.content.idPusat : this.props.navigation.state.params.content.idCabang,
+				namaCabang: this.props.navigation.state.params.content.cabangName,
+				ket: ket,
+
+				access: {
+					persediaan: this.props.navigation.state.params.content.access.persediaan,
+					penjualan: this.props.navigation.state.params.content.access.penjualan,
+					pengeluaran: this.props.navigation.state.params.content.access.pengeluaran,
+					perpajakan: this.props.navigation.state.params.content.access.perpajakan,
+					laporan: this.props.navigation.state.params.content.access.laporan,
+					pengaturan: this.props.navigation.state.params.content.access.pengaturan
+				}
+			})
+		}
 	}
 }
 
@@ -702,7 +945,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
 	return {
 		dispatchRegisterUser: (data) => dispatch(registerUser(data)),
-		dispatchAddUser: (data) => dispatch(addUser(data))
+		dispatchAddUser: (data) => dispatch(addUser(data)),
+		dispatchLocalStorageUsers: (data) => dispatch(localStorageUsers(data)),
 	}
 }
 
