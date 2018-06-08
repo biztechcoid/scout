@@ -4,7 +4,6 @@ import {
 	Dimensions,
 	Keyboard,
 	ListView,
-	NetInfo,
 	Platform,
 	RefreshControl,
 	ScrollView,
@@ -18,24 +17,31 @@ const { width, height } = Dimensions.get('window')
 this.width = width
 this.height = height
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import RNFS from 'react-native-fs'
+import RNHTMLtoPDF from 'react-native-html-to-pdf'
+import FileOpener from 'react-native-file-opener'
 
 import { connect } from 'react-redux'
 import {
 	refreshing,
 	updateStock,
 	penjualan,
-	// layout
+	updateFilter
 } from '../../redux/actions'
 
 import {
 	Button,
 	ButtonIcons,
+	Online,
 	MyModal,
 	Touchable
 } from '../../components'
 
 import {
+	checkFolder,
+	date,
 	makeId,
+	online,
 	rupiah
 } from '../../modules'
 
@@ -50,15 +56,15 @@ class SaleScreen extends React.Component {
 			backgroundColor: '#6ecbe0'
 		},
 		tabBarVisible: navigation.state.params ? navigation.state.params.width > navigation.state.params.height && navigation.state.params.keyboard == false ? false : true : true,
-		headerLeft: (
+		/*headerLeft: (
 			<ButtonIcons
 				onPress = { () => { navigation.navigate('DrawerOpen') }}
 				name = 'md-menu'
 				color = 'white'
 				size = { 30 }/>
-		),
+		),*/
 		headerRight: (
-			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connection ? 'green' : 'red' : 'red' }}/>
+			<Online/>
 		)
 	})
 
@@ -86,7 +92,7 @@ class SaleScreen extends React.Component {
 
 		modal: false,
 
-		connection: null
+		// connection: null
 	}
 
 	_scanQR() {
@@ -401,7 +407,7 @@ class SaleScreen extends React.Component {
 		const stateCopy = this.state
 
 		if(stateCopy.sale.data.length > 0) {
-			Alert.alert(null, 'Anda yakin ingin menghapus pembelian ?',
+			Alert.alert(null, 'Anda yakin ingin menghapus pembelian?',
 				[
 					{ text: 'Yakin', onPress: () => this.setState({sale: { data: [], total: 0.00, customer: 1 }})},
 					{ text: 'Batal' }
@@ -445,6 +451,130 @@ class SaleScreen extends React.Component {
 			// ])
 	}
 
+	async _htmlPdf(HTML) {
+		let options = {
+			html: HTML,
+			fileName: 'struk' + this.state.sale.idTransaction,
+			directory: 'docs',
+		}
+
+		try {
+			let file = await RNHTMLtoPDF.convert(options)
+			this._moveFile()
+		} catch (err) {
+			Alert.alert(null, 'struk ' + this.state.sale.idTransaction + ' gagal disimpan')
+		}
+	}
+
+	_moveFile() {
+		checkFolder('/storage/emulated/0/Scout/Penjualan', value => {
+			RNFS.moveFile('/storage/emulated/0/Documents/struk' + this.state.sale.idTransaction + '.pdf',
+				'/storage/emulated/0/Scout/Penjualan/struk' + this.state.sale.idTransaction + '.pdf')
+				.then(success => {
+					Alert.alert(null, 'struk penjualan berhasil disimpan di Storage/Scout/Penjualan. Apakah file ini ingin dibuka?',
+						[
+							{text: 'OK', onPress: () => this._openFile()},
+							{text: 'Cancel', onPress: () => {
+								this.setState({
+									sale: { data: [], total: 0.00, customer: 1 },
+									discount: 0,
+									change: 0
+								})
+							}}
+						], { cancelable: false })
+				})
+				.catch(err => console.log('err', err))
+		})
+	}
+
+	_openFile() {
+		FileOpener.open('/storage/emulated/0/Scout/Penjualan/struk' + this.state.sale.idTransaction + '.pdf', 'application/pdf')
+			.then(() => {
+				console.log('success!!')
+				this.setState({
+					sale: { data: [], total: 0.00, customer: 1 },
+					discount: 0,
+					change: 0
+				})
+			},(e) => {
+				console.log('error!!')
+			})
+	}
+
+	async _print(stateCopy) {
+		/*
+		*
+		print to pdf
+		*
+		*/
+		var table = ''
+		for(var a in stateCopy.sale.data) {
+			if(a % 2 == 0) {
+				table += "<tr>" +
+					"<td>" + stateCopy.sale.data[a].name + "</td>" +
+				"</tr>" +
+				"<tr>" +
+					"<td>" +
+						"<table>" +
+							"<tr>" +
+								"<td>" + stateCopy.sale.data[a].quantity + "</td>" +
+								"<td> X " + stateCopy.sale.data[a].price + "</td>" +
+								"<td>- " + stateCopy.sale.data[a].disc + "%</td>" +
+								"<td>= " + stateCopy.sale.data[a].subTotal + "</td>" +
+							"</tr>" +
+						"</table>" +
+					"</td>" +
+				"</tr>"
+			} else {
+				table += "<tr style='background-color: #dddddd'>" +
+					"<td>" + stateCopy.sale.data[a].name + "</td>" +
+				"</tr>" +
+				"<tr style='background-color: #dddddd'>" +
+					"<td>" +
+						"<table>" +
+							"<tr>" +
+								"<td>" + stateCopy.sale.data[a].quantity + "</td>" +
+								"<td> X " + stateCopy.sale.data[a].price + "</td>" +
+								"<td>- " + stateCopy.sale.data[a].disc + "%</td>" +
+								"<td>= " + stateCopy.sale.data[a].subTotal + "</td>" +
+							"</tr>" +
+						"</table>" +
+					"</td>" +
+				"</tr>"
+			}
+		}
+		var HTML = "<div style='width: 250px'><h1>Scout</h1>" + 
+			"<h3>" + stateCopy.sale.idTransaction + "</h3>" +
+			"<h3>" + date(stateCopy.sale.date) + "</h3>" +
+			"<table style='width: 100%;border-collapse: collapse'>" +
+				table +
+			"</table>" +
+			"<table>" +
+				"<tr>" +
+					"<td>Total</td>" +
+					"<td>" + stateCopy.sale.total + "</td>" +
+				"</tr>" +
+				"<tr>" +
+					"<td>Diskon</td>" +
+					"<td>" + stateCopy.sale.discount + "</td>" +
+				"</tr>" +
+				"<tr>" +
+					"<td>Pembayaran</td>" +
+					"<td>" + stateCopy.sale.pembayaran + "</td>" +
+				"</tr>" +
+				"<tr>" +
+					"<td>Kembali</td>" +
+					"<td>" + (stateCopy.sale.pembayaran - (stateCopy.sale.total - stateCopy.sale.discount)) + "</td>" +
+				"</tr>" +
+			"</table></div>"
+
+		checkFolder('/storage/emulated/0/Documents', value => {
+			if(value) {
+				this._htmlPdf(HTML)
+			}
+		})
+	}
+
 	_bayar() {
 		const stateCopy = this.state
 		Alert.alert(null, 'Anda yakin transaksi valid ?',
@@ -453,13 +583,16 @@ class SaleScreen extends React.Component {
 					stateCopy.sale['date'] = new Date()
 					stateCopy.sale['discount'] = this.state.discount
 					stateCopy.sale['pembayaran'] = this.state.change
-					this.props.dispatchUpdateStock(stateCopy.sale)
-					this.props.dispatchPenjualan(stateCopy.sale)
-					this.setState({
-						sale: { data: [], total: 0.00, customer: 1 },
-						discount: 0,
-						change: 0
+					var data = Object.assign({}, stateCopy.sale, {
+						idPusat: this.props.profile.idPusat,
+						idCabang: this.props.profile.idCabang
 					})
+					
+					this.props.dispatchUpdateStock(data)
+					this.props.dispatchPenjualan(data)
+					this.props.dispatchUpdateFilter()
+					
+					this._print(stateCopy)
 					this._modal()
 				}},
 				{ text: 'Tidak' }
@@ -495,7 +628,7 @@ class SaleScreen extends React.Component {
 				style = { styles.container }>
 
 				<MyModal
-					top = {this.state.keyboard ? 0 : 0.5}
+					top = {this.state.keyboard || this.state.width > this.state.height ? 0 : 0.5}
 					left = {0.5}
 					cancelable = {false}
 					visible = { this.state.modal }
@@ -880,8 +1013,13 @@ class SaleScreen extends React.Component {
 											*
 											*/
 											<View>
-												{this.props.profile ?
-													content.idCabang === this.props.profile.idCabang ?
+												{	/*
+													*
+													offline
+													*
+													*/
+													/*this.props.profile ?
+													content.idCabang === this.props.profile.idCabang ?*/
 														<View style = {{ flex: 1, /*width: (width / 3) - 10,*/ marginLeft: 2, marginRight: 2 }}>
 															<View 
 																// onLayout = {(evt) => this.height1 = evt.nativeEvent.layout.width}
@@ -956,10 +1094,10 @@ class SaleScreen extends React.Component {
 																null
 															}
 														</View>
-														:
+														/*:
 														null
 													:
-													null
+													null*/
 												}
 											</View>
 										}/>
@@ -1021,37 +1159,13 @@ class SaleScreen extends React.Component {
 		})
 	}
 
-	handleFirstConnectivityChange(isConnected) {
-		this.setState({connection: isConnected})
-
-		this.props.navigation.setParams({
-			connection: isConnected
-		})
-
-		NetInfo.isConnected.removeEventListener(
-			'connectionChange',
-			this.handleFirstConnectivityChange
-		)
-	}
-
 	componentWillMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
 		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
 	}
 
 	componentDidMount() {
-		NetInfo.isConnected.fetch().then(isConnected => {
-			this.setState({connection: isConnected})
-
-			this.props.navigation.setParams({
-				connection: isConnected
-			})
-		})
 		
-		NetInfo.isConnected.addEventListener(
-			'connectionChange',
-			this.handleFirstConnectivityChange
-		)
 	}
 
 	componentWillUnmount() {
@@ -1093,7 +1207,8 @@ function mapStateToProps (state) {
 	return {
 		category: state.category.data,
 		refreshing: state.category.refreshing,
-		profile: state.user.data
+		profile: state.user.data,
+		device: state.user.device
 	}
 }
 
@@ -1101,7 +1216,8 @@ function mapDispatchToProps (dispatch) {
 	return {
 		dispatchRefreshing: (data) => dispatch(refreshing(data)),
 		dispatchUpdateStock: (data) => dispatch(updateStock(data)),
-		dispatchPenjualan: (data) => dispatch(penjualan(data))
+		dispatchPenjualan: (data) => dispatch(penjualan(data)),
+		dispatchUpdateFilter: (data) => dispatch(updateFilter(data))
 	}
 }
 

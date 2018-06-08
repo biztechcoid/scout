@@ -37,8 +37,8 @@ import {
 class LoginScreen extends React.Component {
 	state = {
 		keyboard: false,
-		email: null,
-		password: null,
+		email: '',
+		password: '',
 	}
 
 	_login() {
@@ -55,10 +55,10 @@ class LoginScreen extends React.Component {
 				
 				const data = {
 					// navigation: this.props.navigation,
-					data: {
+					// data: {
 						email: this.state.email,
 						password: this.state.password
-					}
+					// }
 				}
 
 				/*
@@ -72,7 +72,7 @@ class LoginScreen extends React.Component {
 						'Content-Type': 'application/json',
 						token: false
 					},
-					body: JSON.stringify(data.data)
+					body: JSON.stringify(data)
 				})
 				.then(response => response.json())
 				.then(res => {
@@ -81,31 +81,12 @@ class LoginScreen extends React.Component {
 						this.props.navigation.dispatch({
 						  type: 'Navigation/RESET',
 						  index: 0,
-						  actions: [{ type: 'Navigation/NAVIGATE', routeName:
-						  	res.data.access ?
-									res.data.access.persediaan && res.data.access.penjualan && res.data.access.laporan ?
-										'level2'
-									: res.data.access.persediaan && res.data.access.penjualan ?
-										'level3'
-									: res.data.access.persediaan ?
-										'level4'
-									: res.data.access.penjualan ?
-										'level5'
-									: res.data.access.laporan ?
-										'level6'
-									: res.data.access.persediaan && res.data.access.laporan ?
-										'level8'
-									: res.data.access.penjualan && res.data.access.laporan ?
-										'level10'
-									:
-										'Login'
-								:
-									'Login'
-							}]
+						  actions: [{ type: 'Navigation/NAVIGATE', routeName: 'Dashboard'}]
 						})
 
 						this._getUsers(res.data.token, res.data)
 					} else {
+						this._loginProcess(false)
 						Alert.alert(null, res.headers.message)
 					}
 				})
@@ -193,15 +174,15 @@ class LoginScreen extends React.Component {
 		.then(res => {
 			if(res.headers.statusCode === 200) {
 				this.props.dispatchLocalStorageData({data: res.data})
-				// this._getIngredients(token)
+				this._getIngredients(token)
 				this.props.dispatchLogin(data)
 			}
 		})
 		.catch(err => console.log(err))
 	}
 
-	/*_getIngredients(token) {
-		fetch(server + '/inventory/getBahanBaku', {
+	_getIngredients(token) {
+		fetch(server + '/inventory/getIngredients', {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -212,10 +193,46 @@ class LoginScreen extends React.Component {
 		.then(res => {
 			if(res.headers.statusCode === 200) {
 				this.props.dispatchLocalStorageData({ingredients: res.data})
+				this._getPengeluaran(token)
 			}
 		})
 		.catch(err => console.log(err))
-	}*/
+	}
+
+	_getPengeluaran(token) {
+		fetch(server + '/sale/getPengeluaran', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageSale({pengeluaran: res.data})
+				this._getPenjualan(token)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getPenjualan(token) {
+		fetch(server + '/sale/getPenjualan', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageSale({penjualan: res.data})
+			}
+		})
+		.catch(err => console.log(err))
+	}
 
 	_loginProcess(value) {
 		this.props.dispatchLoginProcess(value)
@@ -235,7 +252,7 @@ class LoginScreen extends React.Component {
 				<ScrollView>
 				<View style = { styles.containerlogo }>
 					<View style = { styles.logo }>
-						<Image style = { styles.logoimg } source={require('../../assets/img/LOGO.png')} />
+						<Image style = { styles.logoimg } source={require('../../assets/img/Scoutbiz-New_Logo.png')} />
 					</View>
 				</View>
 

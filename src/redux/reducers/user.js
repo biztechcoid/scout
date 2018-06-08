@@ -2,8 +2,10 @@
 
 import {
 	Alert,
-	AsyncStorage
+	AsyncStorage,
+	Platform
 } from 'react-native'
+import DeviceInfo from 'react-native-device-info-fork'
 
 import {
 	makeId,
@@ -51,6 +53,9 @@ user
 */
 
 const initialState = {
+	device: {
+		imei: Platform.OS == 'ios' ? DeviceInfo.getIdfa() : DeviceInfo.getImei()
+	},
 	users: [],
 	store: [],
 	data: null,
@@ -135,6 +140,7 @@ const UserReducers = (state = initialState, action) => {
 				access: {
 					persediaan: true,
 					penjualan: true,
+					pengeluaran: true,
 					laporan: true,
 					monitoring: true
 				}
@@ -525,7 +531,7 @@ const UserReducers = (state = initialState, action) => {
 			}
 
 		case 'LOGOUT':
-			AsyncStorage.multiRemove(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users'],
+			AsyncStorage.multiRemove(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users', '@Pengeluaran'],
 				(err) => console.log(err))
 			action.data.dispatch({
 				key: null,

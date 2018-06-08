@@ -11,6 +11,15 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.christopherdro.htmltopdf.RNHTMLtoPDFPackage;
+import com.rnfs.RNFSPackage;
+import com.reactnativedocumentpicker.ReactNativeDocumentPicker;
+import com.github.wuxudong.rncharts.MPAndroidChartPackage;
+import com.fileopener.FileOpenerPackage;
+
+/* react native chart */
+import java.lang.reflect.Method;
+import com.facebook.react.bridge.ReadableNativeArray;
+import com.facebook.react.bridge.ReadableNativeMap;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +39,11 @@ public class MainApplication extends Application implements ReactApplication {
             new RCTCameraPackage(),
             new VectorIconsPackage(),
             new RNDeviceInfo(),
-            new RNHTMLtoPDFPackage()
+            new RNHTMLtoPDFPackage(),
+            new RNFSPackage(),
+            new ReactNativeDocumentPicker(),
+            new MPAndroidChartPackage(),
+            new FileOpenerPackage()
       );
     }
 
@@ -49,5 +62,22 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+
+    // call for react native >= 0.54.0
+    // ReadableNativeArray.setUseNativeAccessor(true);
+    // ReadableNativeMap.setUseNativeAccessor(true);
+    try {
+        Method arrayUseNativeAccessor = ReadableNativeArray.class.getDeclaredMethod("setUseNativeAccessor", boolean.class);
+        if (arrayUseNativeAccessor != null) {
+            arrayUseNativeAccessor.invoke(null, true);
+        }
+
+        Method mapUseNativeAccessor = ReadableNativeMap.class.getDeclaredMethod("setUseNativeAccessor", boolean.class);
+        if (mapUseNativeAccessor != null) {
+            mapUseNativeAccessor.invoke(null, true);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
   }
 }

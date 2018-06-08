@@ -20,7 +20,7 @@ class SplashScreen extends React.Component {
 		return(
 			<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#353535' }}>
 				<View  style={{justifyContent: 'center',width:'80%',flex: 1,}}>
-					<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('../assets/img/LOGO.png')} />
+					<Image  style={{flex: 1,width: null,height: null,resizeMode: 'contain'}} source={require('../assets/img/Scoutbiz-New_Logo.png')} />
 				</View>
 			</View>
 		)
@@ -39,7 +39,7 @@ class SplashScreen extends React.Component {
 	componentDidMount() {
 		Keyboard.dismiss()
 
-		AsyncStorage.multiGet(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users'], (err, res) => {
+		AsyncStorage.multiGet(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users', '@Pengeluaran'], (err, res) => {
 			// console.log(res)
 			/*
 			*
@@ -67,7 +67,7 @@ class SplashScreen extends React.Component {
 			*
 			*/
 			if(JSON.parse(res[3][1]) !== null) {
-				this.props.dispatchLocalStorageSale(JSON.parse(res[3][1]))
+				this.props.dispatchLocalStorageSale({penjualan: JSON.parse(res[3][1])})
 			}
 			/**/
 
@@ -93,12 +93,30 @@ class SplashScreen extends React.Component {
 
 			/*
 			*
+			@Pengeluaran
+			*
+			*/
+			if(JSON.parse(res[6][1]) !== null) {
+				this.props.dispatchLocalStorageSale({pengeluaran: JSON.parse(res[6][1])})
+			}
+			/**/
+
+			/*
+			*
 			@User
 			*
 			*/
 			if(res[0][1] == null) {
 				// tidak ada token
+				/*
+				*
+				offline
+
+				user langsung masuk ke level 2
+				*
+				*/
 				this.next('Login')
+				// this.next('Dashboard')
 			} else {
 				// ada token
 				const newRes = JSON.parse(res[0][1])
@@ -185,7 +203,8 @@ class SplashScreen extends React.Component {
 				*/
 				if(newRes.access) {
 					if(newRes.access.persediaan && newRes.access.penjualan && newRes.access.laporan) {
-						return this.next('level2')
+						// return this.next('level2')
+						return this.next('Dashboard')
 					} else if(newRes.access.persediaan && newRes.access.penjualan) {
 						return this.next('level3')
 					} else if(newRes.access.persediaan) {

@@ -1,17 +1,22 @@
 {
   "name": "SCOUTFranchise",
-  "code": "5",
-  "version": "0.0.4",
+  "code": "6",
+  "version": "0.0.5",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
   },
   "dependencies": {
+    "json2csv": "^4.0.2",
     "react": "16.0.0-beta.5",
     "react-native": "0.49.3",
     "react-native-camera": "^0.10.0",
+    "react-native-charts-wrapper": "^0.4.3",
     "react-native-device-info-fork": "^0.9.6",
+    "react-native-document-picker": "^2.1.0",
+    "react-native-file-opener": "^0.2.0",
+    "react-native-fs": "^2.9.11",
     "react-native-html-to-pdf": "^0.5.0",
     "react-native-qrcode-scanner": "0.0.22",
     "react-native-vector-icons": "^4.4.2",

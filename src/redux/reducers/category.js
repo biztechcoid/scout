@@ -1,11 +1,13 @@
 'use strict'
 
 import {
+	Alert,
 	AsyncStorage
 } from 'react-native'
 
 import {
-	makeId
+	makeId,
+	server
 } from '../../modules'
 
 /*
@@ -52,19 +54,22 @@ const initialState = {
 	data: [],
 	ingredients: [],
 	refreshing: false,
-	barcode: null
+	barcode: null,
+	user: null
 }
 
 const CategoryReducers = (state = initialState, action) => {
 	switch(action.type) {
 		case 'LOCAL_STORAGE_CATEGORY':
 			console.log(action.data)
-			if(action.data.data == undefined) {	
+			if(action.data.data == undefined) {
+				AsyncStorage.setItem('@Ingredients', JSON.stringify(action.data.ingredients))
 				return {
 					...state,
 					ingredients: action.data.ingredients
 				}
 			} else {
+				AsyncStorage.setItem('@Data', JSON.stringify(action.data.data))
 				return {
 					...state,
 					data: action.data.data
@@ -85,7 +90,8 @@ const CategoryReducers = (state = initialState, action) => {
 		*/
 		case 'ADD_CATEGORY':
 			const createData = {
-				idCategory: makeId(),
+				idCategory: action.data.idCategory,
+				// idCategory: makeId(),
 				idCabang: action.data.idCabang,
 				name: action.data.name,
 				product: []
@@ -161,7 +167,8 @@ const CategoryReducers = (state = initialState, action) => {
 			for(var i in state.data) {
 				if(state.data[i].idCategory === action.data.idCategory) {
 					state.data[i].product = [...state.data[i].product, {
-						idProduct: makeId(),
+						idProduct: action.data.idProduct,
+						// idProduct: makeId(),
 						barcode: action.data.barcode,
 						name: action.data.name,
 						cost: action.data.cost,
@@ -263,7 +270,8 @@ const CategoryReducers = (state = initialState, action) => {
 					for(var j in state.data[i].product) {
 						if(state.data[i].product[j].idProduct === action.data.idProduct) {
 							state.data[i].product[j].subProduct = [...state.data[i].product[j].subProduct, {
-								idSubProduct: makeId(),
+								idSubProduct: action.data.idSubProduct,
+								// idSubProduct: makeId(),
 								barcode: action.data.barcode,
 								name: action.data.name,
 								cost: action.data.cost,
@@ -369,7 +377,8 @@ const CategoryReducers = (state = initialState, action) => {
 		*/
 		case 'ADD_INGREDIENTS':
 			const createIngredients = {
-				idIngredients: makeId(),
+				idIngredients: action.data.idIngredients,
+				// idIngredients: makeId(),
 				barcode: action.data.barcode,
 				name: action.data.name,
 				cost: action.data.cost,
@@ -523,15 +532,23 @@ const CategoryReducers = (state = initialState, action) => {
 					if(state.data[j].idCategory === action.data.data[i].idCategory) {
 						for(var k in state.data[j].product) {
 							if(state.data[j].product[k].idProduct === action.data.data[i].idProduct) {
-								state.data[j].product[k].quantity = state.data[j].product[k].quantity - action.data.data[i].quantity
+								if(action.data.data[i].idSubProduct === undefined) {
+									state.data[j].product[k].quantity = state.data[j].product[k].quantity - action.data.data[i].quantity
 
-								for(var l in state.data[j].product[k].ingredients) {
-									for(var m in state.ingredients) {
-										if(state.data[j].product[k].ingredients[l].idIngredients === state.ingredients[m].idIngredients) {
-											state.ingredients[m].quantity -=  (action.data.data[i].quantity * state.data[j].product[k].ingredients[l].qty)
+									for(var l in state.data[j].product[k].ingredients) {
+										for(var m in state.ingredients) {
+											if(state.data[j].product[k].ingredients[l].idIngredients === state.ingredients[m].idIngredients) {
+												state.ingredients[m].quantity -=  (action.data.data[i].quantity * state.data[j].product[k].ingredients[l].qty)
+											}
+										}
+										// state.data[j].product[k].ingredients[l].quantity -= action.data.data[i].quantity
+									}
+								} else {
+									for(var l in state.data[j].product[k].subProduct) {
+										if(state.data[j].product[k].subProduct[l].idSubProduct === action.data.data[i].idSubProduct) {
+											state.data[j].product[k].subProduct[l].quantity = state.data[j].product[k].subProduct[l].quantity - action.data.data[i].quantity
 										}
 									}
-									// state.data[j].product[k].ingredients[l].quantity -= action.data.data[i].quantity
 								}
 							}
 						}
@@ -544,6 +561,34 @@ const CategoryReducers = (state = initialState, action) => {
 				...state,
 				data: [...state.data],
 				ingredients: [...state.ingredients]
+			}
+
+		case 'LOGIN':
+			// AsyncStorage.setItem('@User', JSON.stringify(action.data))
+			return {
+				...state,
+				// process: false,
+				user: action.data
+			}
+
+		case 'LOGOUT':
+			// AsyncStorage.multiRemove(['@User', '@Data', '@Ingredients', '@Penjualan', '@Store', '@Users'],
+			// 	(err) => console.log(err))
+			// action.data.dispatch({
+			// 	key: null,
+			// 	type: 'Navigation/RESET',
+			// 	index: 0,
+			// 	actions: [{ type: 'Navigation/NAVIGATE', routeName: 'Login' }]
+			// })
+			return {
+				...state,
+				user: null
+			}
+
+		case 'SET_USER':
+			return {
+				...state,
+				user: action.data
 			}
 
 		default:

@@ -22,7 +22,10 @@ import {
 } from '../../components'
 
 import{
-	rupiah
+	makeId,
+	online,
+	rupiah,
+	server
 } from '../../modules'
 
 import { connect } from 'react-redux'
@@ -78,36 +81,64 @@ class ProductScreen extends React.Component {
 	*
 	*/
 	_addProduct() {
-		/*if(this.state.barcode == '' || this.state.barcode == null) {
-			Alert.alert(null, 'barcode product tidak valid')
-		} else*/ if(this.state.product == '' || this.state.product == null) {
-			Alert.alert(null, 'nama product tidak valid')
-		} else if(this.state.cost == '' || this.state.cost == null) {
-			Alert.alert(null, 'cost product tidak valid')
-		} else if(this.state.price == '' || this.state.price == null) {
-			Alert.alert(null, 'price product tidak valid')
-		} else if(this.state.quantity == '' || this.state.quantity == null) {
-			Alert.alert(null, 'quantity product tidak valid')
-		} else {
-			var data = {
-				idCategory: this.props.navigation.state.params.content.idCategory,
-				barcode: this.state.barcode,
-				name: this.state.product,
-				cost: Number(this.state.cost),
-				price: Number(this.state.price),
-				quantity: Number(this.state.quantity)
+		online(value => {
+			if(value) {
+				/*if(this.state.barcode == '' || this.state.barcode == null) {
+					Alert.alert(null, 'barcode product tidak valid')
+				} else*/ if(this.state.product == '' || this.state.product == null) {
+					Alert.alert(null, 'nama product tidak valid')
+				} else if(this.state.cost == '' || this.state.cost == null) {
+					Alert.alert(null, 'cost product tidak valid')
+				} else if(this.state.price == '' || this.state.price == null) {
+					Alert.alert(null, 'price product tidak valid')
+				} else if(this.state.quantity == '' || this.state.quantity == null) {
+					Alert.alert(null, 'quantity product tidak valid')
+				} else {
+					var data = {
+						idProduct: makeId(),
+						idCategory: this.props.navigation.state.params.content.idCategory,
+						barcode: this.state.barcode,
+						name: this.state.product,
+						cost: Number(this.state.cost),
+						price: Number(this.state.price),
+						quantity: Number(this.state.quantity)
+					}
+					/*
+					*
+					post to api
+					*
+					*/
+					fetch(server + '/inventory/addProduct', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.profile.token
+						},
+						body: JSON.stringify(data)
+					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchAddProduct(data)
+							this.props.dispatchBarcodeProduct(null)
+							this.setState({
+								barcode: null,
+								product: null,
+								cost: null,
+								price: null,
+								quantity: null
+							})
+						} else {
+							Alert.alert(null, res.headers.message)
+						}
+					})
+					.catch(err => console.log(err))
+					this._setModalVisible(false)
+				}
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-			this._setModalVisible(false)
-			this.props.dispatchAddProduct(data)
-			this.props.dispatchBarcodeProduct(null)
-			this.setState({
-				barcode: null,
-				product: null,
-				cost: null,
-				price: null,
-				quantity: null
-			})
-		}
+		})
 	}
 
 	__updateProduct(content) {
@@ -123,50 +154,117 @@ class ProductScreen extends React.Component {
 	}
 
 	_updateProduct() {
-		/*if(this.state.barcode == '' || this.state.barcode == null) {
-			Alert.alert(null, 'barcode product tidak valid')
-		} else*/ if(this.state.product == '' || this.state.product == null) {
-			Alert.alert(null, 'nama product tidak valid')
-		} else if(this.state.cost == '' || this.state.cost == null) {
-			Alert.alert(null, 'cost product tidak valid')
-		} else if(this.state.price == '' || this.state.price == null) {
-			Alert.alert(null, 'price product tidak valid')
-		} else if(this.state.quantity == '' || this.state.quantity == null) {
-			Alert.alert(null, 'quantity product tidak valid')
-		} else {
-			var data = {
-				idCategory: this.props.navigation.state.params.content.idCategory,
-				idProduct: this.state.idProduct,
-				barcode: this.state.barcode,
-				name: this.state.product,
-				cost: this.state.cost,
-				price: this.state.price,
-				quantity: this.state.quantity
+		online(value => {
+			if(value) {
+				/*if(this.state.barcode == '' || this.state.barcode == null) {
+					Alert.alert(null, 'barcode product tidak valid')
+				} else*/ if(this.state.product == '' || this.state.product == null) {
+					Alert.alert(null, 'nama product tidak valid')
+				} else if(this.state.cost == '' || this.state.cost == null) {
+					Alert.alert(null, 'cost product tidak valid')
+				} else if(this.state.price == '' || this.state.price == null) {
+					Alert.alert(null, 'price product tidak valid')
+				} else if(this.state.quantity == '' || this.state.quantity == null) {
+					Alert.alert(null, 'quantity product tidak valid')
+				} else {
+					var data = {
+						idCategory: this.props.navigation.state.params.content.idCategory,
+						idProduct: this.state.idProduct,
+						barcode: this.state.barcode,
+						name: this.state.product,
+						cost: this.state.cost,
+						price: this.state.price,
+						quantity: this.state.quantity
+					}
+					var postData = {
+						// idCategory: this.props.navigation.state.params.content.idCategory,
+						idProduct: this.state.idProduct,
+						barcode: this.state.barcode,
+						name: this.state.product,
+						cost: this.state.cost,
+						price: this.state.price,
+						quantity: this.state.quantity
+					}
+					/*
+					*
+					post to api
+					*
+					*/
+					fetch(server + '/inventory/updateProduct', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.profile.token
+						},
+						body: JSON.stringify(postData)
+					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchUpdateProduct(data)
+							this.props.dispatchBarcodeProduct(null)
+							this.setState({
+								idProduct: null,
+								barcode: null,
+								product: null,
+								cost: null,
+								price: null,
+								quantity: null
+							})
+						} else {
+							Alert.alert(null, res.headers.message)
+						}
+					})
+					.catch(err => console.log(err))
+					this._setModalVisible(false)
+				}
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-			this._setModalVisible(false)
-			this.props.dispatchUpdateProduct(data)
-			this.props.dispatchBarcodeProduct(null)
-			this.setState({
-				idProduct: null,
-				barcode: null,
-				product: null,
-				cost: null,
-				price: null,
-				quantity: null
-			})
-		}
+		})
+	}
+
+	__deleteProduct(data) {
+		/*
+		*
+		post to api
+		*
+		*/
+		fetch(server + '/inventory/deleteProduct', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchDeleteProduct(data)
+			} else {
+				Alert.alert(null, res.headers.message)
+			}
+		})
+		.catch(err => console.log(err))
 	}
 
 	_deleteProduct(content) {
-		var data = {
-			idCategory: this.props.navigation.state.params.content.idCategory,
-			idProduct: content.idProduct
-		}
-		Alert.alert(null, 'Anda yakin akan menghapus product '+ content.name,
-			[
-				{ text: 'Yakin', onPress: () => this.props.dispatchDeleteProduct(data) },
-				{ text: 'Batal' }
-			])
+		online(value => {
+			if(value) {
+				var data = {
+					idCategory: this.props.navigation.state.params.content.idCategory,
+					idProduct: content.idProduct
+				}
+				Alert.alert(null, 'Anda yakin akan menghapus product '+ content.name,
+					[
+						{ text: 'Yakin', onPress: () => this.__deleteProduct(data) },
+						{ text: 'Batal' }
+					])
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
+			}
+		})
 	}
 	/**/
 
@@ -176,38 +274,75 @@ class ProductScreen extends React.Component {
 	*
 	*/
 	_addSubProduct() {
-		/*if(this.state.barcode == '' || this.state.barcode == null) {
-			Alert.alert(null, 'barcode product tidak valid')
-		} else*/ if(this.state.product == '' || this.state.product == null) {
-			Alert.alert(null, 'nama product tidak valid')
-		} else if(this.state.cost == '' || this.state.cost == null) {
-			Alert.alert(null, 'cost product tidak valid')
-		} else if(this.state.price == '' || this.state.price == null) {
-			Alert.alert(null, 'price product tidak valid')
-		} else if(this.state.quantity == '' || this.state.quantity == null) {
-			Alert.alert(null, 'quantity product tidak valid')
-		} else {
-			var data = {
-				idCategory: this.props.navigation.state.params.content.idCategory,
-				idProduct: this.state.idProduct,
-				barcode: this.state.barcode,
-				name: this.state.product,
-				cost: Number(this.state.cost),
-				price: Number(this.state.price),
-				quantity: Number(this.state.quantity)
+		online(value => {
+			if(value) {
+				/*if(this.state.barcode == '' || this.state.barcode == null) {
+					Alert.alert(null, 'barcode product tidak valid')
+				} else*/ if(this.state.product == '' || this.state.product == null) {
+					Alert.alert(null, 'nama product tidak valid')
+				} else if(this.state.cost == '' || this.state.cost == null) {
+					Alert.alert(null, 'cost product tidak valid')
+				} else if(this.state.price == '' || this.state.price == null) {
+					Alert.alert(null, 'price product tidak valid')
+				} else if(this.state.quantity == '' || this.state.quantity == null) {
+					Alert.alert(null, 'quantity product tidak valid')
+				} else {
+					var data = {
+						idCategory: this.props.navigation.state.params.content.idCategory,
+						idProduct: this.state.idProduct,
+						idSubProduct: makeId(),
+						barcode: this.state.barcode,
+						name: this.state.product,
+						cost: Number(this.state.cost),
+						price: Number(this.state.price),
+						quantity: Number(this.state.quantity)
+					}
+					var postData = {
+						idProduct: this.state.idProduct,
+						idSubProduct: data.idSubProduct,
+						barcode: this.state.barcode,
+						name: this.state.product,
+						cost: Number(this.state.cost),
+						price: Number(this.state.price),
+						quantity: Number(this.state.quantity)
+					}
+					/*
+					*
+					post to api
+					*
+					*/
+					fetch(server + '/inventory/addSubProduct', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.profile.token
+						},
+						body: JSON.stringify(postData)
+					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchAddSubProduct(data)
+							this.props.dispatchBarcodeProduct(null)
+							this.setState({
+								idProduct: null,
+								barcode: null,
+								product: null,
+								cost: null,
+								price: null,
+								quantity: null
+							})
+						} else {
+							Alert.alert(null, res.headers.message)
+						}
+					})
+					.catch(err => console.log(err))
+					this._setSubProductModal(false)
+				}
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-			this._setSubProductModal(false)
-			this.props.dispatchAddSubProduct(data)
-			this.props.dispatchBarcodeProduct(null)
-			this.setState({
-				idProduct: null,
-				barcode: null,
-				product: null,
-				cost: null,
-				price: null,
-				quantity: null
-			})
-		}
+		})
 	}
 
 	__updateSubProduct(content, idProduct) {
@@ -223,53 +358,119 @@ class ProductScreen extends React.Component {
 	}
 
 	_updateSubProduct() {
-		/*if(this.state.barcode == '' || this.state.barcode == null) {
-			Alert.alert(null, 'barcode product tidak valid')
-		} else*/ if(this.state.product == '' || this.state.product == null) {
-			Alert.alert(null, 'nama product tidak valid')
-		} else if(this.state.cost == '' || this.state.cost == null) {
-			Alert.alert(null, 'cost product tidak valid')
-		} else if(this.state.price == '' || this.state.price == null) {
-			Alert.alert(null, 'price product tidak valid')
-		} else if(this.state.quantity == '' || this.state.quantity == null) {
-			Alert.alert(null, 'quantity product tidak valid')
-		} else {
-			var data = {
-				idCategory: this.props.navigation.state.params.content.idCategory,
-				idProduct: this.state.idProduct,
-				idSubProduct: this.state.idSubProduct,
-				barcode: this.state.barcode,
-				name: this.state.product,
-				cost: this.state.cost,
-				price: this.state.price,
-				quantity: this.state.quantity
+		online(value => {
+			if(value) {
+				/*if(this.state.barcode == '' || this.state.barcode == null) {
+					Alert.alert(null, 'barcode product tidak valid')
+				} else*/ if(this.state.product == '' || this.state.product == null) {
+					Alert.alert(null, 'nama product tidak valid')
+				} else if(this.state.cost == '' || this.state.cost == null) {
+					Alert.alert(null, 'cost product tidak valid')
+				} else if(this.state.price == '' || this.state.price == null) {
+					Alert.alert(null, 'price product tidak valid')
+				} else if(this.state.quantity == '' || this.state.quantity == null) {
+					Alert.alert(null, 'quantity product tidak valid')
+				} else {
+					var data = {
+						idCategory: this.props.navigation.state.params.content.idCategory,
+						idProduct: this.state.idProduct,
+						idSubProduct: this.state.idSubProduct,
+						barcode: this.state.barcode,
+						name: this.state.product,
+						cost: this.state.cost,
+						price: this.state.price,
+						quantity: this.state.quantity
+					}
+					var postData = {
+						idSubProduct: this.state.idSubProduct,
+						barcode: this.state.barcode,
+						name: this.state.product,
+						cost: this.state.cost,
+						price: this.state.price,
+						quantity: this.state.quantity
+					}
+					/*
+					*
+					post to api
+					*
+					*/
+					fetch(server + '/inventory/updateSubProduct', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.profile.token
+						},
+						body: JSON.stringify(postData)
+					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchUpdateSubProduct(data)
+							this.props.dispatchBarcodeProduct(null)
+							this.setState({
+								idProduct: null,
+								idSubProduct: null,
+								barcode: null,
+								product: null,
+								cost: null,
+								price: null,
+								quantity: null
+							})
+						} else {
+							Alert.alert(null, res.headers.message)
+						}
+					})
+					.catch(err => console.log(err))
+					this._setSubProductModal(false)
+				}
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-			this._setSubProductModal(false)
-			this.props.dispatchUpdateSubProduct(data)
-			this.props.dispatchBarcodeProduct(null)
-			this.setState({
-				idProduct: null,
-				idSubProduct: null,
-				barcode: null,
-				product: null,
-				cost: null,
-				price: null,
-				quantity: null
-			})
-		}
+		})
+	}
+
+	__deleteSubProduct(data){
+		/*
+		*
+		post to api
+		*
+		*/
+		fetch(server + '/inventory/deleteSubProduct', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchDeleteSubProduct(data)
+			} else {
+				Alert.alert(null, res.headers.message)
+			}
+		})
+		.catch(err => console.log(err))
 	}
 
 	_deleteSubProduct(content, idProduct) {
-		var data = {
-			idCategory: this.props.navigation.state.params.content.idCategory,
-			idProduct: idProduct,
-			idSubProduct: content.idSubProduct
-		}
-		Alert.alert(null, 'Anda yakin akan menghapus sub-product '+ content.name,
-			[
-				{ text: 'Yakin', onPress: () => this.props.dispatchDeleteSubProduct(data) },
-				{ text: 'Batal' }
-			])
+		online(value => {
+			if(value) {
+				var data = {
+					idCategory: this.props.navigation.state.params.content.idCategory,
+					idProduct: idProduct,
+					idSubProduct: content.idSubProduct
+				}
+				Alert.alert(null, 'Anda yakin akan menghapus sub-product '+ content.name,
+					[
+						{ text: 'Yakin', onPress: () => this.__deleteSubProduct(data) },
+						{ text: 'Batal' }
+					])
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
+			}
+		})
 	}
 	/**/
 
@@ -333,10 +534,10 @@ class ProductScreen extends React.Component {
 											<Text> Produk </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Biaya </Text>
+											<Text> Harga Pokok </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Harga </Text>
+											<Text> Harga Jual </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
 											<Text> Kuantitas </Text>
@@ -374,7 +575,7 @@ class ProductScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
-												placeholder = 'Biaya'
+												placeholder = 'Harga Pokok'
 												value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
 										</View>
 
@@ -391,7 +592,7 @@ class ProductScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
-												placeholder = 'Harga'
+												placeholder = 'Harga Jual'
 												value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
 										</View>
 
@@ -492,10 +693,10 @@ class ProductScreen extends React.Component {
 											<Text> Sub-Produk </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Biaya </Text>
+											<Text> Harga Pokok </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Harga </Text>
+											<Text> Harga Jual </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
 											<Text> Kuantitas </Text>
@@ -533,7 +734,7 @@ class ProductScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
-												placeholder = 'Biaya'
+												placeholder = 'Harga Pokok'
 												value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
 										</View>
 
@@ -550,7 +751,7 @@ class ProductScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
-												placeholder = 'Harga'
+												placeholder = 'Harga Jual'
 												value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
 										</View>
 
@@ -628,8 +829,8 @@ class ProductScreen extends React.Component {
 													<View style = {{ flexDirection: 'row' }}>
 														<View style = {{ flexDirection: 'column' }}>
 															<Text> Stok </Text>
-															<Text> Biaya </Text>
-															<Text> Harga </Text>
+															<Text> Harga Pokok </Text>
+															<Text> Harga Jual </Text>
 														</View>
 
 														<View style = {{ flexDirection: 'column' }}>
@@ -692,8 +893,8 @@ class ProductScreen extends React.Component {
 														<View style = {{ flexDirection: 'row' }}>
 															<View style = {{ flexDirection: 'column' }}>
 																<Text> Stok </Text>
-																<Text> Biaya </Text>
-																<Text> Harga </Text>
+																<Text> Harga Pokok </Text>
+																<Text> Harga Jual </Text>
 															</View>
 
 															<View style = {{ flexDirection: 'column' }}>
@@ -986,6 +1187,7 @@ function mapStateToProps (state) {
 	return {
 		barcode: state.category.barcode,
 		category: state.category.data,
+		profile: state.user.data
 	}
 }
 

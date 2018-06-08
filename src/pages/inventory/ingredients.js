@@ -21,7 +21,8 @@ import {
 } from '../../components'
 
 import{
-	rupiah
+	rupiah,
+	server
 } from '../../modules'
 
 import { connect } from 'react-redux'
@@ -272,6 +273,36 @@ class IngredientsScreen extends React.Component {
 	}
 	/**/
 
+	__spliceIngredients(data) {
+		var postData = {
+			idIngredients: data.idIngredients,
+			idProduct: data.idProduct,
+			idSubProduct: null
+		}
+		/*
+		*
+		post to api
+		*
+		*/
+		fetch(server + '/inventory/deleteBahanBaku', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			},
+			body: JSON.stringify(postData)
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchSpliceIngredients(data)
+			} else {
+				Alert.alert(null, res.headers.message)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
 	_spliceIngredients(idCategory, idProduct, ingredients) {
 		var data = {
 			idCategory: idCategory,
@@ -280,7 +311,7 @@ class IngredientsScreen extends React.Component {
 		}
 		Alert.alert(null, 'Anda yakin akan menghapus bahan baku ' + ingredients.name,
 			[
-				{ text: 'Yakin', onPress: () => this.props.dispatchSpliceIngredients(data) },
+				{ text: 'Yakin', onPress: () => this.__spliceIngredients(data) },
 				{ text: 'Batal' }
 			])
 	}
@@ -353,10 +384,10 @@ class IngredientsScreen extends React.Component {
 											<Text> Produk </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Biaya </Text>
+											<Text> Harga Pokok </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Harga </Text>
+											<Text> Harga Jual </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
 											<Text> Kuantitas </Text>
@@ -392,7 +423,7 @@ class IngredientsScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
-												placeholder = 'Biaya'
+												placeholder = 'Harga Pokok'
 												value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
 										</View>
 
@@ -408,7 +439,7 @@ class IngredientsScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
-												placeholder = 'Harga'
+												placeholder = 'Harga Jual'
 												value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
 										</View>
 
@@ -506,10 +537,10 @@ class IngredientsScreen extends React.Component {
 											<Text> Sub-Produk </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Biaya </Text>
+											<Text> Harga Pokok </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
-											<Text> Harga </Text>
+											<Text> Harga Jual </Text>
 										</View>
 										<View style = {{ height: 50, justifyContent: 'center' }}>
 											<Text> Kuantitas </Text>
@@ -545,7 +576,7 @@ class IngredientsScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ cost: text })}
 												onSubmitEditing = { () => this._price.focus() }
-												placeholder = 'Biaya'
+												placeholder = 'Harga Pokok'
 												value = { this.state.cost == null ? this.state.cost : this.state.cost.toString() }/>
 										</View>
 
@@ -561,7 +592,7 @@ class IngredientsScreen extends React.Component {
 												returnKeyType = 'next'
 												onChangeText = { (text) => this.setState({ price: text })}
 												onSubmitEditing = { () => this._quantity.focus() }
-												placeholder = 'Harga'
+												placeholder = 'Harga Jual'
 												value = { this.state.price == null ? this.state.price : this.state.price.toString() }/>
 										</View>
 
@@ -663,8 +694,8 @@ class IngredientsScreen extends React.Component {
 																		<View style = {{ flexDirection: 'row' }}>
 																			<View style = {{ flexDirection: 'column' }}>
 																				<Text> Stok </Text>
-																				<Text> Biaya </Text>
-																				<Text> Harga </Text>
+																				<Text> Harga Pokok </Text>
+																				<Text> Harga Jual </Text>
 																			</View>
 
 																			<View style = {{ flexDirection: 'column' }}>
@@ -733,7 +764,7 @@ class IngredientsScreen extends React.Component {
 																							<View style = {{ flexDirection: 'row' }}>
 																								<View style = {{ flexDirection: 'column' }}>
 																									<Text> Stok </Text>
-																									<Text> Biaya </Text>
+																									<Text> Harga Pokok </Text>
 																									<Text> Kuantitas </Text>
 																								</View>
 
@@ -882,7 +913,8 @@ function mapStateToProps (state) {
 	return {
 		barcode: state.category.barcode,
 		category: state.category.data,
-		ingredients: state.category.ingredients
+		ingredients: state.category.ingredients,
+		profile: state.user.data
 	}
 }
 

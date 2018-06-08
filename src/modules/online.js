@@ -1,9 +1,9 @@
 import { NetInfo } from 'react-native'
 
 
-var online = (callback) => {
+var online = (cb) => {
 	NetInfo.isConnected.fetch().then(isConnected => {
-		return callback(isConnected)
+		return cb(isConnected)
 	})
 }
 

@@ -26,9 +26,16 @@ import {
 import {
 	Button,
 	ButtonIcons,
+	Online,
 	MyModal,
 	Touchable
 } from '../../components'
+
+import {
+	makeId,
+	online,
+	server
+} from '../../modules'
 
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
@@ -38,15 +45,15 @@ class InventoryScreen extends React.Component {
 		headerStyle: {
 			backgroundColor: '#6ecbe0'
 		},
-		headerLeft: (
+		/*headerLeft: (
 			<ButtonIcons
-				onPress = { () => { navigation.navigate('DrawerOpen') }}
-				name = 'md-menu'
-				color = 'white'
-				size = { 30 }/>
-		),
+				onPress={() => {navigation.navigate('DrawerOpen')}}
+				name='md-menu'
+				color='white'
+				size={30}/>
+		),*/
 		headerRight: (
-			<View style = {{ width: 20, height: 20, borderRadius: 10, borderWidth: 0.5, borderColor: '#ccc', marginRight: 10, backgroundColor: navigation.state.params ? navigation.state.params.connection ? 'green' : 'red' : 'red' }}/>
+			<Online/>
 		)
 	})
 
@@ -55,29 +62,59 @@ class InventoryScreen extends React.Component {
 		modalVisible: false,
 
 		idCategory: null,
-		category: null,
-
-		connection: null
+		category: null
 	}
 
 	_addCategory() {
-		if(this.state.connection) {
-			if(this.state.category == '' || this.state.category == null) {
-				Alert.alert(null, 'nama category tidak valid')
-			} else {
-				var data = {
-					idCabang: this.props.profile.idCabang,
-					name: this.state.category
+		online(value => {
+			if(value) {
+				if(this.state.category == '' || this.state.category == null) {
+					Alert.alert(null, 'nama category tidak valid')
+				} else {
+					var data = {
+						/*
+						*
+						offline
+						idCabang diganti dengan imei device
+						*
+						*/
+						idCategory: makeId(),
+						idPusat: this.props.profile.idPusat,
+						idCabang: this.props.profile.idCabang,
+						// idCabang: this.props.device.imei,
+						name: this.state.category
+					}
+					/*
+					*
+					post to api
+					*
+					*/
+					fetch(server + '/inventory/addCategory', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.profile.token
+						},
+						body: JSON.stringify(data)
+					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchAddCategory(data)
+						} else {
+							Alert.alert(null, res.headers.message)
+						}
+						this.setState({
+							category: null
+						})
+						this._setModalVisible(false)
+					})
+					.catch(err => console.log(err))
 				}
-				this._setModalVisible(false)
-				this.props.dispatchAddCategory(data)
-				this.setState({
-					category: null
-				})
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-		} else {
-			Alert.alert(null, 'koneksi internet bermasalah')
-		}
+		})
 	}
 
 	__updateCategory(content) {
@@ -89,39 +126,89 @@ class InventoryScreen extends React.Component {
 	}
 
 	_updateCategory() {
-		if(this.state.connection) {
-			if(this.state.category == '' || this.state.category == null) {
-				Alert.alert(null, 'nama category tidak valid')
-			} else {
-				var data = {
-					idCategory: this.state.idCategory,
-					name: this.state.category
+		online(value => {
+			if(value) {
+				if(this.state.category == '' || this.state.category == null) {
+					Alert.alert(null, 'nama category tidak valid')
+				} else {
+					var data = {
+						idCategory: this.state.idCategory,
+						name: this.state.category
+					}
+					/*
+					*
+					post to api
+					*
+					*/
+					fetch(server + '/inventory/updateCategory', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.profile.token
+						},
+						body: JSON.stringify(data)
+					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchUpdateCategory(data)
+						} else {
+							Alert.alert(null, res.headers.message)
+						}
+						this.setState({
+							idCategory: null,
+							category: null
+						})
+						this._setModalVisible(false)
+					})
+					.catch(err => console.log(err))
 				}
-				this._setModalVisible(false)
-				this.props.dispatchUpdateCategory(data)
-				this.setState({
-					idCategory: null,
-					category: null
-				})
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-		} else {
-			Alert.alert(null, 'koneksi internet bermasalah')
-		}
+		})
+	}
+
+	__deleteCategory(data) {
+		/*
+		*
+		post to api
+		*
+		*/
+		fetch(server + '/inventory/deleteCategory', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchDeleteCategory(data)
+			} else {
+				Alert.alert(null, res.headers.message)
+			}
+		})
+		.catch(err => console.log(err))
 	}
 
 	_deleteCategory(content) {
-		if(this.state.connection) {
-			var data = {
-				idCategory: content.idCategory
+		online(value => {
+			if(value) {
+				var data = {
+					idCategory: content.idCategory
+				}
+				Alert.alert(null, 'Anda yakin akan menghapus kategori '+ content.name,
+					[
+						{ text: 'Yakin', onPress: () => this.__deleteCategory(data) },
+						{ text: 'Batal' }
+					])
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
 			}
-			Alert.alert(null, 'Anda yakin akan menghapus kategori '+ content.name,
-				[
-					{ text: 'Yakin', onPress: () => this.props.dispatchDeleteCategory(data) },
-					{ text: 'Batal' }
-				])
-		} else {
-			Alert.alert(null, 'koneksi internet bermasalah')
-		}
+		})
 	}
 
 	render() {
@@ -181,8 +268,13 @@ class InventoryScreen extends React.Component {
 					enableEmptySections = {true}
 					renderRow = {(content, section, row) =>
 					<View>
-						{this.props.profile ?
-							content.idCabang === this.props.profile.idCabang ?
+						{	/*
+							*
+							offline
+							*
+							*/
+						/*this.props.profile ?
+							content.idCabang === this.props.profile.idCabang ?*/
 								<View style = { styles.category }>
 									<Touchable
 										style = {{ justifyContent: 'center' }}
@@ -208,10 +300,10 @@ class InventoryScreen extends React.Component {
 										color = 'grey'
 										size = { 20 }/>
 								</View>
-								:
+								/*:
 								null
 							:
-							null
+							null*/
 						}
 					</View>
 				}/>
@@ -282,16 +374,16 @@ class InventoryScreen extends React.Component {
 				// </ScrollView>
 				}
 
-				<View style = {{height: 90 }}/>
+				<View style={{height: 90 }}/>
 
 				{this.state.keyboard ?
 					null
 					:
-					<View style = { styles.stickyBottom }>
-						<View style = {{ marginBottom: 5 }}>
+					<View style={styles.stickyBottom}>
+						<View style={{marginBottom: 5}}>
 							<Button
-								onPress = { () => this.props.navigation.navigate('Ingredients') }
-								name = 'BAHAN BAKU'/>
+								onPress={() => this.props.navigation.navigate('Ingredients')}
+								name='BAHAN BAKU'/>
 						</View>
 
 						<View>
@@ -331,37 +423,12 @@ class InventoryScreen extends React.Component {
 		})
 	}
 
-	handleFirstConnectivityChange(isConnected) {
-		this.setState({connection: isConnected})
-
-		this.props.navigation.setParams({
-			connection: isConnected
-		})
-
-		NetInfo.isConnected.removeEventListener(
-			'connectionChange',
-			this.handleFirstConnectivityChange
-		)
-	}
-
 	componentWillMount() {
 		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this))
 		this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this))
 	}
 
 	componentDidMount() {
-		/*NetInfo.isConnected.fetch().then(isConnected => {
-			this.setState({connection: isConnected})
-
-			this.props.navigation.setParams({
-				connection: isConnected
-			})
-		})
-		
-		NetInfo.isConnected.addEventListener(
-			'connectionChange',
-			this.handleFirstConnectivityChange
-		)*/
 	}
 
 	componentWillUnmount() {
@@ -406,6 +473,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps (state) {
 	return {
+		device: state.user.device,
 		category: state.category.data,
 		profile: state.user.data
 	}
