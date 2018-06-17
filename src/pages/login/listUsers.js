@@ -9,9 +9,18 @@ import {
 import { connect } from 'react-redux'
 
 import {
+	localStorageUsers
+} from '../../redux/actions'
+
+import {
 	Button,
 	ButtonIcons
 } from '../../components'
+
+import {
+	online,
+	server
+} from '../../modules'
 
 
 class ListUsersScreen extends React.Component {
@@ -20,12 +29,75 @@ class ListUsersScreen extends React.Component {
 	})
 
 	_updateUser(content) {
-		console.log('===', content)
 		this.props.navigation.navigate('Register', {type: 'Edit User', content: content})
 	}
 
 	_deleteUser(content) {
-		Alert.alert(null, 'Anda yakin user ' + content.name + ' akan dihapus?')
+		online(value => {
+			if(value) {
+				Alert.alert(null, 'Anda yakin user ' + content.name + ' akan dihapus?',
+					[{text: 'OK', onPress: () => this.__deleteUser(content)},
+					{text: 'Cancel'}])
+			} else {
+				Alert.alert(null, 'koneksi internet bermasalah')
+			}
+		})
+	}
+
+	__deleteUser(content) {
+		/*
+		*
+		post to api
+		*
+		*/
+		fetch(server + '/users/deleteUser', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				token: this.props.profile.token
+			},
+			body: JSON.stringify({
+				idUser: content.idUser,
+				idPusat: content.idPusat,
+				idCabang: content.idCabang
+			})
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				/*
+				*
+				success
+				*
+				*/
+				Alert.alert(null, res.headers.message,
+					[{ text: 'OK', onPress: () => this._listUser() }])
+			} else {
+				/*
+				*
+				failed
+				*
+				*/
+				Alert.alert(null, res.headers.message)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_listUser() {
+		fetch(server + '/users', {
+			method: 'GET',
+			headers: {
+				token: this.props.profile.token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageUsers({users: res.data})
+			}
+		})
+		.catch(err => console.log(err))
 	}
 
 	render() {
@@ -106,13 +178,14 @@ const styles = StyleSheet.create({
 function mapStateToProps (state) {
 	return {
 		users: state.user.users,
+		profile: state.user.data,
 		// store: state.user.sotre
 	}
 }
 
 function mapDispatchToProps (dispatch) {
 	return {
-		
+		dispatchLocalStorageUsers: (data) => dispatch(localStorageUsers(data))
 	}
 }
 
