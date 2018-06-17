@@ -18,11 +18,21 @@ for(var i = 2018; i <= new Date().getFullYear() + 1; i++) {
 	tahun.push(i.toString())
 }
 
+var choose = []
+
+for(var i in tahun) {
+	for(var j in bulan) {
+		choose.push(bulan[j] + ' ' + tahun[i])
+	}
+}
+
 
 class LabaRugi extends React.Component {
 	state = {
 		bulan: null,
-		tahun: null
+		tahun: null,
+		from: null,
+		to: null
 	}
 	
 	_bulan(bulan) {
@@ -33,6 +43,14 @@ class LabaRugi extends React.Component {
 	_tahun(tahun) {
 		this.setState({tahun: tahun})
 		this.find(this.state.bulan, tahun)
+	}
+
+	_from(from) {
+		this.setState({from: from})
+	}
+
+	_to(to) {
+		this.setState({to: to})
 	}
 
 	find(bulan, tahun) {
@@ -48,7 +66,7 @@ class LabaRugi extends React.Component {
 
 	render() {
 		return (
-			<View style={{flex: 1, padding: 5, backgroundColor: 'white'}}>
+			<View style={{flex: 1, backgroundColor: 'white'}}>
 				<View style={{flexDirection: 'row'}}>
 					<View style={{flex: 1}}>
 						<Picker
@@ -78,8 +96,39 @@ class LabaRugi extends React.Component {
 						</Picker>
 					</View>
 				</View>
+				{/*<View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5}}>
+					<Text style={{fontSize: 10}}>Dari</Text>
+					<View style={{flex: 1}}>
+						<Picker
+							mode = 'dropdown'
+							selectedValue = { this.state.from }
+							onValueChange = { this._from.bind(this) }>
+							<Picker.Item label = 'Select' value = {null} />
+							{choose.map((content, index) => {
+								return (
+									<Picker.Item key={index} label = {content} value = {index} />
+								)
+							})}
+						</Picker>
+					</View>
 
-				<View style={{flex: 1}}>
+					<Text style={{fontSize: 10}}>Hingga</Text>
+					<View style={{flex: 1}}>
+						<Picker
+							mode = 'dropdown'
+							selectedValue = { this.state.to }
+							onValueChange = { this._to.bind(this) }>
+							<Picker.Item label = 'Select' value = {null} />
+							{choose.map((content, index) => {
+								return (
+									<Picker.Item key={index} label = {content} value = {content} />
+								)
+							})}
+						</Picker>
+					</View>
+				</View>*/}
+
+				<View style={{flex: 1, padding: 5}}>
 					<View style={{flex: 1, flexDirection: 'row'}}>
 						<View style={{flex: 1, justifyContent: 'center'}}>
 							<Text>Penjualan</Text>

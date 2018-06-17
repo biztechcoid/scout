@@ -923,12 +923,12 @@ class RegisterScreen extends React.Component {
 				ket: ket,
 
 				access: {
-					persediaan: this.props.navigation.state.params.content.access.persediaan,
-					penjualan: this.props.navigation.state.params.content.access.penjualan,
-					pengeluaran: this.props.navigation.state.params.content.access.pengeluaran,
-					perpajakan: this.props.navigation.state.params.content.access.perpajakan,
-					laporan: this.props.navigation.state.params.content.access.laporan,
-					pengaturan: this.props.navigation.state.params.content.access.pengaturan
+					persediaan: this.props.navigation.state.params.content.access.persediaan == 'true' ? true : false,
+					penjualan: this.props.navigation.state.params.content.access.penjualan == 'true' ? true : false,
+					pengeluaran: this.props.navigation.state.params.content.access.pengeluaran == 'true' ? true : false,
+					perpajakan: this.props.navigation.state.params.content.access.perpajakan == 'true' ? true : false,
+					laporan: this.props.navigation.state.params.content.access.laporan == 'true' ? true : false,
+					pengaturan: this.props.navigation.state.params.content.access.pengaturan == 'true' ? true : false
 				}
 			})
 		}

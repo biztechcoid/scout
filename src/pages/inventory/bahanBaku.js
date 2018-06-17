@@ -99,6 +99,7 @@ class BahanBakuScreen extends React.Component {
 							var postData = {
 								idIngredients: data.idIngredients,
 								idPusat: this.props.profile.idPusat,
+								idCabang: this.props.profile.idCabang,
 								barcode: data.barcode,
 								name: data.name,
 								cost: data.cost,
