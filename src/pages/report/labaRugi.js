@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+	Alert,
 	View,
 	Picker,
 	Text
@@ -49,20 +50,28 @@ class LabaRugi extends React.Component {
 		this.find(this.state.bulan, tahun)
 	}
 
-	_from(from) {
-		this.setState({from: from})
+	_from(value) {
+		if(value > this.state.to) {
+			return Alert.alert(null, 'data tidak valid')
+		}
+		this.setState({from: value})
+		this.find(choose[value], choose[this.state.to])
 	}
 
-	_to(to) {
-		this.setState({to: to})
+	_to(value) {
+		if(this.state.from > value) {
+			return Alert.alert(null, 'data tidak valid')
+		}
+		this.setState({to: value})
+		this.find(choose[this.state.from], choose[value])
 	}
 
-	find(bulan, tahun) {
-		if(bulan != undefined && tahun != undefined) {
+	find(_from, _to) {
+		if(_from != undefined && _to != undefined) {
 			var data = {
 				category: this.props.category,
-				bulan: bulan,
-				tahun: tahun
+				from: _from,
+				to: _to
 			}
 			this.props.dispatchLabaRugi(data)
 		}
@@ -111,7 +120,7 @@ class LabaRugi extends React.Component {
 							<Picker.Item label = 'Select' value = {null} />
 							{choose.map((content, index) => {
 								return (
-									<Picker.Item key={index} label = {content} value = {index} />
+									<Picker.Item key={index} label={content} value={index} />
 								)
 							})}
 						</Picker>
@@ -126,7 +135,7 @@ class LabaRugi extends React.Component {
 							<Picker.Item label = 'Select' value = {null} />
 							{choose.map((content, index) => {
 								return (
-									<Picker.Item key={index} label = {content} value = {content} />
+									<Picker.Item key={index} label={content} value={index} />
 								)
 							})}
 						</Picker>

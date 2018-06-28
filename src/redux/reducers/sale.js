@@ -28,6 +28,22 @@ data: [
 ]
 */
 
+var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+
+var tahun = []
+
+for(var i = 2018; i <= new Date().getFullYear() + 1; i++) {
+	tahun.push(i.toString())
+}
+
+var choose = []
+
+for(var i in tahun) {
+	for(var j in bulan) {
+		choose.push(bulan[j] + ' ' + tahun[i])
+	}
+}
+
 const initialState = {
 	data: [],
 	options: 'daily',
@@ -470,7 +486,8 @@ const SaleReducers = (state = initialState, action) => {
 				hargaPokok = 0
 			for(var a in state.data) {
 				var date = new Date(state.data[a].date)
-				console.log(action.data.bulan, new Date(date).getMonth().toString())
+				console.log('==', action.data)
+				console.log(action.data.bulan, new Date(date).getMonth(), new Date(date).getFullYear())
 				if(action.data.bulan + '_' + action.data.tahun === new Date(date).getMonth().toString() + '_' + new Date(date).getFullYear()) {
 					penjualan = penjualan + state.data[a].total
 					state.labarugi.penjualan = penjualan
