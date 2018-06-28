@@ -622,13 +622,14 @@ class ProductScreen extends React.Component {
 						<View style = { styles.stickyBottom }>
 							<View style = { styles.row }>
 								<Button
-									onPress = { () => this.setState({ idProduct: null,
+									color='#94abb6'
+									onPress = { () => {this.setState({ idProduct: null,
 										barcode: null,
 										product: null,
 										cost: null,
 										price: null,
-										quantity: null })}
-									name = 'Hapus'/>
+										quantity: null }); this._setModalVisible(false)}}
+									name = 'Batal'/>
 								<Text>&nbsp;</Text>
 
 								{this.state.idProduct == null ?
@@ -781,13 +782,14 @@ class ProductScreen extends React.Component {
 						<View style = { styles.stickyBottom }>
 							<View style = { styles.row }>
 								<Button
-									onPress = { () => this.setState({ idProduct: null,
+									color='#94abb6'
+									onPress = { () => {this.setState({ idProduct: null,
 										barcode: null,
 										product: null,
 										cost: null,
 										price: null,
-										quantity: null })}
-									name = 'Hapus'/>
+										quantity: null }); this._setSubProductModal(false)}}
+									name = 'Batal'/>
 								<Text>&nbsp;</Text>
 
 								{this.state.idSubProduct == null ?

@@ -10,6 +10,10 @@ import {
 	labaRugi
 } from '../../redux/actions'
 
+import {
+	rupiah
+} from '../../modules'
+
 var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 
 var tahun = []
@@ -96,7 +100,8 @@ class LabaRugi extends React.Component {
 						</Picker>
 					</View>
 				</View>
-				{/*<View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5}}>
+				
+				{<View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5}}>
 					<Text style={{fontSize: 10}}>Dari</Text>
 					<View style={{flex: 1}}>
 						<Picker
@@ -126,7 +131,7 @@ class LabaRugi extends React.Component {
 							})}
 						</Picker>
 					</View>
-				</View>*/}
+				</View>}
 
 				<View style={{flex: 1, padding: 5}}>
 					<View style={{flex: 1, flexDirection: 'row'}}>
@@ -135,7 +140,7 @@ class LabaRugi extends React.Component {
 						</View>
 
 						<View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center'}}>
-							<Text>{this.props.labarugi.penjualan}</Text>
+							<Text>{rupiah(this.props.labarugi.penjualan)}</Text>
 						</View>
 					</View>
 
@@ -145,7 +150,7 @@ class LabaRugi extends React.Component {
 						</View>
 
 						<View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center', borderBottomWidth: 0.5}}>
-							<Text style={{color: 'red'}}>({this.props.labarugi.hargaPokok})</Text>
+							<Text style={{color: 'red'}}>({rupiah(this.props.labarugi.hargaPokok)})</Text>
 						</View>
 					</View>
 
@@ -155,7 +160,7 @@ class LabaRugi extends React.Component {
 						</View>
 
 						<View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center'}}>
-							<Text>{Number(this.props.labarugi.penjualan) - Number(this.props.labarugi.hargaPokok)}</Text>
+							<Text>{rupiah(Number(this.props.labarugi.penjualan) - Number(this.props.labarugi.hargaPokok))}</Text>
 						</View>
 					</View>
 
@@ -168,13 +173,13 @@ class LabaRugi extends React.Component {
 							<Text style={{color: 'red'}}>
 								({
 									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-										0
+										rupiah(0)
 										:
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah) +
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa) +
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik) +
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi) +
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain)
+										rupiah(Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah) +
+																				Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa) +
+																				Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik) +
+																				Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi) +
+																				Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain))
 								})
 							</Text>
 						</View>
@@ -188,15 +193,15 @@ class LabaRugi extends React.Component {
 						<View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center'}}>
 							<Text style={{color: this.props.labarugi.penjualan - this.props.labarugi.hargaPokok > 0 ? null : 'red'}}>
 								{
-									Number(this.props.labarugi.penjualan - this.props.labarugi.hargaPokok) -
-									(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-										0
-										:
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah) +
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa) +
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik) +
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi) +
-										Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain))
+									rupiah(Number(this.props.labarugi.penjualan - this.props.labarugi.hargaPokok) -
+																		(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
+																			0
+																			:
+																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah) +
+																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa) +
+																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik) +
+																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi) +
+																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain)))
 								}
 							</Text>
 						</View>

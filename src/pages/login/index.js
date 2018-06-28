@@ -284,7 +284,7 @@ class LoginScreen extends React.Component {
 
 					<View style = {{ flex: 1 }}>
 						<Button
-						    color= '#f08519'
+						  color= '#f08519'
 							onPress = { this._login.bind(this) }
 							name = 'MASUK' />
 					</View>

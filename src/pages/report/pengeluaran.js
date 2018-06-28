@@ -6,6 +6,10 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 
+import {
+	rupiah
+} from '../../modules'
+
 var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
 
 var tahun = []
@@ -80,9 +84,9 @@ class Pengeluaran extends React.Component {
 							<Text>
 								{
 									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-									0
+									rupiah(0)
 									:
-									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah
+									rupiah(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah)
 								}
 							</Text>
 						</View>
@@ -97,9 +101,9 @@ class Pengeluaran extends React.Component {
 							<Text>
 								{
 									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-									0
+									rupiah(0)
 									:
-									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa
+									rupiah(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa)
 								}
 							</Text>
 						</View>
@@ -114,9 +118,9 @@ class Pengeluaran extends React.Component {
 							<Text>
 								{
 									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-									0
+									rupiah(0)
 									:
-									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik
+									rupiah(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik)
 								}
 							</Text>
 						</View>
@@ -131,9 +135,9 @@ class Pengeluaran extends React.Component {
 							<Text>
 								{
 									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-									0
+									rupiah(0)
 									:
-									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi
+									rupiah(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi)
 								}
 							</Text>
 						</View>
@@ -148,9 +152,9 @@ class Pengeluaran extends React.Component {
 							<Text>
 								{
 									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-									0
+									rupiah(0)
 									:
-									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain
+									rupiah(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain)
 								}
 							</Text>
 						</View>
@@ -165,13 +169,13 @@ class Pengeluaran extends React.Component {
 							<Text>
 								{
 									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-									0
+									rupiah(0)
 									:
-									Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah) +
-									Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa) +
-									Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik) +
-									Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi) +
-									Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain)
+									rupiah(Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah) +
+																		Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa) +
+																		Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik) +
+																		Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi) +
+																		Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain))
 								}
 							</Text>
 						</View>

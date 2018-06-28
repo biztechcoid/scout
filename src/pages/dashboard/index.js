@@ -310,7 +310,7 @@ class InventoryScreen extends React.Component {
 						if(index%2 === 0) {
 							return (
 								<View key={index} style={{flex: 1, flexDirection: 'row'}}>
-									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 5, backgroundColor: '#6ecbe0'}}>
+									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 10, backgroundColor: '#6ecbe0'}}>
 										<Touchable
 											style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 30}}
 											onPress={() => this.props.profile.access[menu[index].access.toLowerCase()] === 'true' ?
@@ -326,7 +326,7 @@ class InventoryScreen extends React.Component {
 										</Touchable>
 									</View>
 
-									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 5, backgroundColor: '#6ecbe0'}}>
+									<View style={{flex: 1, borderWidth: 2, borderRadius: 10, borderColor: 'orange', margin: 10, backgroundColor: '#6ecbe0'}}>
 										<Touchable
 											style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 30}}
 											onPress={() => this.props.profile.access[menu[index + 1].access.toLowerCase()] === 'true' ?
@@ -357,14 +357,14 @@ class InventoryScreen extends React.Component {
 							<Touchable
 								onPress={() => {}}>
 							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-								<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+								<View style={{flex: 0.5, justifyContent: 'center', alignItems: 'center'}}>
 									<Ionicons
 										name='ios-book'
 										size={25}
 										color='red'/>
 								</View>
 
-								<View  style={{flex: 5, justifyContent: 'center'}}>
+								<View  style={{flex: 6, justifyContent: 'center'}}>
 									<Text>Text</Text>
 								</View>
 							</View>
@@ -375,14 +375,14 @@ class InventoryScreen extends React.Component {
 							<Touchable
 								onPress={() => {}}>
 							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-								<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+								<View style={{flex: 0.5, justifyContent: 'center', alignItems: 'center'}}>
 									<Ionicons
 										name='logo-youtube'
 										size={ 25 }
 										color='red'/>
 								</View>
 
-								<View  style={{flex: 5, justifyContent: 'center'}}>
+								<View  style={{flex: 6, justifyContent: 'center'}}>
 									<Text>Video</Text>
 								</View>
 							</View>

@@ -66,6 +66,7 @@ class InventoryScreen extends React.Component {
 	}
 
 	_addCategory() {
+		try {
 		online(value => {
 			if(value) {
 				if(this.state.category == '' || this.state.category == null) {
@@ -115,6 +116,7 @@ class InventoryScreen extends React.Component {
 				Alert.alert(null, 'koneksi internet bermasalah')
 			}
 		})
+		} catch(err) {console.log(err)}
 	}
 
 	__updateCategory(content) {
@@ -215,11 +217,11 @@ class InventoryScreen extends React.Component {
 		return(
 			<View style = { styles.container }>
 				<MyModal
-					top = {this.state.keyboard ? 0 : 0.5}
+					top = {0.5}
 					left = {0.5}
 					visible = { this.state.modalVisible }
 					onRequestClose = { this._setModalVisible.bind(this, false) }>
-					<View style = {{ flex: 1, width: width - 20, height: height / 4, padding: 15, borderRadius: 5, backgroundColor: 'white' }}>
+					<View style = {{ flex: 1, width: width - 20, height: height - 100, padding: 5, borderRadius: 5, backgroundColor: 'white' }}>
 						<View style = { styles.content }>
 							<View style = {{ padding: 5, alignItems: 'center', justifyContent: 'center' }}>
 								{this.state.idCategory == null ?
@@ -241,12 +243,12 @@ class InventoryScreen extends React.Component {
 							</View>
 						</View>
 						
-						<View style = { styles.content }>
-							<View style = { styles.stickyBottom }>
+						<View style={styles.stickyBottom}>
+							<View style={{flexDirection: 'row'}}>
 								<Button
-									color= '#94abb6'
-									onPress = { () => this.setState({ category: null })}
-									name = 'Hapus'/>
+									color='#94abb6'
+									onPress={() => {this.setState({ category: null });this._setModalVisible(false)}}
+									name='Batal'/>
 								<Text>&nbsp;</Text>
 
 								{this.state.idCategory == null ?
