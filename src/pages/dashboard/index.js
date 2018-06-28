@@ -441,7 +441,8 @@ class InventoryScreen extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: 'white'
+		backgroundColor: 'white',
+		paddingTop: 5
 	},
 	content: {
 		flex: 1,
