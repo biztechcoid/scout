@@ -28,7 +28,12 @@ data: [
 ]
 */
 
-var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+// var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+var bulan = []
+
+for(var i = 0; i < 12; i++) {
+	bulan.push(i.toString())
+}
 
 var tahun = []
 
@@ -54,10 +59,17 @@ const initialState = {
 		transaksi: 0,
 		total: 0
 	},
-	pengeluaran: {},
+	pengeluaran: 0,
 	labarugi: {
 		penjualan: 0,
 		hargaPokok: 0
+	},
+	reportPengeluaran: {
+		upah: 0,
+		sewa: 0,
+		listrik: 0,
+		promosi: 0,
+		lain: 0
 	}
 }
 
@@ -486,23 +498,23 @@ const SaleReducers = (state = initialState, action) => {
 				hargaPokok = 0
 			for(var a in state.data) {
 				var date = new Date(state.data[a].date)
-				console.log('==', action.data)
-				console.log(action.data.bulan, new Date(date).getMonth(), new Date(date).getFullYear())
-				if(action.data.bulan + '_' + action.data.tahun === new Date(date).getMonth().toString() + '_' + new Date(date).getFullYear()) {
-					penjualan = penjualan + state.data[a].total
-					state.labarugi.penjualan = penjualan
+				for(var i = action.data.from; i <= action.data.to; i++) {
+					if(choose[i] === new Date(date).getMonth().toString() + ' ' + new Date(date).getFullYear()) {
+						penjualan = penjualan + state.data[a].total
+						state.labarugi.penjualan = penjualan
 
-					for(var b in state.data[a].data) {
-						for(var c in action.data.category) {
-							if(state.data[a].data[b].idCategory === action.data.category[c].idCategory) {
-								for(var d in action.data.category[c].product) {
-									if(state.data[a].data[b].idProduct === action.data.category[c].product[d].idProduct) {
-										if(state.data[a].data[b].idSubProduct === null) {
-											hargaPokok = hargaPokok + (action.data.category[c].product[d].cost * state.data[a].data[b].quantity)
-										} else {
-											for(var e in action.data.category[c].product[d].subProduct) {
-												if(state.data[a].data[b].idSubProduct === action.data.category[c].product[d].subProduct[e].idSubProduct) {
-													hargaPokok = hargaPokok + (action.data.category[c].product[d].subProduct[e].cost * state.data[a].data[b].quantity)
+						for(var b in state.data[a].data) {
+							for(var c in action.data.category) {
+								if(state.data[a].data[b].idCategory === action.data.category[c].idCategory) {
+									for(var d in action.data.category[c].product) {
+										if(state.data[a].data[b].idProduct === action.data.category[c].product[d].idProduct) {
+											if(state.data[a].data[b].idSubProduct === null) {
+												hargaPokok = hargaPokok + (action.data.category[c].product[d].cost * state.data[a].data[b].quantity)
+											} else {
+												for(var e in action.data.category[c].product[d].subProduct) {
+													if(state.data[a].data[b].idSubProduct === action.data.category[c].product[d].subProduct[e].idSubProduct) {
+														hargaPokok = hargaPokok + (action.data.category[c].product[d].subProduct[e].cost * state.data[a].data[b].quantity)
+													}
 												}
 											}
 										}
@@ -518,6 +530,38 @@ const SaleReducers = (state = initialState, action) => {
 				labarugi: {
 					penjualan: penjualan,
 					hargaPokok: hargaPokok
+				}
+			}
+
+		case 'PENGELUARAN':
+			var reportPengeluaran = {
+				upah: 0,
+				sewa: 0,
+				listrik: 0,
+				promosi: 0,
+				lain: 0
+			}
+			for(var i = action.data.from; i <= action.data.to; i++) {
+				reportPengeluaran.upah = reportPengeluaran.upah + (state.pengeluaran[choose[i].replace(' ', '_')] === undefined ? 0 : state.pengeluaran[choose[i].replace(' ', '_')].upah)
+				reportPengeluaran.sewa = reportPengeluaran.sewa + (state.pengeluaran[choose[i].replace(' ', '_')] === undefined ? 0 : state.pengeluaran[choose[i].replace(' ', '_')].sewa)
+				reportPengeluaran.listrik = reportPengeluaran.listrik + (state.pengeluaran[choose[i].replace(' ', '_')] === undefined ? 0 : state.pengeluaran[choose[i].replace(' ', '_')].listrik)
+				reportPengeluaran.promosi = reportPengeluaran.promosi + (state.pengeluaran[choose[i].replace(' ', '_')] === undefined ? 0 : state.pengeluaran[choose[i].replace(' ', '_')].promosi)
+				reportPengeluaran.lain = reportPengeluaran.lain + (state.pengeluaran[choose[i].replace(' ', '_')] === undefined ? 0 : state.pengeluaran[choose[i].replace(' ', '_')].lain)
+			}
+			return {
+				...state,
+				reportPengeluaran: reportPengeluaran
+			}
+
+		case 'RESETREPORTPENGELUARAN':
+			return {
+				...state,
+				reportPengeluaran: {
+					upah: 0,
+					sewa: 0,
+					listrik: 0,
+					promosi: 0,
+					lain: 0
 				}
 			}
 

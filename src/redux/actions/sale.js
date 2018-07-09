@@ -69,3 +69,17 @@ export function labaRugi(data) {
 		data
 	}
 }
+
+export function pengeluaran(data) {
+	return {
+		type: 'PENGELUARAN',
+		data
+	}
+}
+
+export function resetReportPengeluaran(data) {
+	return {
+		type: 'RESETREPORTPENGELUARAN',
+		data
+	}
+}

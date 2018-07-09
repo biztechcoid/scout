@@ -8,11 +8,14 @@ import {
 import { connect } from 'react-redux'
 
 import {
-	labaRugi
+	labaRugi,
+	pengeluaran,
+	resetReportPengeluaran
 } from '../../redux/actions'
 
 import {
-	rupiah
+	rupiah,
+	server
 } from '../../modules'
 
 var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
@@ -34,20 +37,21 @@ for(var i in tahun) {
 
 class LabaRugi extends React.Component {
 	state = {
-		bulan: null,
-		tahun: null,
 		from: null,
-		to: null
-	}
-	
-	_bulan(bulan) {
-		this.setState({bulan: bulan})
-		this.find(bulan, this.state.tahun)
+		to: null,
+		cabang: null,
+		report: {
+			penjualan: 0,
+			hargaPokok: 0,
+			labaKotor: 0,
+			pengeluaran: 0,
+			labaRugi: 0
+		}
 	}
 
-	_tahun(tahun) {
-		this.setState({tahun: tahun})
-		this.find(this.state.bulan, tahun)
+	_cabang(value) {
+		this.setState({cabang: value})
+		this.find(this.state.from, this.state.to, value)
 	}
 
 	_from(value) {
@@ -55,7 +59,7 @@ class LabaRugi extends React.Component {
 			return Alert.alert(null, 'data tidak valid')
 		}
 		this.setState({from: value})
-		this.find(choose[value], choose[this.state.to])
+		this.find(value, this.state.to, this.state.cabang)
 	}
 
 	_to(value) {
@@ -63,54 +67,48 @@ class LabaRugi extends React.Component {
 			return Alert.alert(null, 'data tidak valid')
 		}
 		this.setState({to: value})
-		this.find(choose[this.state.from], choose[value])
+		this.find(this.state.from, value, this.state.cabang)
 	}
 
-	find(_from, _to) {
-		if(_from != undefined && _to != undefined) {
+	find(_from, _to, cabang) {
+		if(_from != undefined && _to != undefined && cabang != null) {
 			var data = {
-				category: this.props.category,
-				from: _from,
-				to: _to
+				idPusat: this.props.store[0].idPusat,
+				idCabang: cabang === 'Pusat' ? '' : cabang,
+				from: choose[_from].split(' ')[1] + '-' + ((bulan.indexOf(choose[_from].split(' ')[0]) + 1).toString().length === 1 ? '0' + (bulan.indexOf(choose[_from].split(' ')[0]) + 1) : (bulan.indexOf(choose[_from].split(' ')[0]) + 1)) + '-01',
+				to: choose[_to].split(' ')[1] + '-' + ((bulan.indexOf(choose[_to].split(' ')[0]) + 1).toString().length === 1 ? '0' + (bulan.indexOf(choose[_to].split(' ')[0]) + 1) : (bulan.indexOf(choose[_to].split(' ')[0]) + 1)) + '-31'
 			}
-			this.props.dispatchLabaRugi(data)
+
+			// this.props.dispatchLabaRugi(data)
+			// this.props.dispatchPengeluaran(data)
+			fetch(server + '/report/getLabaRugi', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					token: this.props.profile.token
+				},
+				body: JSON.stringify(data)
+			})
+			.then(response => response.json())
+			.then(res => {
+				if(res.headers.statusCode === 200) {
+					this.setState({report: {
+						penjualan: res.data.penjualan,
+						hargaPokok: res.data.hargaPokok,
+						labaKotor: res.data.labaKotor,
+						pengeluaran: res.data.pengeluaran,
+						labaRugi: res.data.labaRugi
+					}})
+				}
+			})
+			.catch(err => console.log(err))
 		}
 	}
 
 	render() {
 		return (
 			<View style={{flex: 1, backgroundColor: 'white'}}>
-				<View style={{flexDirection: 'row'}}>
-					<View style={{flex: 1}}>
-						<Picker
-							mode = 'dropdown'
-							selectedValue = { this.state.bulan }
-							onValueChange = { this._bulan.bind(this) }>
-							<Picker.Item label = 'Bulan' value = {null} />
-							{bulan.map((content, index) => {
-								return (
-									<Picker.Item key={index} label = {content} value = {index} />
-								)
-							})}
-						</Picker>
-					</View>
-
-					<View style={{flex: 1}}>
-						<Picker
-							mode = 'dropdown'
-							selectedValue = { this.state.tahun }
-							onValueChange = { this._tahun.bind(this) }>
-							<Picker.Item label = 'Tahun' value = {null} />
-							{tahun.map((content, index) => {
-								return (
-									<Picker.Item key={index} label = {content} value = {content} />
-								)
-							})}
-						</Picker>
-					</View>
-				</View>
-				
-				{<View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5}}>
+				<View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5}}>
 					<Text style={{fontSize: 10}}>Dari</Text>
 					<View style={{flex: 1}}>
 						<Picker
@@ -140,7 +138,25 @@ class LabaRugi extends React.Component {
 							})}
 						</Picker>
 					</View>
-				</View>}
+				</View>
+
+				<View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5}}>
+					<Text style={{fontSize: 10}}>Cabang</Text>
+					<View style={{flex: 0.5}}>
+						<Picker
+							mode = 'dropdown'
+							selectedValue = { this.state.cabang }
+							onValueChange = { this._cabang.bind(this) }>
+							<Picker.Item label='Pilih Cabang' value={null} />
+							<Picker.Item label={this.props.store[0].name} value='Pusat' />
+							{this.props.store[0].cabang.map((content, index) => {
+								return (
+									<Picker.Item key={index} label={content.name} value={content.idCabang} />
+								)
+							})}
+						</Picker>
+					</View>
+				</View>
 
 				<View style={{flex: 1, padding: 5}}>
 					<View style={{flex: 1, flexDirection: 'row'}}>
@@ -149,7 +165,7 @@ class LabaRugi extends React.Component {
 						</View>
 
 						<View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center'}}>
-							<Text>{rupiah(this.props.labarugi.penjualan)}</Text>
+							<Text>{rupiah(Number(this.state.report.penjualan))}</Text>
 						</View>
 					</View>
 
@@ -159,7 +175,7 @@ class LabaRugi extends React.Component {
 						</View>
 
 						<View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center', borderBottomWidth: 0.5}}>
-							<Text style={{color: 'red'}}>({rupiah(this.props.labarugi.hargaPokok)})</Text>
+							<Text style={{color: 'red'}}>({rupiah(Number(this.state.report.hargaPokok))})</Text>
 						</View>
 					</View>
 
@@ -169,7 +185,7 @@ class LabaRugi extends React.Component {
 						</View>
 
 						<View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center'}}>
-							<Text>{rupiah(Number(this.props.labarugi.penjualan) - Number(this.props.labarugi.hargaPokok))}</Text>
+							<Text>{rupiah(Number(this.state.report.labaKotor))}</Text>
 						</View>
 					</View>
 
@@ -180,38 +196,19 @@ class LabaRugi extends React.Component {
 
 						<View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center', borderBottomWidth: 0.5}}>
 							<Text style={{color: 'red'}}>
-								({
-									this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-										rupiah(0)
-										:
-										rupiah(Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah) +
-																				Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa) +
-																				Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik) +
-																				Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi) +
-																				Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain))
-								})
+								{rupiah(Number(this.state.report.pengeluaran))}
 							</Text>
 						</View>
 					</View>
 
 					<View style={{flex: 1, flexDirection: 'row'}}>
 						<View style={{flex: 1, justifyContent: 'center'}}>
-							<Text>{this.props.labarugi.penjualan - this.props.labarugi.hargaPokok > 0 ? 'Laba' : 'Rugi'}</Text>
+							<Text>{this.state.report.labaRugi > 0 ? 'Laba' : 'Rugi'}</Text>
 						</View>
 
 						<View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'center'}}>
-							<Text style={{color: this.props.labarugi.penjualan - this.props.labarugi.hargaPokok > 0 ? null : 'red'}}>
-								{
-									rupiah(Number(this.props.labarugi.penjualan - this.props.labarugi.hargaPokok) -
-																		(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun] === undefined ?
-																			0
-																			:
-																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].upah) +
-																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].sewa) +
-																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].listrik) +
-																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].promosi) +
-																			Number(this.props.pengeluaran[this.state.bulan + '_' + this.state.tahun].lain)))
-								}
+							<Text style={{color: this.state.report.labaRugi > 0 ? null : 'red'}}>
+								{rupiah(Number(this.state.report.labaRugi))}
 							</Text>
 						</View>
 					</View>
@@ -222,22 +219,31 @@ class LabaRugi extends React.Component {
 		)
 	}
 
+	componentWillMount() {
+		this.props.dispatchResetReportPengeluaran()
+	}
+
 	componentDidMount() {
-		this.find(this.state.bulan, this.state.tahun)
+		this.find(this.state.from, this.state.to)
 	}
 }
 
 function mapStateToProps (state) {
 	return {
+		profile: state.user.data,
+		store: state.user.store,
 		category: state.category.data,
 		labarugi: state.sale.labarugi,
-		pengeluaran: state.sale.pengeluaran
+		pengeluaran: state.sale.pengeluaran,
+		reportPengeluaran: state.sale.reportPengeluaran
 	}
 }
 
 function mapDispatchToProps (dispatch) {
 	return {
-		dispatchLabaRugi: (data) => dispatch(labaRugi(data))
+		dispatchLabaRugi: (data) => dispatch(labaRugi(data)),
+		dispatchPengeluaran: (data) => dispatch(pengeluaran(data)),
+		dispatchResetReportPengeluaran: (data) => dispatch(resetReportPengeluaran(data))
 	}
 }
 

@@ -75,3 +75,5 @@ exports.updatePengeluaran = require('./sale').updatePengeluaran
 
 exports.updatePenjualan = require('./sale').updatePenjualan
 exports.labaRugi = require('./sale').labaRugi
+exports.pengeluaran = require('./sale').pengeluaran
+exports.resetReportPengeluaran = require('./sale').resetReportPengeluaran
