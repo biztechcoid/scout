@@ -3,10 +3,40 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View, processColor
-} from 'react-native';
+  View,
+  Picker,
+  ScrollView,
+  processColor
+} from 'react-native'
+import { connect } from 'react-redux'
+import {LineChart} from 'react-native-charts-wrapper'
 
-import {LineChart} from 'react-native-charts-wrapper';
+import {
+  rupiah,
+  server
+} from '../../modules'
+
+import {
+  pengeluaran,
+  resetReportPengeluaran
+} from '../../redux/actions'
+
+var bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+
+var tahun = []
+
+for(var i = 2018; i <= new Date().getFullYear() + 1; i++) {
+  tahun.push(i.toString())
+}
+
+var choose = []
+
+for(var i in tahun) {
+  for(var j in bulan) {
+    choose.push(bulan[j] + ' ' + tahun[i])
+  }
+}
+
 
 class LineChartScreen extends React.Component {
 
@@ -14,7 +44,9 @@ class LineChartScreen extends React.Component {
     super();
 
     this.state = {
-      data: {},
+      data: [],
+
+      /*data: {},
       legend: {
         enabled: true,
         textColor: processColor('blue'),
@@ -27,10 +59,10 @@ class LineChartScreen extends React.Component {
         formToTextSpace: 5,
         wordWrapEnabled: true,
         maxSizePercent: 0.5,
-        /*custom: {
+        custom: {
           colors: [processColor('red'), processColor('blue'), processColor('green')],
           labels: ['Company X', 'Company Y', 'Company Dashed']
-        }*/
+        }
       },
       marker: {
         enabled: true,
@@ -38,11 +70,65 @@ class LineChartScreen extends React.Component {
         backgroundTint: processColor('teal'),
 	      markerColor: processColor('#F0C0FF8C'),
         textColor: processColor('white'),
-      }
+      }*/
     };
   }
 
-  componentWillMount() {
+  _cabang(value) {
+    this.setState({cabang: value})
+    this.find(this.state.from, this.state.to, value)
+  }
+
+  _from(value) {
+    if(value > this.state.to) {
+      return Alert.alert(null, 'data tidak valid')
+    }
+    this.setState({from: value})
+    this.find(value, this.state.to, this.state.cabang)
+  }
+
+  _to(value) {
+    if(this.state.from > value) {
+      return Alert.alert(null, 'data tidak valid')
+    }
+    this.setState({to: value})
+    this.find(this.state.from, value, this.state.cabang)
+  }
+
+  find(_from, _to, cabang) {
+    if(_from != undefined && _to != undefined && cabang != null) {
+      var data = {
+        // idPusat: this.props.store[0].idPusat,
+        idPusat: 'WCWjgsdSzKEcE9zra6zZ',
+        idCabang: cabang === 'Pusat' ? '' : cabang,
+        from: choose[_from].split(' ')[1] + '-' + ((bulan.indexOf(choose[_from].split(' ')[0]) + 1).toString().length === 1 ? '0' + (bulan.indexOf(choose[_from].split(' ')[0]) + 1) : (bulan.indexOf(choose[_from].split(' ')[0]) + 1)) + '-01',
+        to: choose[_to].split(' ')[1] + '-' + ((bulan.indexOf(choose[_to].split(' ')[0]) + 1).toString().length === 1 ? '0' + (bulan.indexOf(choose[_to].split(' ')[0]) + 1) : (bulan.indexOf(choose[_to].split(' ')[0]) + 1)) + '-31'
+      }
+
+      // this.props.dispatchLabaRugi(data)
+      // this.props.dispatchPengeluaran(data)
+      fetch(server + '/report/getPemasukan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: this.props.profile.token
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(res => {
+        if(res.headers.statusCode === 200) {
+          console.log(choose, res)
+          this.setState({
+            data: res.data
+          })
+        }
+      })
+      .catch(err => console.log(err))
+    }
+  }
+
+  /*componentWillMount() {
     this.setState(
       {
         data: {
@@ -120,9 +206,9 @@ class LineChartScreen extends React.Component {
         }
       }
     );
-  }
+  }*/
 
-  handleSelect(event) {
+  /*handleSelect(event) {
     let entry = event.nativeEvent
     if (entry == null) {
       this.setState({...this.state, selectedEntry: null})
@@ -131,15 +217,192 @@ class LineChartScreen extends React.Component {
     }
 
     console.log(event.nativeEvent)
-  }
+  }*/
 
   render() {
     return (
+      <View style={{flex: 1, padding: 5, backgroundColor: 'white'}}>
+        <View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5}}>
+          <Text style={{fontSize: 10}}>Dari</Text>
+          <View style={{flex: 1}}>
+            <Picker
+              mode = 'dropdown'
+              selectedValue = { this.state.from }
+              onValueChange = { this._from.bind(this) }>
+              <Picker.Item label = 'Select' value = {null} />
+              {choose.map((content, index) => {
+                return (
+                  <Picker.Item key={index} label={content} value={index} />
+                )
+              })}
+            </Picker>
+          </View>
+
+          <Text style={{fontSize: 10}}>Hingga</Text>
+          <View style={{flex: 1}}>
+            <Picker
+              mode = 'dropdown'
+              selectedValue = { this.state.to }
+              onValueChange = { this._to.bind(this) }>
+              <Picker.Item label = 'Select' value = {null} />
+              {choose.map((content, index) => {
+                return (
+                  <Picker.Item key={index} label={content} value={index} />
+                )
+              })}
+            </Picker>
+          </View>
+        </View>
+        
+        <View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5}}>
+          <Text style={{fontSize: 10}}>Cabang</Text>
+          <View style={{flex: 0.5}}>
+            <Picker
+              mode = 'dropdown'
+              selectedValue = { this.state.cabang }
+              onValueChange = { this._cabang.bind(this) }>
+              <Picker.Item label='Pilih Cabang' value={null} />
+              <Picker.Item label={this.props.store[0].name} value='Pusat' />
+              {this.props.store[0].cabang.map((content, index) => {
+                return (
+                  <Picker.Item key={index} label={content.name} value={content.idCabang} />
+                )
+              })}
+            </Picker>
+          </View>
+        </View>
+
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          style={{flex: 1, marginTop: 5}}>
+          <View style={{flex: 1}}>
+          <ScrollView
+            horizontal={true}
+            style={{flex: 1, flexDirection: 'row'}}>
+            {this.state.data.length === 0 ?
+              null
+              :
+              <View style={{flex: 1}}>
+                <View style={{borderWidth: 0.25, padding: 5}}>
+                  <Text style={{fontWeight: 'bold'}}>Date</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5}}>
+                  <Text style={{fontWeight: 'bold'}}>Upah</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5}}>
+                  <Text style={{fontWeight: 'bold'}}>Sewa</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5}}>
+                  <Text style={{fontWeight: 'bold'}}>Listrik</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5}}>
+                  <Text style={{fontWeight: 'bold'}}>Promosi</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5}}>
+                  <Text style={{fontWeight: 'bold'}}>Lain</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5}}>
+                  <Text style={{fontWeight: 'bold'}}>Total</Text>
+                </View>
+              </View>
+            }
+
+            {this.state.data.map((content, index) => {
+              return (
+                <View style={{flex: 1}}>
+                  <View style={{borderWidth: 0.25, padding: 5}}>
+                    <Text style={{fontWeight: 'bold'}}>{bulan[content.date.split('-')[0] - 1]} {content.date.split('-')[1]}</Text>
+                  </View>
+                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                    <Text>{rupiah(content.upah)}</Text>
+                  </View>
+                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                    <Text>{rupiah(content.sewa)}</Text>
+                  </View>
+                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                    <Text>{rupiah(content.listrik)}</Text>
+                  </View>
+                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                    <Text>{rupiah(content.promosi)}</Text>
+                  </View>
+                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                    <Text>{rupiah(content.lain)}</Text>
+                  </View>
+                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                    <Text style={{fontWeight: 'bold'}}>{rupiah(content.total)}</Text>
+                  </View>
+                </View>
+              )
+            })}
+
+            {this.state.data.length > 1 ?
+              <View style={{flex: 1}}>
+                <View style={{borderWidth: 0.25, padding: 5}}>
+                  <Text style={{fontWeight: 'bold'}}>Total</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.upah)}</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.sewa)}</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.listrik)}</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.promosi)}</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.lain)}</Text>
+                </View>
+                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.total)}</Text>
+                </View>
+              </View>
+              :
+              null
+            }
+          </ScrollView>
+
+          <View style={{flex: 1}}>
+            <LineChart
+              style={{flex: 1, height: 300}}
+              data={this.state.dataChart}
+              chartDescription={{text: ''}}
+              // legend={this.state.legend}
+              marker={this.state.marker}
+              xAxis={this.state.xAxis}
+              yAxis={this.state.yAxis}
+              drawGridBackground={true}
+              borderColor={processColor('teal')}
+              borderWidth={1}
+              drawBorders={true}
+
+              touchEnabled={true}
+              dragEnabled={true}
+              scaleEnabled={true}
+              scaleXEnabled={true}
+              scaleYEnabled={true}
+              pinchZoom={true}
+              doubleTapToZoomEnabled={true}
+
+              dragDecelerationEnabled={true}
+              dragDecelerationFrictionCoef={0.99}
+
+              keepPositionOnRotation={false}
+              // onSelect={this.handleSelect.bind(this)}
+              onChange={(event) => console.log(event.nativeEvent)}
+            />
+          </View>
+          </View>
+        </ScrollView>
+      </View>
+    )
+    /*return (
       <View style={{flex: 1}}>
 
         <View style={{height:80}}>
           <Text> selected entry</Text>
-          <Text> {this.state.selectedEntry}</Text>
         </View>
 
         <View style={styles.container}>
@@ -172,9 +435,8 @@ class LineChartScreen extends React.Component {
             onChange={(event) => console.log(event.nativeEvent)}
           />
         </View>
-
       </View>
-    );
+    );*/
   }
 }
 
@@ -190,4 +452,23 @@ const styles = StyleSheet.create({
   }
 });
 
-export default LineChartScreen;
+function mapStateToProps (state) {
+  return {
+    profile: state.user.data,
+    store: state.user.store,
+    pengeluaran: state.sale.pengeluaran,
+    reportPengeluaran: state.sale.reportPengeluaran
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    dispatchPengeluaran: (data) => dispatch(pengeluaran(data)),
+    dispatchResetReportPengeluaran: (data) => dispatch(resetReportPengeluaran(data))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LineChartScreen)
