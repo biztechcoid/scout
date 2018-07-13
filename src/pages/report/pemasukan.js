@@ -45,6 +45,10 @@ class LineChartScreen extends React.Component {
 
     this.state = {
       data: [],
+      kategori: null,
+      listKategori: [],
+      produk: null,
+      listProduk: []
 
       /*data: {},
       legend: {
@@ -105,8 +109,11 @@ class LineChartScreen extends React.Component {
         to: choose[_to].split(' ')[1] + '-' + ((bulan.indexOf(choose[_to].split(' ')[0]) + 1).toString().length === 1 ? '0' + (bulan.indexOf(choose[_to].split(' ')[0]) + 1) : (bulan.indexOf(choose[_to].split(' ')[0]) + 1)) + '-31'
       }
 
-      // this.props.dispatchLabaRugi(data)
-      // this.props.dispatchPengeluaran(data)
+      /*
+      *
+      get_pemasukan
+      *
+      */
       fetch(server + '/report/getPemasukan', {
         method: 'POST',
         headers: {
@@ -118,9 +125,37 @@ class LineChartScreen extends React.Component {
       .then(response => response.json())
       .then(res => {
         if(res.headers.statusCode === 200) {
-          console.log(choose, res)
           this.setState({
             data: res.data
+          })
+        }
+      })
+      .catch(err => console.log(err))
+
+      /*
+      *
+      list_category
+      *
+      */
+      var dataListCategory = {
+        // idPusat: this.props.store[0].idPusat,
+        idPusat: 'WCWjgsdSzKEcE9zra6zZ',
+        idCabang: cabang === 'Pusat' ? '' : cabang,
+      }
+      fetch(server + '/report/getListCategory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: this.props.profile.token
+        },
+        body: JSON.stringify(dataListCategory)
+      })
+      .then(response => response.json())
+      .then(res => {
+        if(res.headers.statusCode === 200) {
+          this.setState({
+            kategori: null,
+            listKategori: res.data
           })
         }
       })
@@ -128,96 +163,120 @@ class LineChartScreen extends React.Component {
     }
   }
 
-  /*componentWillMount() {
-    this.setState(
-      {
-        data: {
-            dataSets: [{
-              values: [{y: 0.88}, {y: 0.77}, {y: 105}, {y: 115}],
-              label: 'Company X',
-              config: {
-              //   lineWidth: 2,
-              //   drawCircles: false,
-              //   highlightColor: processColor('red'),
-              //   color: processColor('red'),
-              //   // drawFilled: true,
-              //   fillColor: processColor('red'),
-              //   fillAlpha: 60,
-		            // valueTextSize: 15,
-              //   valueFormatter: "##.000",
-              //   dashedLine: {
-              //     lineLength: 20,
-              //     spaceLength: 20
-              //   }
-                color: processColor('red'),
-                // drawFilled: true,
-                fillColor: processColor('red'),
-                fillAlpha: 50,
-                circleColor: processColor('red')
-              }
-            }, {
-              values: [{y: 90}, {y: 130}, {y: 100}, {y: 105}],
-              label: 'Company Y',
-              config: {
-                // lineWidth: 1,
-                // drawCubicIntensity: 0.4,
-                // circleRadius: 5,
-                // drawHighlightIndicators: false,
-                // color: processColor('blue'),
-                // // drawFilled: true,
-                // fillColor: processColor('blue'),
-                // fillAlpha: 45,
-                // circleColor: processColor('blue')
-                color: processColor('blue'),
-                // drawFilled: true,
-                fillColor: processColor('blue'),
-                fillAlpha: 50,
-                circleColor: processColor('blue')
-              }
-            }, {
-              values: [{y: 110}, {y: 105}, {y: 115}, {y: 110}],
-              label: 'Company Dashed',
-              config: {
-                color: processColor('green'),
-                // drawFilled: true,
-                fillColor: processColor('green'),
-                fillAlpha: 50,
-                circleColor: processColor('green')
-              }
-            }],
-        },
-        xAxis: {
-          // $set: {
-            fontFamily:"HelveticaNeue-Medium",
-            fontWeight:"bold",
-            fontStyle:"italic",
-            fontColor: 'white',
-            valueFormatter: ['Q1', 'Q2', 'Q3', 'Q4'],
-            position: 'BOTTOM'
-          // }
-        },
-        yAxis: {
-          left: {
-            enabled: false
-          },
-          right: {
-            enabled: false
-          }
-        }
-      }
-    );
-  }*/
+  _kategori(value) {
+    this.setState({kategori: value})
 
-  /*handleSelect(event) {
-    let entry = event.nativeEvent
-    if (entry == null) {
-      this.setState({...this.state, selectedEntry: null})
-    } else {
-      this.setState({...this.state, selectedEntry: JSON.stringify(entry)})
+    /*
+    *
+    list_product
+    *
+    */
+    var dataListProduct = {
+      // idPusat: this.props.store[0].idPusat,
+      idPusat: 'WCWjgsdSzKEcE9zra6zZ',
+      idCabang: this.state.cabang === 'Pusat' ? '' : this.state.cabang,
+      idCategory: value
     }
+    fetch(server + '/report/getListProduct', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        token: this.props.profile.token
+      },
+      body: JSON.stringify(dataListProduct)
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.headers.statusCode === 200) {
+        this.setState({
+          produk: null,
+          listProduk: res.data
+        })
+      }
+    })
+    .catch(err => console.log(err))
+  }
 
-    console.log(event.nativeEvent)
-  }*/
+  _produk(value) {
+    this.setState({produk: value})
+  }
+
+  _apiGetPemasukan(data) {
+    /*
+    *
+    get_pemasukan
+    *
+    */
+    fetch(server + '/report/getPemasukan', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        token: this.props.profile.token
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.headers.statusCode === 200) {
+        this.setState({
+          data: res.data
+        })
+      }
+    })
+    .catch(err => console.log(err))
+  }
+
+  _apiGetCategory(data) {
+    /*
+    *
+    list_category
+    *
+    */
+    fetch(server + '/report/getListCategory', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        token: this.props.profile.token
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.headers.statusCode === 200) {
+        this.setState({
+          kategori: null,
+          listKategori: res.data
+        })
+      }
+    })
+    .catch(err => console.log(err))
+  }
+
+  _apiGetProduct(data) {
+    /*
+    *
+    list_product
+    *
+    */
+    fetch(server + '/report/getListProduct', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        token: this.props.profile.token
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.headers.statusCode === 200) {
+        this.setState({
+          produk: null,
+          listProduk: res.data
+        })
+      }
+    })
+    .catch(err => console.log(err))
+  }
 
   render() {
     return (
@@ -272,6 +331,38 @@ class LineChartScreen extends React.Component {
           </View>
         </View>
 
+        <View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 0.5}}>
+          <Text style={{fontSize: 10}}>Kategori</Text>
+          <View style={{flex: 0.5}}>
+            <Picker
+              mode = 'dropdown'
+              selectedValue = { this.state.kategori }
+              onValueChange = { this._kategori.bind(this) }>
+              <Picker.Item label='Pilih Kategori' value={null} />
+              {this.state.listKategori.map((content, index) => {
+                return (
+                  <Picker.Item key={index} label={content.name} value={content.idCategory} />
+                )
+              })}
+            </Picker>
+          </View>
+
+          <Text style={{fontSize: 10}}>Produk</Text>
+          <View style={{flex: 0.5}}>
+            <Picker
+              mode = 'dropdown'
+              selectedValue = { this.state.produk }
+              onValueChange = { this._produk.bind(this) }>
+              <Picker.Item label='Pilih Produk' value={null} />
+              {this.state.listProduk.map((content, index) => {
+                return (
+                  <Picker.Item key={index} label={content.name} value={content.idProduct} />
+                )
+              })}
+            </Picker>
+          </View>
+        </View>
+
         <ScrollView
           contentContainerStyle={{flexGrow: 1}}
           style={{flex: 1, marginTop: 5}}>
@@ -311,26 +402,32 @@ class LineChartScreen extends React.Component {
               return (
                 <View style={{flex: 1}}>
                   <View style={{borderWidth: 0.25, padding: 5}}>
-                    <Text style={{fontWeight: 'bold'}}>{bulan[content.date.split('-')[0] - 1]} {content.date.split('-')[1]}</Text>
+                    <Text style={{fontWeight: 'bold'}}>{content._date}</Text>
                   </View>
-                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                    <Text>{rupiah(content.upah)}</Text>
-                  </View>
-                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                    <Text>{rupiah(content.sewa)}</Text>
-                  </View>
-                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                    <Text>{rupiah(content.listrik)}</Text>
-                  </View>
-                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                    <Text>{rupiah(content.promosi)}</Text>
-                  </View>
-                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                    <Text>{rupiah(content.lain)}</Text>
-                  </View>
-                  <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                    <Text style={{fontWeight: 'bold'}}>{rupiah(content.total)}</Text>
-                  </View>
+                  {content.data.map((_content, _index) => {
+                    return (
+                      <View>
+                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                          <Text>{rupiah(_content.total)}</Text>
+                        </View>
+                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                          <Text>{rupiah(_content.total)}</Text>
+                        </View>
+                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                          <Text>{rupiah(_content.total)}</Text>
+                        </View>
+                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                          <Text>{rupiah(_content.total)}</Text>
+                        </View>
+                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                          <Text>{rupiah(_content.total)}</Text>
+                        </View>
+                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                          <Text style={{fontWeight: 'bold'}}>{rupiah(_content.total)}</Text>
+                        </View>
+                      </View>
+                    )
+                  })}
                 </View>
               )
             })}
