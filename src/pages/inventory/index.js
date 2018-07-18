@@ -408,6 +408,7 @@ class InventoryScreen extends React.Component {
 			/* set default state jika modal tertutup */
 			this.setState({
 				modalVisible: visible,
+				idCategory: null,
 				category: null
 			})
 		}

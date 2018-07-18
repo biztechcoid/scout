@@ -42,9 +42,9 @@ import {
 } from '../../modules'
 
 var menu = [
-	{name: 'Persediaan', icon: 'md-cube', pages: 'Inventory', access: 'Persediaan'},
-	{name: 'Penjualan', icon: 'md-cash', pages: 'Sale', access: 'Penjualan'},
-	{name: 'Pengeluaran', icon: 'md-cart', pages: 'Pengeluaran', access: 'Pengeluaran'},
+	{name: 'Produk', icon: 'md-cube', pages: 'Inventory', access: 'Persediaan'},
+	{name: 'Penjualan', icon: 'md-cart', pages: 'Sale', access: 'Penjualan'},
+	{name: 'Pengeluaran', icon: 'md-cash', pages: 'Pengeluaran', access: 'Pengeluaran'},
 	{name: 'Perpajakan', icon: 'md-paper', pages: 'Perpajakan', access: 'Perpajakan'},
 	{name: 'Laporan', icon: 'ios-list-box-outline', pages: 'Report', access: 'Laporan'},
 	{name: 'Pengaturan', icon: 'md-settings', pages: 'ListUsers', access: 'Pengaturan'},

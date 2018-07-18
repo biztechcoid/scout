@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   AppRegistry,
   StyleSheet,
   Text,
@@ -48,33 +49,9 @@ class LineChartScreen extends React.Component {
       kategori: null,
       listKategori: [],
       produk: null,
-      listProduk: []
+      listProduk: [],
 
-      /*data: {},
-      legend: {
-        enabled: true,
-        textColor: processColor('blue'),
-        textSize: 12,
-        position: 'BELOW_CHART_RIGHT',
-        form: 'SQUARE',
-        formSize: 14,
-        xEntrySpace: 10,
-        yEntrySpace: 5,
-        formToTextSpace: 5,
-        wordWrapEnabled: true,
-        maxSizePercent: 0.5,
-        custom: {
-          colors: [processColor('red'), processColor('blue'), processColor('green')],
-          labels: ['Company X', 'Company Y', 'Company Dashed']
-        }
-      },
-      marker: {
-        enabled: true,
-        digits: 2,
-        backgroundTint: processColor('teal'),
-	      markerColor: processColor('#F0C0FF8C'),
-        textColor: processColor('white'),
-      }*/
+      _date: []
     };
   }
 
@@ -102,8 +79,8 @@ class LineChartScreen extends React.Component {
   find(_from, _to, cabang) {
     if(_from != undefined && _to != undefined && cabang != null) {
       var data = {
-        // idPusat: this.props.store[0].idPusat,
-        idPusat: 'WCWjgsdSzKEcE9zra6zZ',
+        idPusat: this.props.store[0].idPusat,
+        // idPusat: 'WCWjgsdSzKEcE9zra6zZ',
         idCabang: cabang === 'Pusat' ? '' : cabang,
         from: choose[_from].split(' ')[1] + '-' + ((bulan.indexOf(choose[_from].split(' ')[0]) + 1).toString().length === 1 ? '0' + (bulan.indexOf(choose[_from].split(' ')[0]) + 1) : (bulan.indexOf(choose[_from].split(' ')[0]) + 1)) + '-01',
         to: choose[_to].split(' ')[1] + '-' + ((bulan.indexOf(choose[_to].split(' ')[0]) + 1).toString().length === 1 ? '0' + (bulan.indexOf(choose[_to].split(' ')[0]) + 1) : (bulan.indexOf(choose[_to].split(' ')[0]) + 1)) + '-31'
@@ -111,67 +88,77 @@ class LineChartScreen extends React.Component {
 
       /*
       *
-      get_pemasukan
+      loop date
       *
       */
-      fetch(server + '/report/getPemasukan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          token: this.props.profile.token
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(res => {
-        if(res.headers.statusCode === 200) {
-          this.setState({
-            data: res.data
-          })
-        }
-      })
-      .catch(err => console.log(err))
+      var stateCopy = this.state._date = []
+      for(var i = _from; i <= _to; i++) {
+        stateCopy.push(choose[i])
+      }
+      this.setState(stateCopy)
 
       /*
       *
-      list_category
+      get category
       *
       */
-      var dataListCategory = {
-        // idPusat: this.props.store[0].idPusat,
-        idPusat: 'WCWjgsdSzKEcE9zra6zZ',
-        idCabang: cabang === 'Pusat' ? '' : cabang,
+      /*var _getCategory = {
+        idPusat: data.idPusat,
+        idCabang: data.idCabang
       }
-      fetch(server + '/report/getListCategory', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          token: this.props.profile.token
-        },
-        body: JSON.stringify(dataListCategory)
-      })
-      .then(response => response.json())
-      .then(res => {
-        if(res.headers.statusCode === 200) {
-          this.setState({
-            kategori: null,
-            listKategori: res.data
-          })
-        }
-      })
-      .catch(err => console.log(err))
+      this._apiGetCategory(_getCategory)*/
+
+      /*
+      *
+      get product
+      *
+      */
+      /*var _getProduct = {
+        idPusat: data.idPusat,
+        idCabang: data.idCabang,
+        idCategory: ''
+      }
+      this._apiGetProduct(_getProduct)*/
+
+      /*
+      *
+      get pemasukan
+      *
+      */
+      var _getPemasukan = {
+        idPusat: data.idPusat,
+        idCabang: data.idCabang,
+        idCategory: null,
+        idProduct: null,
+        from: data.from,
+        to: data.to
+      }
+      this._apiGetPemasukan(_getPemasukan)
+
+      /*
+      *
+      set default
+      *
+      */
+      /*this.setState({
+        kategori: null,
+        produk: null
+      })*/
     }
   }
 
   _kategori(value) {
-    this.setState({kategori: value})
+    this.setState({
+      kategori: value,
+      // produk: null
+    })
 
     /*
     *
     list_product
     *
     */
-    var dataListProduct = {
+    /*var dataListProduct = {
       // idPusat: this.props.store[0].idPusat,
       idPusat: 'WCWjgsdSzKEcE9zra6zZ',
       idCabang: this.state.cabang === 'Pusat' ? '' : this.state.cabang,
@@ -189,12 +176,12 @@ class LineChartScreen extends React.Component {
     .then(res => {
       if(res.headers.statusCode === 200) {
         this.setState({
-          produk: null,
+          // produk: null,
           listProduk: res.data
         })
       }
     })
-    .catch(err => console.log(err))
+    .catch(err => console.log(err))*/
   }
 
   _produk(value) {
@@ -205,6 +192,15 @@ class LineChartScreen extends React.Component {
     /*
     *
     get_pemasukan
+
+    data = {
+      idPusat: string,
+      idCabang: string,
+      idCategory: string,
+      idProduct: string,
+      from: string,
+      to: string'
+    }
     *
     */
     fetch(server + '/report/getPemasukan', {
@@ -217,9 +213,12 @@ class LineChartScreen extends React.Component {
     })
     .then(response => response.json())
     .then(res => {
+      console.log('===== pemasukan =====', res)
       if(res.headers.statusCode === 200) {
         this.setState({
-          data: res.data
+          listKategori: res.data.category,
+          listProduk: res.data.product,
+          data: res.data.pemasukan,
         })
       }
     })
@@ -230,6 +229,11 @@ class LineChartScreen extends React.Component {
     /*
     *
     list_category
+
+    data = {
+      idPusat: string,
+      idCabang: string
+    }
     *
     */
     fetch(server + '/report/getListCategory', {
@@ -242,9 +246,10 @@ class LineChartScreen extends React.Component {
     })
     .then(response => response.json())
     .then(res => {
+      console.log('=== category ===', res)
       if(res.headers.statusCode === 200) {
         this.setState({
-          kategori: null,
+          // kategori: null,
           listKategori: res.data
         })
       }
@@ -256,6 +261,12 @@ class LineChartScreen extends React.Component {
     /*
     *
     list_product
+
+    data = {
+      idPusat: string,
+      idCabang: string,
+      idCategory: string
+    }
     *
     */
     fetch(server + '/report/getListProduct', {
@@ -268,9 +279,10 @@ class LineChartScreen extends React.Component {
     })
     .then(response => response.json())
     .then(res => {
+      console.log('=== product ===', res)
       if(res.headers.statusCode === 200) {
         this.setState({
-          produk: null,
+          // produk: null,
           listProduk: res.data
         })
       }
@@ -369,95 +381,47 @@ class LineChartScreen extends React.Component {
           <View style={{flex: 1}}>
           <ScrollView
             horizontal={true}
-            style={{flex: 1, flexDirection: 'row'}}>
+            style={{flex: 1}}>
             {this.state.data.length === 0 ?
               null
               :
-              <View style={{flex: 1}}>
-                <View style={{borderWidth: 0.25, padding: 5}}>
-                  <Text style={{fontWeight: 'bold'}}>Date</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5}}>
-                  <Text style={{fontWeight: 'bold'}}>Upah</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5}}>
-                  <Text style={{fontWeight: 'bold'}}>Sewa</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5}}>
-                  <Text style={{fontWeight: 'bold'}}>Listrik</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5}}>
-                  <Text style={{fontWeight: 'bold'}}>Promosi</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5}}>
-                  <Text style={{fontWeight: 'bold'}}>Lain</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5}}>
-                  <Text style={{fontWeight: 'bold'}}>Total</Text>
-                </View>
-              </View>
-            }
-
-            {this.state.data.map((content, index) => {
-              return (
+              <View style={{flexDirection: 'row'}}>
                 <View style={{flex: 1}}>
                   <View style={{borderWidth: 0.25, padding: 5}}>
-                    <Text style={{fontWeight: 'bold'}}>{content._date}</Text>
+                    <Text style={{fontWeight: 'bold'}}>Date</Text>
                   </View>
-                  {content.data.map((_content, _index) => {
+                  {this.state.listProduk.map((content, index) => {
                     return (
-                      <View>
-                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                          <Text>{rupiah(_content.total)}</Text>
-                        </View>
-                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                          <Text>{rupiah(_content.total)}</Text>
-                        </View>
-                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                          <Text>{rupiah(_content.total)}</Text>
-                        </View>
-                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                          <Text>{rupiah(_content.total)}</Text>
-                        </View>
-                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                          <Text>{rupiah(_content.total)}</Text>
-                        </View>
-                        <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                          <Text style={{fontWeight: 'bold'}}>{rupiah(_content.total)}</Text>
-                        </View>
+                      <View style={{borderWidth: 0.25, padding: 5}}>
+                        <Text style={{fontWeight: 'bold'}}>{content.name}</Text>
                       </View>
                     )
                   })}
+                  <View style={{borderWidth: 0.25, padding: 5}}>
+                    <Text style={{fontWeight: 'bold'}}>Total</Text>
+                  </View>
                 </View>
-              )
-            })}
 
-            {this.state.data.length > 1 ?
-              <View style={{flex: 1}}>
-                <View style={{borderWidth: 0.25, padding: 5}}>
-                  <Text style={{fontWeight: 'bold'}}>Total</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.upah)}</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.sewa)}</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.listrik)}</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.promosi)}</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.lain)}</Text>
-                </View>
-                <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
-                  <Text style={{fontWeight: 'bold'}}>{rupiah(this.state.total)}</Text>
-                </View>
+                {this.state.data.map((content, index) => {
+                  return (
+                    <View key={index} style={{flex: 1}}>
+                      <View style={{borderWidth: 0.25, padding: 5}}>
+                        <Text style={{fontWeight: 'bold'}}>{content.date}</Text>
+                      </View>
+                      {content.data.map((_content, _index) => {
+                        return (
+                          <View key={_index} style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                            <Text style={{fontWeight: index === this.state.data.length - 1 ? 'bold' : null}}>{rupiah(_content)}</Text>
+                          </View>
+                        )
+                      })}
+                      <View style={{borderWidth: 0.25, padding: 5, alignItems: 'flex-end'}}>
+                        <Text style={{fontWeight: 'bold'}}>{rupiah(content.total)}</Text>
+                      </View>
+                    </View>
+                  )
+                })}
               </View>
-              :
-              null
             }
           </ScrollView>
 
@@ -495,45 +459,6 @@ class LineChartScreen extends React.Component {
         </ScrollView>
       </View>
     )
-    /*return (
-      <View style={{flex: 1}}>
-
-        <View style={{height:80}}>
-          <Text> selected entry</Text>
-        </View>
-
-        <View style={styles.container}>
-          <LineChart
-            style={styles.chart}
-            data={this.state.data}
-            chartDescription={{text: ''}}
-            // legend={this.state.legend}
-            marker={this.state.marker}
-            xAxis={this.state.xAxis}
-            yAxis={this.state.yAxis}
-            drawGridBackground={true}
-            borderColor={processColor('teal')}
-            borderWidth={1}
-            drawBorders={true}
-
-            touchEnabled={true}
-            dragEnabled={true}
-            scaleEnabled={true}
-            scaleXEnabled={true}
-            scaleYEnabled={true}
-            pinchZoom={true}
-            doubleTapToZoomEnabled={true}
-
-            dragDecelerationEnabled={true}
-            dragDecelerationFrictionCoef={0.99}
-
-            keepPositionOnRotation={false}
-            onSelect={this.handleSelect.bind(this)}
-            onChange={(event) => console.log(event.nativeEvent)}
-          />
-        </View>
-      </View>
-    );*/
   }
 }
 

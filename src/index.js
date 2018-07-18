@@ -197,7 +197,7 @@ export const AppNavigator = StackNavigator({
 		screen: InventoryScreen,
 		navigationOptions: {
 			// header: null,
-			headerTitle: 'Persediaan',
+			headerTitle: 'Produk',
 			headerTintColor: 'white',
 			headerStyle: {
 				backgroundColor: '#6ecbe0'
