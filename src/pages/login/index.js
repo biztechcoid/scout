@@ -84,7 +84,7 @@ class LoginScreen extends React.Component {
 						  actions: [{ type: 'Navigation/NAVIGATE', routeName: 'Dashboard'}]
 						})
 
-						this._getUsers(res.data.token, res.data)
+						this._getStore(res.data.token, res.data)
 					} else {
 						this._loginProcess(false)
 						Alert.alert(null, res.headers.message)
@@ -127,23 +127,6 @@ class LoginScreen extends React.Component {
 		}
 	}
 
-	_getUsers(token, data) {
-		fetch(server + '/users', {
-			method: 'GET',
-			headers: {
-				token: token
-			}
-		})
-		.then(response => response.json())
-		.then(res => {
-			if(res.headers.statusCode === 200) {
-				this.props.dispatchLocalStorageUsers({users: res.data})
-				this._getStore(token, data)
-			}
-		})
-		.catch(err => console.log(err))
-	}
-
 	_getStore(token, data) {
 		fetch(server + '/users/store', {
 			method: 'GET',
@@ -156,6 +139,23 @@ class LoginScreen extends React.Component {
 		.then(res => {
 			if(res.headers.statusCode === 200) {
 				this.props.dispatchLocalStorageUsers({store: res.data})
+				this._getUsers(token, data)
+			}
+		})
+		.catch(err => console.log(err))
+	}
+
+	_getUsers(token, data) {
+		fetch(server + '/users', {
+			method: 'GET',
+			headers: {
+				token: token
+			}
+		})
+		.then(response => response.json())
+		.then(res => {
+			if(res.headers.statusCode === 200) {
+				this.props.dispatchLocalStorageUsers({users: res.data})
 				this._getInventory(token, data)
 			}
 		})

@@ -42,7 +42,7 @@ for(var i in tahun) {
 class LineChartScreen extends React.Component {
 
   constructor() {
-    super();
+    super()
 
     this.state = {
       data: [],
@@ -50,14 +50,41 @@ class LineChartScreen extends React.Component {
       listKategori: [],
       produk: null,
       listProduk: [],
+      listProduk1: [],
 
-      _date: []
-    };
+      _date: [],
+
+      dataChart: {},
+      legend: {
+        enabled: true,
+        textColor: processColor('blue'),
+        textSize: 12,
+        position: 'BELOW_CHART_RIGHT',
+        form: 'SQUARE',
+        formSize: 14,
+        xEntrySpace: 10,
+        yEntrySpace: 5,
+        formToTextSpace: 5,
+        wordWrapEnabled: true,
+        maxSizePercent: 0.5,
+        /*custom: {
+          colors: [processColor('red'), processColor('blue'), processColor('green')],
+          labels: ['Company X', 'Company Y', 'Company Dashed']
+        }*/
+      },
+      marker: {
+        enabled: true,
+        digits: 2,
+        backgroundTint: processColor('teal'),
+        markerColor: processColor('#F0C0FF8C'),
+        textColor: processColor('white'),
+      }
+    }
   }
 
   _cabang(value) {
     this.setState({cabang: value})
-    this.find(this.state.from, this.state.to, value)
+    this.find(this.state.from, this.state.to, value, this.state.kategori, this.state.produk)
   }
 
   _from(value) {
@@ -65,7 +92,7 @@ class LineChartScreen extends React.Component {
       return Alert.alert(null, 'data tidak valid')
     }
     this.setState({from: value})
-    this.find(value, this.state.to, this.state.cabang)
+    this.find(value, this.state.to, this.state.cabang, this.state.kategori, this.state.produk)
   }
 
   _to(value) {
@@ -73,10 +100,10 @@ class LineChartScreen extends React.Component {
       return Alert.alert(null, 'data tidak valid')
     }
     this.setState({to: value})
-    this.find(this.state.from, value, this.state.cabang)
+    this.find(this.state.from, value, this.state.cabang, this.state.kategori, this.state.produk)
   }
 
-  find(_from, _to, cabang) {
+  find(_from, _to, cabang, _kategori, _produk) {
     if(_from != undefined && _to != undefined && cabang != null) {
       var data = {
         idPusat: this.props.store[0].idPusat,
@@ -128,8 +155,8 @@ class LineChartScreen extends React.Component {
       var _getPemasukan = {
         idPusat: data.idPusat,
         idCabang: data.idCabang,
-        idCategory: null,
-        idProduct: null,
+        idCategory: _kategori === null ? '' : _kategori,
+        idProduct: _produk === null ? '' : _produk,
         from: data.from,
         to: data.to
       }
@@ -152,6 +179,7 @@ class LineChartScreen extends React.Component {
       kategori: value,
       // produk: null
     })
+    this.find(this.state.from, this.state.to, this.state.cabang, value, this.state.produk)
 
     /*
     *
@@ -186,6 +214,7 @@ class LineChartScreen extends React.Component {
 
   _produk(value) {
     this.setState({produk: value})
+    this.find(this.state.from, this.state.to, this.state.cabang, this.state.kategori, value)
   }
 
   _apiGetPemasukan(data) {
@@ -213,13 +242,73 @@ class LineChartScreen extends React.Component {
     })
     .then(response => response.json())
     .then(res => {
-      console.log('===== pemasukan =====', res)
       if(res.headers.statusCode === 200) {
+        if(this.state.produk === null) {
+          this.setState({
+            listProduk: res.data.product
+          })
+        }
         this.setState({
           listKategori: res.data.category,
-          listProduk: res.data.product,
+          listProduk1: res.data.product,
           data: res.data.pemasukan,
         })
+
+        var totalChart = [{y: 0}]
+        var dateChart = ['']
+        for(var i = 0; i < res.data.pemasukan.length; i++) {
+          totalChart.push({y: res.data.pemasukan[i].total})
+          dateChart.push(res.data.pemasukan[i].date)
+        }
+        
+        // if(res.data.pemasukan.length >= 4) {
+          this.setState({
+            dataChart: {
+            dataSets: [{
+              values: totalChart,
+              label: 'Pemasukan',
+              config: {
+              //   lineWidth: 2,
+              //   drawCircles: false,
+              //   highlightColor: processColor('red'),
+              //   color: processColor('red'),
+              //   // drawFilled: true,
+              //   fillColor: processColor('red'),
+              //   fillAlpha: 60,
+                // valueTextSize: 15,
+              //   valueFormatter: "##.000",
+              //   dashedLine: {
+              //     lineLength: 20,
+              //     spaceLength: 20
+              //   }
+                color: processColor('red'),
+                // drawFilled: true,
+                fillColor: processColor('red'),
+                fillAlpha: 50,
+                circleColor: processColor('red')
+              }
+            }],
+            },
+            xAxis: {
+              // $set: {
+                fontFamily:"HelveticaNeue-Medium",
+                fontWeight:"bold",
+                fontStyle:"italic",
+                fontColor: 'white',
+                valueFormatter: dateChart,
+                position: 'BOTTOM'
+              // }
+            },
+            yAxis: {
+              left: {
+                enabled: false
+              },
+              right: {
+                enabled: false
+              }
+            }
+          })
+        // }
       }
     })
     .catch(err => console.log(err))
@@ -246,7 +335,6 @@ class LineChartScreen extends React.Component {
     })
     .then(response => response.json())
     .then(res => {
-      console.log('=== category ===', res)
       if(res.headers.statusCode === 200) {
         this.setState({
           // kategori: null,
@@ -279,7 +367,6 @@ class LineChartScreen extends React.Component {
     })
     .then(response => response.json())
     .then(res => {
-      console.log('=== product ===', res)
       if(res.headers.statusCode === 200) {
         this.setState({
           // produk: null,
@@ -390,7 +477,7 @@ class LineChartScreen extends React.Component {
                   <View style={{borderWidth: 0.25, padding: 5}}>
                     <Text style={{fontWeight: 'bold'}}>Date</Text>
                   </View>
-                  {this.state.listProduk.map((content, index) => {
+                  {this.state.listProduk1.map((content, index) => {
                     return (
                       <View style={{borderWidth: 0.25, padding: 5}}>
                         <Text style={{fontWeight: 'bold'}}>{content.name}</Text>

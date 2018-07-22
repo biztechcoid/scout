@@ -175,10 +175,19 @@ class SideMenuScreen extends React.Component {
 			<View style = {{flex: 1}}>
 				<View style={{ backgroundColor:'#353535' }}>
 					<View style = {{ height: 40,marginTop:20,marginBottom:20, borderWidth: 0, borderBottomWidth: 0, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
-						<View style = {{ flex: 1, alignItems: 'center', justifyContent: 'center',width:'100%'}}>
-							<View style={{justifyContent: 'center', flex: 1,}}>
-								<Text style={{color: 'white'}}>{this.props.user === null ? null : this.props.user.cabangName}</Text>
-							</View>
+						<View style = {{ flex: 1, justifyContent: 'center', width:'100%'}}>
+							{this.props.user === null ?
+								null
+								:
+								<View style={{flex: 1}}>
+									<View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+										<Text style={{color: 'white'}}>{this.props.user.bisnisName}</Text>
+									</View>
+									<View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+										<Text style={{color: 'white'}}>{this.props.user.cabangName}</Text>
+									</View>
+								</View>
+							}
 						</View>
 					</View>
 				</View>
@@ -208,6 +217,26 @@ class SideMenuScreen extends React.Component {
 					{this.props.user ?
 						// this.props.user.idCabang === null ?
 							<View>
+								<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
+									<Touchable
+										style={{justifyContent: 'center'}}
+										onPress={()=>{}}>
+										<Text>Hak Akses</Text>
+									</Touchable>
+								</View>
+
+								{Object.keys(this.props.user.access).map((content, index) => {
+									if(this.props.user.access[content] === 'true') {
+										return (
+											<View style = {{height: 20, borderWidth: 0,width:'90%',marginLeft:'10%',marginRight:'5%'}}>
+												<View style={{justifyContent: 'center'}}>
+													<Text>{content}</Text>
+												</View>
+											</View>
+										)
+									}
+								})}
+
 								<View style = {{ height: 40, borderWidth: 0, borderBottomWidth: 1, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
 									<Touchable
 										style={{justifyContent: 'center'}}

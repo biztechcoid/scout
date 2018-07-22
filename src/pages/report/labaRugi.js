@@ -36,16 +36,19 @@ for(var i in tahun) {
 
 
 class LabaRugi extends React.Component {
-	state = {
-		from: null,
-		to: null,
-		cabang: null,
-		report: {
-			penjualan: 0,
-			hargaPokok: 0,
-			labaKotor: 0,
-			pengeluaran: 0,
-			labaRugi: 0
+	constructor() {
+    super()
+		this.state = {
+			from: null,
+			to: null,
+			cabang: null,
+			report: {
+				penjualan: 0,
+				hargaPokok: 0,
+				labaKotor: 0,
+				pengeluaran: 0,
+				labaRugi: 0
+			}
 		}
 	}
 

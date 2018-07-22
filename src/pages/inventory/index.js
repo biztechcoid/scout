@@ -72,45 +72,49 @@ class InventoryScreen extends React.Component {
 				if(this.state.category == '' || this.state.category == null) {
 					Alert.alert(null, 'nama category tidak valid')
 				} else {
-					var data = {
+					if(this.props.category.map((a) => {return a.name}).indexOf(this.state.category) === -1) {
+						var data = {
+							/*
+							*
+							offline
+							idCabang diganti dengan imei device
+							*
+							*/
+							idCategory: makeId(),
+							idPusat: this.props.profile.idPusat,
+							idCabang: this.props.profile.idCabang,
+							// idCabang: this.props.device.imei,
+							name: this.state.category
+						}
 						/*
 						*
-						offline
-						idCabang diganti dengan imei device
+						post to api
 						*
 						*/
-						idCategory: makeId(),
-						idPusat: this.props.profile.idPusat,
-						idCabang: this.props.profile.idCabang,
-						// idCabang: this.props.device.imei,
-						name: this.state.category
-					}
-					/*
-					*
-					post to api
-					*
-					*/
-					fetch(server + '/inventory/addCategory', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-							token: this.props.profile.token
-						},
-						body: JSON.stringify(data)
-					})
-					.then(response => response.json())
-					.then(res => {
-						if(res.headers.statusCode === 200) {
-							this.props.dispatchAddCategory(data)
-						} else {
-							Alert.alert(null, res.headers.message)
-						}
-						this.setState({
-							category: null
+						fetch(server + '/inventory/addCategory', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json',
+								token: this.props.profile.token
+							},
+							body: JSON.stringify(data)
 						})
-						this._setModalVisible(false)
-					})
-					.catch(err => console.log(err))
+						.then(response => response.json())
+						.then(res => {
+							if(res.headers.statusCode === 200) {
+								this.props.dispatchAddCategory(data)
+							} else {
+								Alert.alert(null, res.headers.message)
+							}
+							this.setState({
+								category: null
+							})
+							this._setModalVisible(false)
+						})
+						.catch(err => console.log(err))
+					} else {
+						Alert.alert(null, 'nama kategori sudah ada')
+					}
 				}
 			} else {
 				Alert.alert(null, 'koneksi internet bermasalah')

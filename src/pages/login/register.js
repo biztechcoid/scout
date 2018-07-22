@@ -37,6 +37,7 @@ class RegisterScreen extends React.Component {
 		name: null,
 		email: null,
 		phone: null,
+		bisnisName: null,
 		password: null,
 		confirmPassword: null,
 
@@ -84,6 +85,7 @@ class RegisterScreen extends React.Component {
 						const store = {
 							idPusat: makeId(),
 							name: 'Pusat',
+							bisnisName: this.state.bisnisName,
 							ket: null
 						}
 
@@ -354,8 +356,13 @@ class RegisterScreen extends React.Component {
 							return Alert.alert(null, 'silahkan pilih hak akses')
 						}
 
-						var cabang, register
+						var store, cabang, register
 						if(stateCopy.cabang === this.props.store.idPusat) {
+							store = {
+								idPusat: this.props.store.idPusat,
+								name: 'Pusat',
+								bisnisName: this.state.bisnisName
+							}
 							cabang = {
 								idCabang: 'Follow Pusat',
 								name: 'Follow Pusat',
@@ -414,6 +421,7 @@ class RegisterScreen extends React.Component {
 								token: this.props.user.token
 							},
 							body: JSON.stringify({
+								store: store,
 								cabang: cabang,
 								register: register
 							})
@@ -517,7 +525,9 @@ class RegisterScreen extends React.Component {
 							</View>
 
 							{this.props.navigation.state.params.type === 'Edit User' ?
-								null
+								<View style = {{ height: 45, justifyContent: 'center' }}>
+									<Text>Nama Bisnis</Text>
+								</View>
 								:
 								<View>
 									<View style = {{ height: 45, justifyContent: 'center' }}>
@@ -531,10 +541,14 @@ class RegisterScreen extends React.Component {
 							}
 
 							{this.props.navigation.state.params.type === 'Register' ?
-								null
-								:
 								<View style = {{ height: 45, justifyContent: 'center' }}>
-									<Text>Cabang</Text>
+									<Text>Nama Bisnis</Text>
+								</View>
+								:
+								<View>
+									<View style = {{ height: 45, justifyContent: 'center' }}>
+										<Text>Cabang</Text>
+									</View>
 								</View>
 							}
 
@@ -623,14 +637,29 @@ class RegisterScreen extends React.Component {
 									returnKeyType = 'next'
 									underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({phone: text }) }
-									onSubmitEditing = { () => this._password.focus() }
+									onSubmitEditing = { () => this._bisnisName.focus() }
 									//placeholder = 'Telepon'
 									style = {{ flex: 1, height: 45 }}
 									value = {this.state.phone}/>
 							</View>
 
 							{this.props.navigation.state.params.type === 'Edit User' ?
-								null
+								<View style = {{ flexDirection: 'row' }}>
+									<View style = {{ justifyContent: 'center' }}>
+										<Text> : </Text>
+									</View>
+
+									<TextInput
+										ref = { (c) => this._bisnisName = c }
+										autoCapitalize = 'none'
+										returnKeyType = 'next'
+										underlineColorAndroid = '#bebebe'
+										onChangeText = { (text) => this.setState({bisnisName: text }) }
+										onSubmitEditing = { () => this._password.focus() }
+										//placeholder = 'Telepon'
+										style = {{ flex: 1, height: 45 }}
+										value = {this.state.bisnisName}/>
+								</View>
 								:
 								<View>
 									<View style = {{ flexDirection: 'row' }}>
@@ -672,24 +701,41 @@ class RegisterScreen extends React.Component {
 							}
 
 							{this.props.navigation.state.params.type === 'Register' ?
-								null
-								:
 								<View style = {{ flexDirection: 'row' }}>
 									<View style = {{ justifyContent: 'center' }}>
 										<Text> : </Text>
 									</View>
 
-									<Picker
+									<TextInput
+										ref = { (c) => this._bisnisName = c }
+										autoCapitalize = 'none'
+										returnKeyType = 'next'
+										underlineColorAndroid = '#bebebe'
+										onChangeText = { (text) => this.setState({bisnisName: text }) }
+										onSubmitEditing = { () => this._password.focus() }
+										//placeholder = 'Telepon'
 										style = {{ flex: 1, height: 45 }}
-										selectedValue={this.state.cabang}
-										onValueChange={(itemValue, itemIndex) => this._chooseCabang(itemValue, itemIndex) }>
-										<Picker.Item label = '-- Pilih Cabang --' value = {null} />
-										<Picker.Item label = {this.props.store.name} value = {this.props.store.idPusat} />
-										{this.props.store.cabang.map((cabang, index) =>
-											<Picker.Item key = {index} label = {cabang.name} value = {cabang.idCabang} />
-											)}
-										<Picker.Item label = 'Tambah Cabang' value = 'addCabang' />
-									</Picker>
+										value = {this.state.bisnisName}/>
+								</View>
+								:
+								<View>
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ justifyContent: 'center' }}>
+											<Text> : </Text>
+										</View>
+
+										<Picker
+											style = {{ flex: 1, height: 45 }}
+											selectedValue={this.state.cabang}
+											onValueChange={(itemValue, itemIndex) => this._chooseCabang(itemValue, itemIndex) }>
+											<Picker.Item label = '-- Pilih Cabang --' value = {null} />
+											<Picker.Item label = {this.props.store.name} value = {this.props.store.idPusat} />
+											{this.props.store.cabang.map((cabang, index) =>
+												<Picker.Item key = {index} label = {cabang.name} value = {cabang.idCabang} />
+												)}
+											<Picker.Item label = 'Tambah Cabang' value = 'addCabang' />
+										</Picker>
+									</View>
 								</View>
 							}
 
@@ -917,6 +963,7 @@ class RegisterScreen extends React.Component {
 				name: this.props.navigation.state.params.content.name,
 				email: this.props.navigation.state.params.content.email,
 				phone: this.props.navigation.state.params.content.phone,
+				bisnisName: this.props.store.bisnisName,
 
 				cabang: this.props.navigation.state.params.content.idCabang === null ? this.props.navigation.state.params.content.idPusat : this.props.navigation.state.params.content.idCabang,
 				namaCabang: this.props.navigation.state.params.content.cabangName,

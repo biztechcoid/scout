@@ -77,11 +77,25 @@ const UserReducers = (state = initialState, action) => {
 				for(var i in action.data.users) {
 					for(var j in state.store) {
 						if(action.data.users[i].idPusat === state.store[j].idPusat) {
-							for(var k in state.store[j].cabang) {
-								if(action.data.users[i].idCabang === state.store[j].cabang[k].idCabang) {
-									action.data.users[i]['cabangName'] = state.store[j].cabang[k].name
-								} else if(action.data.users[i].idCabang === null) {
-									action.data.users[i]['cabangName'] = 'Pusat'
+							if(state.store[j].cabang.length === 0) {
+								/*
+								*
+								jika belum punya cabang
+								*
+								*/
+								action.data.users[i]['cabangName'] = 'Pusat'
+							} else {
+								/*
+								*
+								jika punya cabang
+								*
+								*/
+								for(var k in state.store[j].cabang) {
+									if(action.data.users[i].idCabang === state.store[j].cabang[k].idCabang) {
+										action.data.users[i]['cabangName'] = state.store[j].cabang[k].name
+									} else if(action.data.users[i].idCabang === null) {
+										action.data.users[i]['cabangName'] = 'Pusat'
+									}
 								}
 							}
 						}
