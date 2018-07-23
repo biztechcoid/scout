@@ -530,6 +530,14 @@ class RegisterScreen extends React.Component {
 								</View>
 								:
 								<View>
+									{this.props.navigation.state.params.type === 'Tambah User' ?
+									null
+									:
+									<View style = {{ height: 45, justifyContent: 'center' }}>
+										<Text>Nama Bisnis</Text>
+									</View>
+									}
+
 									<View style = {{ height: 45, justifyContent: 'center' }}>
 										<Text>Password</Text>
 									</View>
@@ -541,9 +549,7 @@ class RegisterScreen extends React.Component {
 							}
 
 							{this.props.navigation.state.params.type === 'Register' ?
-								<View style = {{ height: 45, justifyContent: 'center' }}>
-									<Text>Nama Bisnis</Text>
-								</View>
+								null
 								:
 								<View>
 									<View style = {{ height: 45, justifyContent: 'center' }}>
@@ -662,6 +668,27 @@ class RegisterScreen extends React.Component {
 								</View>
 								:
 								<View>
+									{this.props.navigation.state.params.type === 'Tambah User' ?
+									null
+									:
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ justifyContent: 'center' }}>
+											<Text> : </Text>
+										</View>
+
+										<TextInput
+											ref = { (c) => this._bisnisName = c }
+											autoCapitalize = 'none'
+											returnKeyType = 'next'
+											underlineColorAndroid = '#bebebe'
+											onChangeText = { (text) => this.setState({bisnisName: text }) }
+											onSubmitEditing = { () => this._password.focus() }
+											//placeholder = 'Telepon'
+											style = {{ flex: 1, height: 45 }}
+											value = {this.state.bisnisName}/>
+									</View>
+									}
+
 									<View style = {{ flexDirection: 'row' }}>
 										<View style = {{ justifyContent: 'center' }}>
 											<Text> : </Text>
@@ -701,22 +728,7 @@ class RegisterScreen extends React.Component {
 							}
 
 							{this.props.navigation.state.params.type === 'Register' ?
-								<View style = {{ flexDirection: 'row' }}>
-									<View style = {{ justifyContent: 'center' }}>
-										<Text> : </Text>
-									</View>
-
-									<TextInput
-										ref = { (c) => this._bisnisName = c }
-										autoCapitalize = 'none'
-										returnKeyType = 'next'
-										underlineColorAndroid = '#bebebe'
-										onChangeText = { (text) => this.setState({bisnisName: text }) }
-										onSubmitEditing = { () => this._password.focus() }
-										//placeholder = 'Telepon'
-										style = {{ flex: 1, height: 45 }}
-										value = {this.state.bisnisName}/>
-								</View>
+								null
 								:
 								<View>
 									<View style = {{ flexDirection: 'row' }}>

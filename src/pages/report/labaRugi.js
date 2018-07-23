@@ -39,8 +39,8 @@ class LabaRugi extends React.Component {
 	constructor() {
     super()
 		this.state = {
-			from: null,
-			to: null,
+			// from: null,
+			// to: null,
 			cabang: null,
 			report: {
 				penjualan: 0,
