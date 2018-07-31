@@ -643,7 +643,9 @@ class RegisterScreen extends React.Component {
 									returnKeyType = 'next'
 									underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({phone: text }) }
-									onSubmitEditing = { () => this._bisnisName.focus() }
+									onSubmitEditing = { () => {
+										this.props.navigation.state.params.type === 'Tambah User' ? this._password.focus() : this._bisnisName.focus()
+									}}
 									//placeholder = 'Telepon'
 									style = {{ flex: 1, height: 45 }}
 									value = {this.state.phone}/>
@@ -661,7 +663,7 @@ class RegisterScreen extends React.Component {
 										returnKeyType = 'next'
 										underlineColorAndroid = '#bebebe'
 										onChangeText = { (text) => this.setState({bisnisName: text }) }
-										onSubmitEditing = { () => this._password.focus() }
+										// onSubmitEditing = { () => this._password.focus() }
 										//placeholder = 'Telepon'
 										style = {{ flex: 1, height: 45 }}
 										value = {this.state.bisnisName}/>

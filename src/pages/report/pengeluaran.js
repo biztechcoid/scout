@@ -305,7 +305,7 @@ class Pengeluaran extends React.Component {
 
 						{this.state.data.map((content, index) => {
 							return (
-								<View style={{flex: 1}}>
+								<View key={index} style={{flex: 1}}>
 									<View style={{borderWidth: 0.25, padding: 5}}>
 										<Text style={{fontWeight: 'bold'}}>{content.date}</Text>
 									</View>

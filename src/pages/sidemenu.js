@@ -228,7 +228,8 @@ class SideMenuScreen extends React.Component {
 								{Object.keys(this.props.user.access).map((content, index) => {
 									if(this.props.user.access[content] === 'true') {
 										return (
-											<View style = {{height: 20, borderWidth: 0,width:'90%',marginLeft:'10%',marginRight:'5%'}}>
+											<View key={index}
+												style = {{height: 20, borderWidth: 0,width:'90%',marginLeft:'10%',marginRight:'5%'}}>
 												<View style={{justifyContent: 'center'}}>
 													<Text>{content}</Text>
 												</View>

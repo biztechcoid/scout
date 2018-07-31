@@ -479,7 +479,7 @@ class LineChartScreen extends React.Component {
                   </View>
                   {this.state.listProduk1.map((content, index) => {
                     return (
-                      <View style={{borderWidth: 0.25, padding: 5}}>
+                      <View key={index} style={{borderWidth: 0.25, padding: 5}}>
                         <Text style={{fontWeight: 'bold'}}>{content.name}</Text>
                       </View>
                     )
