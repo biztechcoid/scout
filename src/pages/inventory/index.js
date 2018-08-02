@@ -86,7 +86,6 @@ class InventoryScreen extends React.Component {
 							// idCabang: this.props.device.imei,
 							name: this.state.category
 						}
-						console.log('1', data)
 						/*
 						*
 						post to api
@@ -103,7 +102,6 @@ class InventoryScreen extends React.Component {
 						.then(response => response.json())
 						.then(res => {
 							if(res.headers.statusCode === 200) {
-								console.log('2', data)
 								this.props.dispatchAddCategory(data)
 							} else {
 								Alert.alert(null, res.headers.message)
@@ -481,7 +479,6 @@ const styles = StyleSheet.create({
 
 
 function mapStateToProps (state) {
-	console.log(state.category.data)
 	return {
 		device: state.user.device,
 		category: state.category.data,

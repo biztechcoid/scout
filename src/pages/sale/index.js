@@ -245,7 +245,7 @@ class SaleScreen extends React.Component {
 							stateCopy.sale.total = total + data.subTotal
 							stateCopy.sale.data.push(data)
 
-							this.setState(stateCopy)
+							return this.setState(stateCopy)
 						} else {
 							/*
 							*
@@ -267,9 +267,12 @@ class SaleScreen extends React.Component {
 			return Alert.alert(null, 'silahkan pilih product terlebih dahulu')
 		} else {
 			for(var i in stateCopy.sale.data) {
-				if(stateCopy.sale.data[i].idCategory === idCategory) {
-					if(stateCopy.sale.data[i].idProduct === idProduct) {
-						if(stateCopy.sale.data[i].idSubProduct === subProduct.idSubProduct) {
+				if(stateCopy.sale.data.map((a) => {return a.idCategory}).indexOf(idCategory) !== -1) {
+				// if(stateCopy.sale.data[i].idCategory === idCategory) {
+					if(stateCopy.sale.data.map((a) => {return a.idProduct}).indexOf(idProduct) !== -1) {
+					// if(stateCopy.sale.data[i].idProduct === idProduct) {
+						if(stateCopy.sale.data.map((a) => {return a.idSubProduct}).indexOf(subProduct.idSubProduct) !== -1) {
+						// if(stateCopy.sale.data[i].idSubProduct === subProduct.idSubProduct) {
 							/*
 							*
 							sub product sudah ada

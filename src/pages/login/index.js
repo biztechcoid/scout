@@ -5,6 +5,7 @@ import {
 	AsyncStorage,
 	Dimensions,
 	Keyboard,
+	Linking,
 	Text,
 	TextInput,
 	View,
@@ -280,7 +281,16 @@ class LoginScreen extends React.Component {
 							placeholder = 'Password'
 							secureTextEntry = {true}
 							value = {this.state.password}/>
+
+						<View style={{alignItems: 'flex-end'}}>
+							<Text
+								style={{color: 'white'}}
+								onPress={() => Linking.openURL('http://www.scoutbiz.id/reset.php').catch(err => console.error('An error occurred', err))}>
+								Lupa Password?
+							</Text>
+						</View>
 					</View>
+
 
 					<View style = {{ flex: 1 }}>
 						<Button

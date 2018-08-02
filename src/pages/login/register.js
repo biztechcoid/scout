@@ -131,7 +131,24 @@ class RegisterScreen extends React.Component {
 								success
 								*
 								*/
-								Alert.alert(null, 'Pendaftaran berhasil, silahkan masuk',
+								// send email
+								fetch('http://www.scoutbiz.id/register.php', {
+									method: 'POST',
+									headers: {
+				            'Accept': 'application/json',
+				            'Content-Type': 'application/json',
+				          },
+				          body: JSON.stringify({
+				            idUser: register.idUser,
+				            email: register.email
+				          })
+								})
+								.then(response => {response.json()})
+								.then(res => console.log(res))
+								.catch(err => console.log(err))
+
+								// message success
+								Alert.alert(null, 'Pendaftaran berhasil. Kami telah mengirimkan email verifikasi ke email anda.',
 									[{ text: 'OK', onPress: () => this.props.navigation.goBack() }])
 							} else {
 								/*
@@ -375,6 +392,7 @@ class RegisterScreen extends React.Component {
 								name: stateCopy.name,
 								email: stateCopy.email,
 								phone: stateCopy.phone,
+								password: stateCopy.password,
 								access: stateCopy.access
 							}
 						} else if(stateCopy.cabang === 'addCabang') {
@@ -390,6 +408,7 @@ class RegisterScreen extends React.Component {
 								name: stateCopy.name,
 								email: stateCopy.email,
 								phone: stateCopy.phone,
+								password: stateCopy.password,
 								access: stateCopy.access
 							}
 						} else {
@@ -405,6 +424,7 @@ class RegisterScreen extends React.Component {
 								name: stateCopy.name,
 								email: stateCopy.email,
 								phone: stateCopy.phone,
+								password: stateCopy.password,
 								access: stateCopy.access
 							}
 						}
@@ -525,17 +545,23 @@ class RegisterScreen extends React.Component {
 							</View>
 
 							{this.props.navigation.state.params.type === 'Edit User' ?
-								<View style = {{ height: 45, justifyContent: 'center' }}>
-									<Text>Nama Bisnis</Text>
+								<View>
+									<View style = {{ height: 45, justifyContent: 'center' }}>
+										<Text>Nama Bisnis</Text>
+									</View>
+
+									<View style = {{ height: 45, justifyContent: 'center' }}>
+										<Text>Password</Text>
+									</View>
 								</View>
 								:
 								<View>
 									{this.props.navigation.state.params.type === 'Tambah User' ?
-									null
-									:
-									<View style = {{ height: 45, justifyContent: 'center' }}>
-										<Text>Nama Bisnis</Text>
-									</View>
+										null
+										:
+										<View style = {{ height: 45, justifyContent: 'center' }}>
+											<Text>Nama Bisnis</Text>
+										</View>
 									}
 
 									<View style = {{ height: 45, justifyContent: 'center' }}>
@@ -644,7 +670,10 @@ class RegisterScreen extends React.Component {
 									underlineColorAndroid = '#bebebe'
 									onChangeText = { (text) => this.setState({phone: text }) }
 									onSubmitEditing = { () => {
-										this.props.navigation.state.params.type === 'Tambah User' ? this._password.focus() : this._bisnisName.focus()
+										this.props.navigation.state.params.type === 'Register' ?
+											this._bisnisName.focus()
+											:
+											this.props.navigation.state.params.type === 'Tambah User' ? this._password.focus() : this.state.idCabang === null ? this._bisnisName.focus() : this._password.focus()
 									}}
 									//placeholder = 'Telepon'
 									style = {{ flex: 1, height: 45 }}
@@ -652,21 +681,47 @@ class RegisterScreen extends React.Component {
 							</View>
 
 							{this.props.navigation.state.params.type === 'Edit User' ?
-								<View style = {{ flexDirection: 'row' }}>
-									<View style = {{ justifyContent: 'center' }}>
-										<Text> : </Text>
+								<View>
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ justifyContent: 'center' }}>
+											<Text> : </Text>
+										</View>
+
+										{this.state.idCabang === null ?
+											<TextInput
+												ref = { (c) => this._bisnisName = c }
+												autoCapitalize = 'words'
+												returnKeyType = 'next'
+												underlineColorAndroid = '#bebebe'
+												onChangeText = { (text) => this.setState({bisnisName: text }) }
+												// onSubmitEditing = { () => this._password.focus() }
+												//placeholder = 'Telepon'
+												style = {{ flex: 1, height: 45 }}
+												value = {this.state.bisnisName}/>
+											:
+											<View  style={{flex: 1, height: 45, justifyContent: 'center'}}>
+												<Text>{this.state.bisnisName}</Text>
+											</View>
+										}
 									</View>
 
-									<TextInput
-										ref = { (c) => this._bisnisName = c }
-										autoCapitalize = 'none'
-										returnKeyType = 'next'
-										underlineColorAndroid = '#bebebe'
-										onChangeText = { (text) => this.setState({bisnisName: text }) }
-										// onSubmitEditing = { () => this._password.focus() }
-										//placeholder = 'Telepon'
-										style = {{ flex: 1, height: 45 }}
-										value = {this.state.bisnisName}/>
+									<View style = {{ flexDirection: 'row' }}>
+										<View style = {{ justifyContent: 'center' }}>
+											<Text> : </Text>
+										</View>
+
+										<TextInput
+											ref = { (c) => this._password = c }
+											autoCapitalize = 'none'
+											returnKeyType = 'next'
+											underlineColorAndroid = '#bebebe'
+											onChangeText = { (text) => this.setState({password: text }) }
+											// onSubmitEditing = { () => this._password.focus() }
+											//placeholder = 'Telepon'
+											secureTextEntry = {true}
+											style = {{ flex: 1, height: 45 }}
+											value = {this.state.password}/>
+									</View>
 								</View>
 								:
 								<View>
@@ -680,7 +735,7 @@ class RegisterScreen extends React.Component {
 
 										<TextInput
 											ref = { (c) => this._bisnisName = c }
-											autoCapitalize = 'none'
+											autoCapitalize = 'words'
 											returnKeyType = 'next'
 											underlineColorAndroid = '#bebebe'
 											onChangeText = { (text) => this.setState({bisnisName: text }) }

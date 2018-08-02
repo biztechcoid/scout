@@ -33,7 +33,7 @@ let store = createStore(rootReducer)
 import Franchise from './src'
 
 console.disableYellowBox = true
-// console.log = () => {}
+console.log = () => {}
 
 export default class App extends Component<{}> {
   render() {

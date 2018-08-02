@@ -4,6 +4,7 @@ import {
 	AsyncStorage,
 	Dimensions,
 	Keyboard,
+	Linking,
 	ListView,
 	Modal,
 	NetInfo,
@@ -355,7 +356,9 @@ class InventoryScreen extends React.Component {
 					<View style={{flex: 2, padding: 5}}>
 						<View style={{flex: 1, borderWidth: 0}}>
 							<Touchable
-								onPress={() => {}}>
+								onPress={() => {
+									Linking.openURL('http://www.scoutbiz.id/manual.pdf').catch(err => console.error('An error occurred', err))
+								}}>
 							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
 								<View style={{flex: 0.5, justifyContent: 'center', alignItems: 'center'}}>
 									<Ionicons
@@ -365,7 +368,7 @@ class InventoryScreen extends React.Component {
 								</View>
 
 								<View  style={{flex: 6, justifyContent: 'center'}}>
-									<Text>Text</Text>
+									<Text>E-Book Panduan Penggunaan</Text>
 								</View>
 							</View>
 							</Touchable>
