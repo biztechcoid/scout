@@ -12,14 +12,15 @@ const Json2csvParser = require('json2csv').Parser
 import RNFS from 'react-native-fs'
 import FileOpener from 'react-native-file-opener'
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
-// import ImagePicker from 'react-native-image-crop-picker'
-var ImagePicker = require('react-native-image-picker');
+import ImagePicker from 'react-native-image-crop-picker'
+// var ImagePicker = require('react-native-image-picker');
 
 import { connect } from 'react-redux'
 import {
 	logout,
 	localStorageData,
-	localStorageSale
+	localStorageSale,
+	localStorageUsers
 } from '../redux/actions'
 
 import {
@@ -175,7 +176,7 @@ class SideMenuScreen extends React.Component {
 	}
 
 	_pickerLogo() {
-		/*ImagePicker.openPicker({
+		ImagePicker.openPicker({
 		  width: 500,
 		  height: 500,
 		  cropping: false
@@ -201,15 +202,29 @@ class SideMenuScreen extends React.Component {
 		  .then((res) => {
 		  	console.log(res)
 		  	if(res === 'Berhasil') {
-		  		Alert.alert(null, 'upload gambar berhasil')
+		  		fetch(server + '/users/store', {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							token: this.props.user.token
+						}
+					})
+					.then(response => response.json())
+					.then(res => {
+						if(res.headers.statusCode === 200) {
+							this.props.dispatchLocalStorageUsers({store: res.data})
+		  				Alert.alert(null, 'upload gambar berhasil')
+						}
+					})
+					.catch(err => console.log(err))
 		  	} else {
 		  		Alert.alert(null, 'upload gambar gagal')
 		  	}
 		  })
 		  .catch((err) => console.log(err))
-		})*/
+		})
 
-		var options = {
+		/*var options = {
 		  title: 'Select Avatar',
 		  //customButtons: [
 		    //{name: 'fb', title: 'Choose Photo from Facebook'},
@@ -218,9 +233,9 @@ class SideMenuScreen extends React.Component {
 		    skipBackup: true,
 		    path: 'images'
 		  }
-		};
+		};*/
 
-		ImagePicker.showImagePicker(options, (response) => {
+		/*ImagePicker.showImagePicker(options, (response) => {
 		  console.log('Response = ', response);
 
 
@@ -258,7 +273,6 @@ class SideMenuScreen extends React.Component {
 			  data.append('idPusat', this.props.user.idPusat)
 
 			  console.log(data)
-			  // fetch('https://www.rajalistrik.com/erp/upload-logo.php', {
 			  fetch('http://www.scoutbiz.id/upload-logo.php', {
 			  	method: 'POST',
 			  	headers: {
@@ -277,7 +291,65 @@ class SideMenuScreen extends React.Component {
 			  })
 			  .catch((err) => console.log(err))
 		  }
-		});
+		});*/
+
+		/*ImagePicker.launchImageLibrary(options, (response) => {
+			console.log('Response = ', response);
+
+
+		  if (response.didCancel) {
+		    console.log('User cancelled image picker');
+		  }
+		  else if (response.error) {
+		    console.log('ImagePicker Error: ', response.error);
+		  }
+		  else if (response.customButton) {
+		    console.log('User tapped custom button: ', response.customButton);
+		  }
+		  else {
+		    let source = { uri: response.uri };
+				const sourceString = response.uri.toString(); 
+				this.setState({ 
+					dataImage: response.data, 
+					fileName: sourceString.split('/').pop(), 
+					sourceAsString: sourceString, 
+				});
+
+		    // You can also display the image using data:
+		    // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+		    this.setState({
+		      avatarSource: source
+		    });
+
+			  const data = new FormData()
+			  data.append('data', {
+			  	uri: this.state.sourceAsString,
+			  	type: response.type,
+			  	name: this.state.fileName,
+			  })
+			  data.append('idPusat', this.props.user.idPusat)
+
+			  console.log(data)
+			  fetch('http://www.scoutbiz.id/upload-logo.php', {
+			  	method: 'POST',
+			  	headers: {
+			  		'Content-Type': 'multipart/form-data'
+			  	},
+			  	body: data,
+			  })
+			  .then((response) => response.json())
+			  .then((res) => {
+			  	console.log(res)
+			  	if(res === 'Berhasil') {
+			  		Alert.alert(null, 'upload gambar berhasil')
+			  	} else {
+			  		Alert.alert(null, 'upload gambar gagal')
+			  	}
+			  })
+			  .catch((err) => console.log(err))
+		  }
+		})*/
 	}
 
 	render() {
@@ -475,7 +547,8 @@ function mapDispatchToProps (dispatch) {
 	return {
 		dispatchLogout: (data) => dispatch(logout(data)),
 		dispatchLocalStorageData: (data) => dispatch(localStorageData(data)),
-		dispatchLocalStorageSale: (data) => dispatch(localStorageSale(data))
+		dispatchLocalStorageSale: (data) => dispatch(localStorageSale(data)),
+		dispatchLocalStorageUsers: (data) => dispatch(localStorageUsers(data)),
 	}
 }
 
