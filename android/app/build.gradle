@@ -157,6 +157,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-image-picker')
     compile project(':react-native-image-crop-picker')
     compile project(':react-native-charts-wrapper')
     compile project(':react-native-document-picker')
