@@ -21,6 +21,9 @@ import java.lang.reflect.Method;
 import com.facebook.react.bridge.ReadableNativeArray;
 import com.facebook.react.bridge.ReadableNativeMap;
 
+/*react native image crop picker*/
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +46,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFSPackage(),
             new ReactNativeDocumentPicker(),
             new MPAndroidChartPackage(),
-            new FileOpenerPackage()
+            new FileOpenerPackage(),
+            new PickerPackage()
       );
     }
 

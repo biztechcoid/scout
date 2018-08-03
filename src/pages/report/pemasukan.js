@@ -256,7 +256,7 @@ class LineChartScreen extends React.Component {
 
         var totalChart = [{y: 0}]
         var dateChart = ['']
-        for(var i = 0; i < res.data.pemasukan.length; i++) {
+        for(var i = 0; i < res.data.pemasukan.length - 1; i++) {
           totalChart.push({y: res.data.pemasukan[i].total})
           dateChart.push(res.data.pemasukan[i].date)
         }

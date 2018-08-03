@@ -15,15 +15,20 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
-        jcenter()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url "$rootDir/../node_modules/react-native/android"
+        }
+
+        /*react native image crop picker*/
+        maven {
+            url 'https://maven.google.com'
         }
 
         /*react native charts*/
         maven {
             url 'https://jitpack.io'
         }
+        jcenter()
     }
 }

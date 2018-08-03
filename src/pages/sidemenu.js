@@ -2,16 +2,17 @@ import React from 'react'
 import {
 	Alert,
 	AsyncStorage,
+	Image,
 	Platform,
 	Text,
-	View,
-	Image
+	View
 } from 'react-native'
 import DeviceInfo from 'react-native-device-info-fork'
 const Json2csvParser = require('json2csv').Parser
 import RNFS from 'react-native-fs'
 import FileOpener from 'react-native-file-opener'
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
+import ImagePicker from 'react-native-image-crop-picker'
 
 import { connect } from 'react-redux'
 import {
@@ -170,15 +171,58 @@ class SideMenuScreen extends React.Component {
     })
 	}
 
+	_pickerLogo() {
+		ImagePicker.openPicker({
+		  width: 500,
+		  height: 500,
+		  cropping: false
+		}).then(image => {
+		  var _name = image.path.split('/')
+		  const data = new FormData()
+		  data.append('data', {
+		  	uri: image.path,
+		  	type: image.mime,
+		  	name: _name[_name.length - 1]
+		  })
+		  data.append('idPusat', this.props.user.idPusat)
+
+		  console.log(data)
+		  fetch('http://www.scoutbiz.id/upload-logo.php', {
+		  	method: 'POST',
+		  	headers: {
+		  		'Content-Type': 'multipart/form-data'
+		  	},
+		  	body: data,
+		  })
+		  .then((response) => response.json())
+		  .then((res) => {
+		  	console.log(res)
+		  	if(res === 'Berhasil') {
+		  		Alert.alert(null, 'upload gambar berhasil')
+		  	} else {
+		  		Alert.alert(null, 'upload gambar gagal')
+		  	}
+		  })
+		  .catch((err) => console.log(err))
+		})
+	}
+
 	render() {
 		return (
 			<View style = {{flex: 1}}>
 				<View style={{ backgroundColor:'#353535' }}>
-					<View style = {{ height: 40,marginTop:20,marginBottom:20, borderWidth: 0, borderBottomWidth: 0, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%' }}>
-						<View style = {{ flex: 1, justifyContent: 'center', width:'100%'}}>
+					
 							{this.props.user === null ?
 								null
 								:
+					<View style={{flexDirection: 'row', height: 80, marginTop: 20, marginBottom: 20, borderWidth: 0, borderBottomWidth: 0, borderColor: '#f7f7f7',width:'90%',marginLeft:'5%',marginRight:'5%'}}>
+						<View style={{width: 80, height: 80, backgroundColor: 'white'}}>
+							<Touchable style={{flex: 1}} onPress={this._pickerLogo.bind(this)}>
+								<Image style={{flex: 1, width: null, height: null, resizeMode: 'center'}} source={{uri: 'http://www.scoutbiz.id/images/' + this.props.store[0].logo}}/>
+							</Touchable>
+						</View>
+
+						<View style = {{ flex: 1, justifyContent: 'center', width:'100%'}}>
 								<View style={{flex: 1}}>
 									<View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
 										<Text style={{color: 'white'}}>{this.props.user.bisnisName}</Text>
@@ -187,9 +231,10 @@ class SideMenuScreen extends React.Component {
 										<Text style={{color: 'white'}}>{this.props.user.cabangName}</Text>
 									</View>
 								</View>
-							}
 						</View>
 					</View>
+							}
+
 				</View>
 
 				<View>
@@ -343,6 +388,7 @@ class SideMenuScreen extends React.Component {
 }
 
 function mapStateToProps (state) {
+	console.log(state)
 	return {
 		user: state.user.data,
 		store: state.user.store,
