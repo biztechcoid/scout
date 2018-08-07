@@ -21,9 +21,9 @@ allprojects {
         }
 
         /*react native image crop picker*/
-        maven {
+        /*maven {
             url 'https://maven.google.com'
-        }
+        }*/
 
         /*react native charts*/
         maven {

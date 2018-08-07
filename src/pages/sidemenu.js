@@ -12,8 +12,8 @@ const Json2csvParser = require('json2csv').Parser
 import RNFS from 'react-native-fs'
 import FileOpener from 'react-native-file-opener'
 import { DocumentPicker, DocumentPickerUtil } from 'react-native-document-picker'
-import ImagePicker from 'react-native-image-crop-picker'
-// var ImagePicker = require('react-native-image-picker');
+// import ImagePicker from 'react-native-image-crop-picker'
+var ImagePicker = require('react-native-image-picker');
 
 import { connect } from 'react-redux'
 import {
@@ -176,7 +176,7 @@ class SideMenuScreen extends React.Component {
 	}
 
 	_pickerLogo() {
-		ImagePicker.openPicker({
+		/*ImagePicker.openPicker({
 		  width: 500,
 		  height: 500,
 		  cropping: false
@@ -222,18 +222,20 @@ class SideMenuScreen extends React.Component {
 		  	}
 		  })
 		  .catch((err) => console.log(err))
-		})
+		})*/
 
-		/*var options = {
+		var options = {
 		  title: 'Select Avatar',
 		  //customButtons: [
 		    //{name: 'fb', title: 'Choose Photo from Facebook'},
 		  //],
+		  maxWidth: 500,
+		  maxHeight: 500,
 		  storageOptions: {
 		    skipBackup: true,
 		    path: 'images'
 		  }
-		};*/
+		};
 
 		/*ImagePicker.showImagePicker(options, (response) => {
 		  console.log('Response = ', response);
@@ -293,7 +295,7 @@ class SideMenuScreen extends React.Component {
 		  }
 		});*/
 
-		/*ImagePicker.launchImageLibrary(options, (response) => {
+		ImagePicker.launchImageLibrary(options, (response) => {
 			console.log('Response = ', response);
 
 
@@ -342,14 +344,28 @@ class SideMenuScreen extends React.Component {
 			  .then((res) => {
 			  	console.log(res)
 			  	if(res === 'Berhasil') {
-			  		Alert.alert(null, 'upload gambar berhasil')
+			  		fetch(server + '/users/store', {
+							method: 'GET',
+							headers: {
+								'Content-Type': 'application/json',
+								token: this.props.user.token
+							}
+						})
+						.then(response => response.json())
+						.then(res => {
+							if(res.headers.statusCode === 200) {
+								this.props.dispatchLocalStorageUsers({store: res.data})
+			  				Alert.alert(null, 'upload gambar berhasil')
+							}
+						})
+						.catch(err => console.log(err))
 			  	} else {
 			  		Alert.alert(null, 'upload gambar gagal')
 			  	}
 			  })
 			  .catch((err) => console.log(err))
 		  }
-		})*/
+		})
 	}
 
 	render() {

@@ -465,6 +465,7 @@ class SaleScreen extends React.Component {
 			let file = await RNHTMLtoPDF.convert(options)
 			this._moveFile()
 		} catch (err) {
+			console.log(err)
 			Alert.alert(null, 'struk ' + this.state.sale.idTransaction + ' gagal disimpan')
 		}
 	}
@@ -491,7 +492,9 @@ class SaleScreen extends React.Component {
 	}
 
 	_openFile() {
+		console.log('=====', RNFS)
 		FileOpener.open('/storage/emulated/0/Scout/Penjualan/struk' + this.state.sale.idTransaction + '.pdf', 'application/pdf')
+		// FileOpener.open(RNFS.ExternalStorageDirectoryPath + '/Scout/Penjualan/struk' + this.state.sale.idTransaction + '.pdf', 'application/pdf')
 			.then(() => {
 				console.log('success!!')
 				this.setState({
@@ -500,7 +503,7 @@ class SaleScreen extends React.Component {
 					change: 0
 				})
 			},(e) => {
-				console.log('error!!')
+				console.log('error!!', e)
 			})
 	}
 
