@@ -1,7 +1,7 @@
 {
   "name": "SCOUTFranchise",
-  "code": "6",
-  "version": "0.0.5",
+  "code": "7",
+  "version": "0.0.6",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
